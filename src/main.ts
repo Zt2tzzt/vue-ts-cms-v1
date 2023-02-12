@@ -5,9 +5,12 @@ import pinia from './stores'
 
 import App from './App.vue'
 import router from './router'
+import registerIcons from '@/global/register-icons'
 
 const app = createApp(App)
 
+app.use(registerIcons)
 app.use(router)
 app.use(pinia)
+
 app.mount('#app')

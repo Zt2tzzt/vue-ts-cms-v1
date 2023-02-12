@@ -47,7 +47,6 @@ class ZTRequest {
 						background: 'rgba(0,0,0,0.5)'
 					})
 				} */
-				console.log('request config:', config)
 				return config
 			},
 			err => {

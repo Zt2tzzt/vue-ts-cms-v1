@@ -1,59 +1,228 @@
-# UI 组件库介绍
+# 一、UI 组件库介绍
 
-React
+流行的 React 组件库：
 
 - AntDesign
 - Material UI
 
-Vue3
+流行的 Vue3 组件库：
 
 - Vant（移动端）
 - Element Plus
 - AntDesign Vue
 
-Vue2
+流行的 Vue2 组件库：
 
 - Element UI
 
-# Element Plus 引入
+# 二、Element Plus 引入
 
 ## 1.安装
 
-## 2.用法
+在项目中，使用包管理器进行安装；[官方文档](https://element-plus.org/zh-CN/guide/installation.html)。
 
-### 1.全局引入
+```shell
+npm install element-plus
+```
 
-方便简洁，但打包过大。
+## 2.全局引入
 
-### 2.按需引入
+方便简洁，但打包过大。[官方文档](https://element-plus.org/zh-CN/guide/quickstart.html)
 
-1. 安装两个插件
+src/main.ts
 
-   ```shell
-   npm install -D unplugin-vue-components unplugin-auto-import
-   ```
+```typescript
+//...
+import ElementPlus from 'element-plus'
+import 'element-plus/dist/index.css'
+//...
+app.use(ElementPlus)
+//...
+```
 
-2. 在配置文件中进行配置
+## 3.按需引入
 
-   - webpack 对应 vue.config.ts
-   - vite 对应 vite.config.ts
+详细步骤参考[官方文档](https://element-plus.org/zh-CN/guide/quickstart.html#%E6%8C%89%E9%9C%80%E5%AF%BC%E5%85%A5)
 
-3. 项目运行后，会生成 2 个文件
+1.安装两个插件
 
-   - `auto-imports.d.ts`；`components.d.ts`
-   - 将它们添加到 `tsconfig.json` 中的 `include` 选项中，以实现编辑器中更好地类型支持。
+```shell
+npm install -D unplugin-vue-components unplugin-auto-import
+```
 
-类似于 `ELMessage`、`ELLoading` 这样的反馈组件，按需引入不会自动导入，需要手动导入。
+2.在配置文件中进行配置
 
-### 3.手动导入
+- webpack 对应 `vue.config.ts`
+- vite 对应 `vite.config.ts`
 
-了解，不推荐使用。
+项目中使用的是 vite
 
-# 登录页面
+。/vite.config.ts
 
-## 1.样式调整
+```typescript
+//...
 
-让 Login.vue 中的 app 占满屏幕，这样好做窗口剧中处理。
+import { defineConfig } from 'vite'
+import AutoImport from 'unplugin-auto-import/vite'
+import Components from 'unplugin-vue-components/vite'
+import { ElementPlusResolver } from 'unplugin-vue-components/resolvers'
+
+export default defineConfig({
+	plugins: [
+    //...
+		AutoImport({
+			resolvers: [ElementPlusResolver()]
+		}),
+		Components({
+			resolvers: [ElementPlusResolver()]
+		})
+	],
+})
+
+```
+
+3.项目运行后，会生成 2 个文件
+
+- `auto-imports.d.ts`；
+- `components.d.ts`
+
+将它们添加到 `tsconfig.json` 中的 `include` 选项中，以实现编辑器中更好地类型支持。
+
+./tsconfig.json
+
+```json
+"include": ["env.d.ts", "src/**/*", "src/**/*.vue", "auto-imports.d.ts", "components.d.ts"],
+```
+
+> 像 `ELMessage`、`ELLoading` 这样的”反馈组件“，
+>
+> 按需引入不会自动导入，需要手动导入，或者另外配置它们的自动导入。
+
+## 4.手动导入
+
+了解，比较麻烦，不推荐使用。[官方文档](https://element-plus.org/zh-CN/guide/quickstart.html#%E6%89%8B%E5%8A%A8%E5%AF%BC%E5%85%A5)
+
+## 5.图标引入
+
+使用 Element Plus 框架中自带的图标，两种方式：
+
+- [全局注册](https://element-plus.org/zh-CN/component/icon.html#%E6%B3%A8%E5%86%8C%E6%89%80%E6%9C%89%E5%9B%BE%E6%A0%87)，项目中采用。
+- [自动导入](https://element-plus.org/zh-CN/component/icon.html#%E8%87%AA%E5%8A%A8%E5%AF%BC%E5%85%A5)（配置起来较麻烦）
+
+1.编写一个注册图标的插件。
+
+src\global\register-icons.ts
+
+```typescript
+import * as ElementPlusIconsVue from '@element-plus/icons-vue'
+import type { App } from 'vue'
+
+const registerIcons = (app: App<Element>) => {
+	for (const [key, component] of Object.entries(ElementPlusIconsVue)) {
+		app.component(key, component)
+	}
+}
+
+export default registerIcons
+```
+
+2.使用插件
+
+src\main.ts
+
+```typescript
+//...
+import registerIcons from '@/global/register-icons'
+//...
+app.use(registerIcons)
+```
+
+## 6.反馈组件引入
+
+使用像 `ElMessage` 这样的反馈组件。对错误信息进行提示。
+
+该组件不会在 `<template>` 中使用，而是在 ts 逻辑代码中使用，需要手动引入组件和样式，
+
+手动引入组件：
+
+src\views\login\cpns\PanelAccount.vue
+
+```typescript
+import { ElMessage } from 'element-plus'
+```
+
+手动引入样式，三种方式：
+
+方式一：全局引入样式。
+
+src\main.ts
+
+```typescript
+import 'element-plus/dist/index.css'
+```
+
+方式二：单独引入样式，比如只引入 `ElMessage` 的样式。
+
+src\main.ts
+
+```typescript
+import 'element-plus/theme-chalk/el-message.css'
+```
+
+方式三：自动导入样式，需要安装插件
+
+1.安装插件 [vite-plugin-style-import](https://github.com/vbenjs/vite-plugin-style-import)
+
+```shell
+npm i vite-plugin-style-import -D
+```
+
+2.配置 `vite.config.ts`
+
+```typescript
+import { UserConfigExport } from 'vite'
+import {
+  createStyleImportPlugin,
+  ElementPlusResolve,
+} from 'vite-plugin-style-import'
+
+export default (): UserConfigExport => {
+  return {
+    // 1. If you are using the ant-design series, you need to configure this
+    // 2. Make sure less is installed in the dependency `yarn add less -D`
+    css: {
+      preprocessorOptions: {
+        less: {
+          javascriptEnabled: true,
+        },
+      },
+    },
+    plugins: [
+      createStyleImportPlugin({
+        resolves: [
+          ElementPlusResolve(),
+        ],
+        libs: [
+          // If you don’t have the resolve you need, you can write it directly in the lib, or you can provide us with PR
+          {
+            libraryName: 'ant-design-vue',
+            esModule: true,
+            resolveStyle: (name) => {
+              return `ant-design-vue/es/${name}/style/index`
+            },
+          },
+        ],
+      }),
+    ],
+  }
+}
+```
+
+# 三、登录页面
+
+## 1.样式调整，添加背景
+
+1.`App.vue` 占满屏幕；这样好做窗口居中处理。
 
 src\App.vue
 
@@ -64,9 +233,9 @@ src\App.vue
 }
 ```
 
-让 Login 占满屏幕；
+2.`Login.vue` 样式处理；
 
-并使用 flex 布局，将内容居中。；
+让整个组件占满屏幕，login 的内容居中，使用 flex 布局；
 
 添加一个背景
 
@@ -83,9 +252,9 @@ src\views\login\Login.vue
 }
 ```
 
-## 2.LoginPanel 组件
+## 2.登录页面搭建
 
-1.创建组件
+1.创建组件 `LoginPanel.vue` 组件
 
 src\views\login\cpns\LoginPanel.vue
 
@@ -105,73 +274,339 @@ import LoginPanel from './cpns/LoginPanel.vue'
 </template>
 ```
 
-3.组件编写
+### 1.整体页面搭建
 
-。。。
+在 `LoginPanel.vue` 中搭建整体页面。
 
-vue 中 使用 `ref` 没有初始化值时，可以传泛型来规范类型，如 `ref<boolean>()`
+src\views\login\cpns\LoginPanel.vue
 
-引入的 Ele 组件，可以加 `class`
+1.标题
 
-> 第三方 UI 框架，使用 CSS 变量名设值样式，亦成为趋势，方便用户进行样式覆盖。
+```html
+<h1 class="title">ZT 后台管理系统</h1>
+```
 
-使用 Element Plus 框架中自带的图标，两种方式：
+2.tabs
 
-- 全局注册，项目中采用。
-- 自动导入（配置起来较麻烦）
+```vue
+<!-- tabs 区域，在帐号和手机登录之间切换。 -->
+<div class="tabs">
+  <el-tabs type="border-card" stretch v-model="activeName">
+    <!-- 1.账号登录的Pane -->
+    <el-tab-pane name="account"></el-tab-pane>
 
+    <!-- 2.手机登录的Pane -->
+    <el-tab-pane name="phone"></el-tab-pane>
+  </el-tabs>
+</div>
 
+<script>
+//...
+const activeName = ref('account')
+</script>
+```
 
-4.PanelAccount 组件抽取。
+3.记住密码/忘记密码
 
-未用户输入的帐号、密码编写校验规则。一般卸载 `<el-form>` 组件中。
+```html
+<!-- 底部区域 -->
+<div class="controls">
+  <el-checkbox v-model="isRemPwd" label="记住密码" size="large" />
+  <el-link type="primary">忘记密码</el-link>
+</div>
 
-。。。
+<script setup lang="ts">
+import { ref } from 'vue'
 
-“账号” => “帐号”（正确）
+const isRemPwd = ref(false)
+</script>
+```
 
+> vue 中 使用 `ref` 没有初始化值时，可以传泛型来规范类型，如 `ref<boolean>()`
 
+4.立即登录按钮（组件）
 
-5.PanelPhone 组件抽取。
+使用 El 组件
 
-。。。
+```vue
+<el-button class="login-btn" type="primary" size="large" @click="handleLoginBtnClick">
+  立即登录
+</el-button>
 
+<script>
+// ...
+const handleLoginBtnClick = () => {
 
+}
+</script>
+```
 
-6.登录按钮点击
+### 2.tabs 搭建过程
 
-校验输入，
+src\views\login\cpns\LoginPanel.vue
 
-在父组件中点击按钮，执行子组件中的方法。
+1.`<el-tab-pane>` 里，`label` 插槽的使用，用于 tabs 的标签。
 
-使用 `ref` 引用子组件实例时，不能使用子组件名称作为类型。而是这么写 `ref<InstanceType<typeof [组件名称]>>`，代码中组件导出的时对象，而在 Vue 框架中是当作构造器来使用的。
+2.呢容显示
 
-店家提交按钮，校验表单中的规则是否满足。使用 `ref` 获取 `el-form`。
+```vue
+<!-- 1.账号登录的Pane -->
+<el-tab-pane name="account">
+  <template #label>
+    <div class="label">
+      <el-icon><UserFilled /></el-icon>
+      <span class="text">帐号登录</span>
+    </div>
 
-使用 `ElMessage` 反馈组件（需要手动引入组件和样式）对错误信息进行提示，
+		我是内容
+  </template>
+</el-tab-pane>
+```
 
-- 全局引入样式。
-- 只引入 `ElMessage` 的样式。
-- 自动导入杨思，需要安装插件
+> 第三方 UI 框架，使用 CSS 变量名设值样式，已成为趋势，方便用户进行样式覆盖。
 
+### 3.帐号登录 form
 
+创建 `PanelAccount.vue` 组件，在其中搭建账号登陆 form
 
-发送请求
+src\views\login\cpns\PanelAccount.vue
 
-封装登录的网络请求，并调用。
+```vue
+<el-form
+  :model="account"
+  :rules="accountRules"
+  label-width="60px"
+  size="large"
+  ref="formRef"
+>
+  <el-form-item label="帐号" prop="name">
+    <el-input v-model="account.name" clearable  />
+  </el-form-item>
+  <el-form-item label="密码" prop="password">
+    <el-input v-model="account.password" show-password clearable />
+  </el-form-item>
+</el-form>
 
-将登录返回的登录态，保存到 store 和 storage 中，创建 loginStore。
+<script>
+//...
+  
+// 1.定义account数据
+const account = reactive<IAccount>({
+	name: '',
+	password: ''
+})
 
-- 封装一个操作 storege 的工具类.
+</script>
+```
 
-将发送网络请求的过程，放入到 store 中。
+> “账号”一般出现在银行系统中，与钱有关；
+>
+> 普通系统应该使用“帐号“。
 
-在 src 下创建 types 目录，用来声明多处都要用到的类型。
+### 4.form 验证规则
 
+为用户输入的帐号、密码编写校验规则，传入 `<el-form>` 的 `rules` 属性中。
 
+src\views\login\cpns\PanelAccount.vue
 
-# postman 使用
+```typescript
+const accountRules: FormRules = {
+	name: [
+		{ required: true, message: '必须输入帐号信息~', trigger: 'blur' },
+		{
+			pattern: /^[a-z0-9]{6,20}$/,
+			message: '必须是6~20数字或字母组成~',
+			trigger: 'blur'
+		}
+	],
+	password: [
+		{ required: true, message: '必须输入密码信息~', trigger: 'blur' },
+		{
+			pattern: /^[a-z0-9]{3,}$/,
+			message: '必须是3位以上数字或字母组成',
+			trigger: 'blur'
+		}
+	]
+}
+```
+
+### 5.立即登录按钮
+
+回到 `LoginPanel.vue` 组件中，点击“立即登录”按钮，调用 `PanelAccount.vue` 中的登录方法，
+
+src\views\login\cpns\LoginPanel.vue
+
+```vue
+<template>
+	<!-- .. -->
+  <PanelAccount ref="accountRef"></PanelAccount>
+	<!-- ... -->
+	<el-button class="login-btn" type="primary" size="large" @click="handleLoginBtnClick">
+		立即登录
+	</el-button>
+</template>
+
+<script>
+// ...
+const accountRef = ref<InstanceType<typeof PanelAccount>>()
+//...
+const handleLoginBtnClick = () => {
+	if (activeName.value === 'account') {
+		accountRef.value?.loginAction()
+	} else {
+		console.log('用户在进行手机登录')
+	}
+}
+</script>
+```
+
+> 在 TS 中，使用 `ref` 引用子组件实例时，不能使用子组件名称作为类型。而是这么写 `ref<InstanceType<typeof [组件名称]>>`，
+>
+> .vue 文件中导出的是组件对象，在 Vue 框架中是当作构造器来使用的。
+>
+> 引入的 Ele 组件，可以加 `class` 属性
+
+src\views\login\cpns\PanelAccount.vue
+
+```typescript
+const loginAction = () => {
+}
+
+defineExpose({
+	loginAction
+})
+```
+
+## 3.登录操作分析
+
+### 1.form 通过验证
+
+使用 `form.validata` 方法：
+
+- 用 `ref` 获取 `<el-form>` 实例。
+
+src\views\login\cpns\PanelAccount.vue
+
+```typescript
+const formRef = ref<InstanceType<typeof ElForm>>()
+
+const loginAction = () => {
+	formRef.value?.validate(valid => {
+		if (valid) {
+
+		} else {
+			ElMessage.error('Oops, 请您输入正确的格式后再操作~~.')
+		}
+	})
+}
+```
+
+### 2.登录接口封装
+
+在 service 目录中，封装登录接口。
+
+src\service\login\login.ts
+
+```typescript
+//...
+export const accountLoginRequest = (account: IAccount) => ztRequest.post<ILoginRes>({
+	url: 'login',
+	data: account
+})
+```
+
+### 3.在 store 和组件中使用
+
+在 store 中使用
+
+封装一个操作 storege 的工具类.
+
+src\utils\cache.ts
+
+登录后，返回的登录态（token），保存到 store 和 storage 中。
+
+src\stores\login\login.ts
+
+```typescript
+//...
+const LOGIN_TOKEN = 'login/token'
+
+const useLoginStore =  defineStore('login', {
+	state: () => ({
+		id: 0,
+		token: localCache.getCache(LOGIN_TOKEN) ?? '',
+		name: ''
+	}),
+	actions: {
+		loginAccountAction(account: IAccount) {
+
+			accountLoginRequest(account).then(res => {
+				this.id = res.data.id
+				this.token = res.data.token
+				this.name = res.data.name
+
+				localCache.setCache(LOGIN_TOKEN, this.token)
+			})
+		}
+	}
+})
+
+export default useLoginStore
+```
+
+在 `PanelAccount.vue` 中使用：
+
+src\views\login\cpns\PanelAccount.vue
+
+```typescript
+//...
+const account = reactive<IAccount>({
+	name: '',
+	password: ''
+})
+//...
+const loginAction = () => {
+	formRef.value?.validate(valid => {
+		if (valid) {
+
+			loginStore.loginAccountAction({ ...account })
+
+		} else {
+			ElMessage.error('Oops, 请您输入正确的格式后再操作~~.')
+		}
+	})
+}
+```
+
+### 4.登录接口参数类型
+
+在全局定义 `IAccount` 类型，作为登录接口掺入参数的类型。
+
+src\types\login.d.ts
+
+```typescript
+export interface IAccount {
+	name: string
+	password: string
+}
+```
+
+> 在 src 下创建 types 目录，用来声明多处都要用到的类型。
+
+# 四、postman 使用
 
 将在线文档，导入到 postman 中。
 
+[接⼝⽂档v1版本](https://documenter.getpostman.com/view/12387168/TzsfmQvw) 
 
+[接⼝⽂档v2版本（有部分更新）](https://documenter.getpostman.com/view/12387168/TzzDKb12)
+
+[baseURL](http://152.136.185.210:5000)
+
+[baseUrl](http://152.136.185.210:4000)（备用）
+
+postman 中设置全局 token 的⽅法：
+
+```js
+const res = pm.response.json(); pm.globals.set("token", res.data.token);
+```
