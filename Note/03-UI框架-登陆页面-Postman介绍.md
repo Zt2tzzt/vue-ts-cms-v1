@@ -52,8 +52,8 @@ npm install -D unplugin-vue-components unplugin-auto-import
 
 2.在配置文件中进行配置
 
-- webpack 对应 `vue.config.ts`
-- vite 对应 `vite.config.ts`
+- webpack 在 `vue.config.ts` 配置。
+- vite 在 `vite.config.ts` 配置。
 
 项目中使用的是 vite
 
@@ -96,7 +96,7 @@ export default defineConfig({
 
 > 像 `ELMessage`、`ELLoading` 这样的”反馈组件“，
 >
-> 按需引入不会自动导入，需要手动导入，或者另外配置它们的自动导入。
+> 按需引入不会自动导入，需要手动导入，或者另外配置它们的自动导入，[详细导入方式](#6.反馈组件引入)。
 
 ## 4.手动导入
 
@@ -169,7 +169,7 @@ src\main.ts
 import 'element-plus/theme-chalk/el-message.css'
 ```
 
-方式三：自动导入样式，需要安装插件
+自动导入样式，需要安装插件
 
 1.安装插件 [vite-plugin-style-import](https://github.com/vbenjs/vite-plugin-style-import)
 
@@ -347,7 +347,7 @@ src\views\login\cpns\LoginPanel.vue
 
 1.`<el-tab-pane>` 里，`label` 插槽的使用，用于 tabs 的标签。
 
-2.呢容显示
+2.内容显示
 
 ```vue
 <!-- 1.账号登录的Pane -->
@@ -389,7 +389,7 @@ src\views\login\cpns\PanelAccount.vue
 
 <script>
 //...
-  
+
 // 1.定义account数据
 const account = reactive<IAccount>({
 	name: '',
@@ -597,7 +597,7 @@ export interface IAccount {
 
 将在线文档，导入到 postman 中。
 
-[接⼝⽂档v1版本](https://documenter.getpostman.com/view/12387168/TzsfmQvw) 
+[接⼝⽂档v1版本](https://documenter.getpostman.com/view/12387168/TzsfmQvw)
 
 [接⼝⽂档v2版本（有部分更新）](https://documenter.getpostman.com/view/12387168/TzzDKb12)
 
@@ -608,5 +608,6 @@ export interface IAccount {
 postman 中设置全局 token 的⽅法：
 
 ```js
-const res = pm.response.json(); pm.globals.set("token", res.data.token);
+const res = pm.response.json();
+pm.globals.set("token", res.data.token);
 ```
