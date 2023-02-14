@@ -94,7 +94,7 @@ export default defineConfig({
 "include": ["env.d.ts", "src/**/*", "src/**/*.vue", "auto-imports.d.ts", "components.d.ts"],
 ```
 
-> 像 `ELMessage`、`ELLoading` 这样的”反馈组件“，
+> 像 `ELMessage`、`ELLoading` 这样的”反馈组件“，没有在 `<template>` 中使用；
 >
 > 按需引入不会自动导入，需要手动导入，或者另外配置它们的自动导入，[详细导入方式](#6.反馈组件引入)。
 
@@ -564,6 +564,7 @@ const account = reactive<IAccount>({
 	name: '',
 	password: ''
 })
+
 //...
 const loginAction = () => {
 	formRef.value?.validate(valid => {
