@@ -13,7 +13,7 @@ class Cache {
 		return this.storage.length
 	}
 	setCache(key: string, value: any) {
-		if (value) {
+		if (value !== undefined && value !== null) {
 			this.storage.setItem(key, JSON.stringify(value))
 		} else {
 			throw new Error('value error: value 必须有值!')

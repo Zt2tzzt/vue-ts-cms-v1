@@ -509,7 +509,7 @@ src\service\login\login.ts
 
 ```typescript
 //...
-export const accountLoginRequest = (account: IAccount) => ztRequest.post<ILoginRes>({
+export const accountLoginRequest = (account: IAccount) => ztRequest.post<IResponse<ILoginResData>>({
 	url: 'login',
 	data: account
 })

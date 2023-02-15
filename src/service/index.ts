@@ -1,16 +1,18 @@
+import { LOGIN_TOKEN } from '@/global/constance'
+import { localCache } from '@/utils/cache'
 import ZTRequest from './request'
 import { BASE_URL, TIME_OUT } from './request/config'
-// import storage from '@/utils/cache'
 
 const ztRequest = new ZTRequest({
 	baseURL: BASE_URL,
 	timeout: TIME_OUT,
 	interceptor: {
 		requestInterceptor(config) {
-			// 携带token的拦截
-			/* const token = storage.getCache('token')
-			if (token) config.headers!.Authorization = `Bearer ${token}` */
 			// console.log('单例拦截，请求成功')
+			const token = localCache.getCache(LOGIN_TOKEN)
+			if (config.headers && token) {
+				config.headers.Authorization = `Bearer ${token}`
+			}
 			return config
 		},
 		requestInterceptorCatch(err) {
