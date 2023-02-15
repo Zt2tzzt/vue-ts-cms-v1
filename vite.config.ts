@@ -26,10 +26,10 @@ export default defineConfig({
 			],
 			libs: [
 				{
-					libraryName: 'ant-design-vue',
+					libraryName: 'element-plus',
 					esModule: true,
 					resolveStyle: (name) => {
-						return `ant-design-vue/es/${name}/style/index`
+						return `element-plus/theme-chalk/${name}.css`
 					},
 				},
 			],

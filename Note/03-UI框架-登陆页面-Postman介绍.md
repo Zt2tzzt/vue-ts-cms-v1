@@ -52,10 +52,10 @@ npm install -D unplugin-vue-components unplugin-auto-import
 
 2.在配置文件中进行配置
 
-- webpack 在 `vue.config.ts` 配置。
-- vite 在 `vite.config.ts` 配置。
+- *webpack* 在 `vue.config.ts` 配置。
+- *vite* 在 `vite.config.ts` 配置。
 
-项目中使用的是 vite
+项目中使用的是 *vite*
 
 。/vite.config.ts
 
@@ -143,7 +143,7 @@ app.use(registerIcons)
 
 该组件不会在 `<template>` 中使用，而是在 ts 逻辑代码中使用，需要手动引入组件和样式，
 
-手动引入组件：
+### 1.手动引入组件：
 
 src\views\login\cpns\PanelAccount.vue
 
@@ -151,7 +151,7 @@ src\views\login\cpns\PanelAccount.vue
 import { ElMessage } from 'element-plus'
 ```
 
-手动引入样式，三种方式：
+### 2.手动引入样式：
 
 方式一：全局引入样式。
 
@@ -169,7 +169,7 @@ src\main.ts
 import 'element-plus/theme-chalk/el-message.css'
 ```
 
-自动导入样式，需要安装插件
+方式三：自动导入样式，需要安装插件（项目中采用）。
 
 1.安装插件 [vite-plugin-style-import](https://github.com/vbenjs/vite-plugin-style-import)
 
@@ -203,12 +203,11 @@ export default (): UserConfigExport => {
           ElementPlusResolve(),
         ],
         libs: [
-          // If you don’t have the resolve you need, you can write it directly in the lib, or you can provide us with PR
           {
-            libraryName: 'ant-design-vue',
+            libraryName: 'element-plus',
             esModule: true,
             resolveStyle: (name) => {
-              return `ant-design-vue/es/${name}/style/index`
+              return `element-plus/theme-chalk/${name}.css`
             },
           },
         ],
@@ -399,9 +398,9 @@ const account = reactive<IAccount>({
 </script>
 ```
 
-> “账号”一般出现在银行系统中，与钱有关；
+> 词语“账号”，一般出现在银行系统中，与钱有关；
 >
-> 普通系统应该使用“帐号“。
+> 词语”帐号“，一般用于普通系统。
 
 ### 4.form 验证规则
 
