@@ -1,13 +1,12 @@
-<script setup lang="ts">
-
-</script>
-
 <template>
-	<div class="role">
-		<h1>role</h1>
-	</div>
+  <div class="role">
+    <h2>role</h2>
+  </div>
 </template>
 
-<style scoped lang="less">
+<script setup lang="ts" name="role"></script>
 
+<style scoped>
+.role {
+}
 </style>

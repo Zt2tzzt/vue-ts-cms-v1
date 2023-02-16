@@ -1,13 +1,12 @@
-<script setup lang="ts">
-
-</script>
-
 <template>
-	<div class="user">
-		<h1>user</h1>
-	</div>
+  <div class="user">
+    <h2>user</h2>
+  </div>
 </template>
 
-<style scoped lang="less">
+<script setup lang="ts" name="user"></script>
 
+<style scoped>
+.user {
+}
 </style>

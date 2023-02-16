@@ -1,13 +1,12 @@
-<script setup lang="ts">
-
-</script>
-
 <template>
-	<div class="dashboard">
-		<h1>dashboard</h1>
-	</div>
+  <div class="dashboard">
+    <h2>dashboard</h2>
+  </div>
 </template>
 
-<style scoped lang="less">
+<script setup lang="ts" name="dashboard"></script>
 
+<style scoped>
+.dashboard {
+}
 </style>
