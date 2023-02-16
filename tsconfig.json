@@ -1,15 +1,12 @@
 {
-  // 继承自这个目录的配置文件：node_modules\@vue\tsconfig\tsconfig.web.json
   "extends": "@vue/tsconfig/tsconfig.web.json",
 	"include": ["src/**/*", "src/**/*.vue", "env.d.ts", "auto-imports.d.ts", "components.d.ts"],
   "compilerOptions": {
     "baseUrl": ".",
-    // 有利于编辑工具更好的读取路径（打包使用的时 vite.config.ts 中的配置，如果使用 tsc 编译，会用到这里的配置）
     "paths": {
       "@/*": ["./src/*"]
     }
   },
-
   "references": [
     {
       "path": "./tsconfig.config.json"
