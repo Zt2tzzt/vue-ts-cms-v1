@@ -1,7 +1,9 @@
 <script setup lang="ts">
 import useLoginStore from '@/stores/login/login'
-import { useRouter } from 'vue-router';
+import { useRoute, useRouter } from 'vue-router';
 import type { IUserMenuChild } from '@/types';
+import { computed } from 'vue';
+import { mapPathToMenu } from '@/utils/map-path';
 
 withDefaults(defineProps<{
 	isFold: boolean
@@ -9,14 +11,23 @@ withDefaults(defineProps<{
 	isFold: false
 })
 
+// 1.获取动态菜单
 const loginStore = useLoginStore()
-const userMenu = loginStore.userMenu
+const userMenu = loginStore.userMenus
 
+// 2.监听 item 点击
 const router = useRouter()
 const handleItemClick = (item: IUserMenuChild) => {
 	const url = item.url
 	router.push(url)
 }
+
+// 3.默认激活的菜单
+const route = useRoute()
+const defaultActive = computed(() => {
+	const menu = mapPathToMenu(route.path, userMenu)
+	return menu? menu.id + '' : '-1'
+})
 </script>
 
 <template>
@@ -30,7 +41,7 @@ const handleItemClick = (item: IUserMenuChild) => {
 		<!-- menu -->
 		<div class="menu">
 			<el-menu
-				default-active="3"
+				:default-active="defaultActive"
 				:collapse="isFold"
 				text-color="#b7bdc3"
 				active-text-color="#fff"

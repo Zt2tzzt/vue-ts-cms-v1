@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref } from 'vue';
+import Breadcrumb from './cpns/Breadcrumb.vue';
 import UserState from './cpns/UserState.vue'
 
 const props = withDefaults(defineProps<{
@@ -23,7 +23,7 @@ const handleMenuIconClick = () => {
 			</el-icon>
 		</div>
 		<div class="content">
-			<div class="breadcrumb">面包屑</div>
+			<Breadcrumb></Breadcrumb>
 			<UserState></UserState>
 		</div>
 	</div>

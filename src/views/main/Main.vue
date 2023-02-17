@@ -20,7 +20,7 @@ const handleFoldChange = (flag: boolean) => {
 					<MainHeader :is-fold="isFold" @handleFoldChange="handleFoldChange"></MainHeader>
 				</el-header>
 				<el-main>
-					<RouterView></RouterView>
+					<router-view></router-view>
 				</el-main>
 			</el-container>
 		</el-container>

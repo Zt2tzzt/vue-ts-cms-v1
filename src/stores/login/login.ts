@@ -4,18 +4,24 @@ import { localCache } from '@/utils/cache'
 import { defineStore } from 'pinia'
 import { LOGIN_TOKEN, USER_INFO, USER_MENU } from '@/global/constance'
 import router from '@/router'
+import { mapMenusToRoutes } from '@/utils/map-menu'
 
 interface ILoginState {
 	token: string
 	userInfo: IUserInfoResData
-	userMenu: IUserMenuResData
+	userMenus: IUserMenuResData
+}
+
+const dynamicLoadingRoutes = (userMenus: IUserMenuResData) => {
+	const routes = mapMenusToRoutes(userMenus)
+	routes.forEach(route => router.addRoute('main', route))
 }
 
 const useLoginStore = defineStore('login', {
 	state: (): ILoginState => ({
 		token: localCache.getCache(LOGIN_TOKEN) ?? '',
 		userInfo: localCache.getCache(USER_INFO) ?? {},
-		userMenu: localCache.getCache(USER_MENU) ?? []
+		userMenus: localCache.getCache(USER_MENU) ?? []
 	}),
 	actions: {
 		loginAccountAction(account: IAccount) {
@@ -32,13 +38,31 @@ const useLoginStore = defineStore('login', {
 					this.userInfo = userInfo
 					localCache.setCache(USER_INFO, userInfo)
 					return getUserMenusByRoleId(userInfo.role.id)
-				}).then(res => {
+				})
+				.then(res => {
 					console.log('user menu res:', res)
-					const userMenu = res.data
-					this.userMenu = userMenu
-					localCache.setCache(USER_MENU, userMenu)
+					const userMenus = res.data
+					this.userMenus = userMenus
+					localCache.setCache(USER_MENU, userMenus)
+
+					// 路由映射
+					dynamicLoadingRoutes(userMenus)
+
 					router.push('/main')
 				})
+		},
+		loadLocalCacheAction() {
+			// 页面载入、刷新，从缓存中加载数据
+			const token = localCache.getCache(LOGIN_TOKEN)
+			const userInfo = localCache.getCache(USER_INFO)
+			const userMenus = localCache.getCache(USER_MENU)
+			if (token && userInfo && userMenus) {
+				this.token = token
+				this.userInfo = userInfo
+				this.userMenus = userMenus
+
+				dynamicLoadingRoutes(userMenus)
+			}
 		}
 	}
 })

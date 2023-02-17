@@ -5,7 +5,6 @@ import type { FormRules, ElForm } from 'element-plus'
 import useLoginStore from '@/stores/login/login'
 import type { IAccount } from '@/types'
 import { localCache } from '@/utils/cache'
-import ztDebounce from '@/utils/debounce'
 
 const CACHE_NAME = 'name'
 const CACHE_PASSWORD = 'password'
@@ -57,8 +56,8 @@ const loginAction = (isRemPwd: boolean) => {
 					}
 				})
 				.catch(err => {
-					throw new Error(err)
 					ElMessage.error('Oops, 帐号或密码错误~~.')
+					throw new Error(err)
 				})
 		} else {
 			ElMessage.error('Oops, 请您输入正确的格式后再操作~~.')
