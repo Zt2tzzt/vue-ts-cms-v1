@@ -40,7 +40,7 @@ app.use(ElementPlus)
 //...
 ```
 
-## 3.按需引入
+## 3.按需引入（推荐）
 
 详细步骤参考[官方文档](https://element-plus.org/zh-CN/guide/quickstart.html#%E6%8C%89%E9%9C%80%E5%AF%BC%E5%85%A5)
 
@@ -53,9 +53,7 @@ npm install -D unplugin-vue-components unplugin-auto-import
 2.在配置文件中进行配置
 
 - *webpack* 在 `vue.config.ts` 配置。
-- *vite* 在 `vite.config.ts` 配置。
-
-项目中使用的是 *vite*
+- *vite* 在 `vite.config.ts` 配置（项目中使用）。
 
 。/vite.config.ts
 
@@ -96,7 +94,7 @@ export default defineConfig({
 
 > 像 `ELMessage`、`ELLoading` 这样的”反馈组件“，没有在 `<template>` 中使用；
 >
-> 按需引入不会自动导入，需要手动导入，或者另外配置它们的自动导入，[详细导入方式](#6.反馈组件引入)。
+> 按需引入不会自动导入，需要手动导入，或者另外配置它们的自动导入，[详细导入方式见下方](#6.反馈组件引入)。
 
 ## 4.手动导入
 
@@ -206,7 +204,7 @@ export default (): UserConfigExport => {
           {
             libraryName: 'element-plus',
             esModule: true,
-            resolveStyle: (name) => {
+            resolveStyle: (name: string) => {
               return `element-plus/theme-chalk/${name}.css`
             },
           },
@@ -389,7 +387,7 @@ src\views\login\cpns\PanelAccount.vue
 <script>
 //...
 
-// 1.定义account数据
+// 1.定义 account 数据
 const account = reactive<IAccount>({
 	name: '',
 	password: ''
