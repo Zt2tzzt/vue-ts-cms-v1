@@ -2,25 +2,32 @@
 
 ## 1.思路整理
 
-基于菜单动态匹配。
+基于角色添加路由（方案二）步骤：
 
-1.获取用户的菜单信息（已在 store 中），
+1. 在前端维护角色，以及角色对应的路由。
 
-2.创建组件，以及组件对应的路由。
+2. 后端返回角色后，进行匹配，动态添加路由。
 
-3.从文件中读取路由动态的添加路由。
+基于菜单动态匹配的方案（方案三）步骤：
 
-4.根据菜单，映射路由。
+1. 获取用户的菜单信息（已在 store 中），
 
+2. 创建组件，以及组件对应的路由。
+   - 可以使用自动化工具创建。
 
+3. 从文件中读取所有的路由。
+
+4. 根据用户菜单，筛选路由，并动态添加。
+
+项目中采用方案三。
 
 ## 2.创建页面和路由
 
-在 router 目录下，创建与 view 目录下，相同的文件结构
+在 router 目录下，创建与 view 目录下，相同的文件结构。
 
 在每个文件中导出对应的路由对象。
 
-这个过程，使用一个工具 *coderwhy*，自动生成 view 目录下的 .vue 组件，和 router 目录下的路由对象。
+这个过程，使用一个自动化工具 *coderwhy*，自动生成 view 目录下的 .vue 组件，和 router 目录下的路由对象。
 
 1.安装 *coderwhy* 工具
 
@@ -30,25 +37,24 @@ pnpm add coderwhy -D
 npx coderwhy --version
 ```
 
-2.使用工具，创建 department 的路由对象，以及 Department.vue 组件。
-
-- `add3page_setup` 表示添加 Vue3 setup 语法的组件。
-- `Department` 表示创建 `Department.vue` 组件和对应的路由对象。
-- `-d` 表示创建 `Department.vue` 组件在哪一路径下，同时会映射到 ``router 目录下。
+2.使用工具，比如要创建 `department` 的路由对象，以及 `Department.vue` 组件，可以执行一下命令。
 
 ```shell
 npx coderwhy add3page_setup Department -d src/views/main/system/department
 ```
 
-> 采用方案三（后端返回菜单）时，一般参考后端返回的路径，蓝创建相应路径下的组件。
 
+- `add3page_setup` 表示添加 Vue3 setup 语法的 .vue 组件。
+- `Department` 表示创建 `Department.vue` 组件和对应的导出路由对象的文件 `Department.ts`。
+- `-d` 表示创建 `Department.vue` 组件在哪一路径下，同时会映射到 router 目录下。
 
-
-
+> 采用方案三（后端返回菜单）时，一般参考后端返回的路径，来创建相应路径下的组件。
+>
+> 比如返回的这样的路径：`/main/analysis/overview`
 
 ## 3.从文件中添加路由
 
-1.在 loginstore 中，定义一个保存路由对象的空数组。
+1.在 `loginstore` 中，定义一个保存路由对象的空数组。
 
 2.使用打包工具提供的 API，读取文件。
 
