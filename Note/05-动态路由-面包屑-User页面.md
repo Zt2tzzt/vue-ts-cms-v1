@@ -117,7 +117,9 @@ import.meta.glob('../../router/main/**/*.ts', {eager: true})
 
 # 三、User.vue 页面 
 
-## 1.搜索页面布局
+## 1.搜索页面
+
+创建 `UserSearch.vue` 页面。
 
 使用 `<el-form>` 布局搜索区域。
 
@@ -133,6 +135,49 @@ import.meta.glob('../../router/main/**/*.ts', {eager: true})
 
 
 
+重置和搜索按钮编写。
+
+功能编写。
+
+1.重置操作编写，如果要使用 UI 框架提供的 API。
+
+- 给 `<el-form>` 加上 `model` 属性。
+- 给 `<el-form-item>` 加上 `prop` 属性。`
+
+
+
 ## 2.UI 框架国际化
 
 在 `App.vue` 中配置。
+
+
+
+## 3.内容页面
+
+创建 UserContent.vue 页面。
+
+编写 content 的头部区域。
+
+
+
+获取 user 的数据并展示：
+
+封装获取用户列表的请求。
+
+创建 systmeStore。
+
+发送网络请求，调用 store 中的 action。
+
+
+
+使用 el-tabel 展示数据。
+
+在第一列加入多选列。
+
+最后一列操作列，使用插槽插入按钮。
+
+设置每列宽度，没有设置的列，自动平分剩余的宽度。
+
+每列居中显示。
+
+调整每一行的行高。
