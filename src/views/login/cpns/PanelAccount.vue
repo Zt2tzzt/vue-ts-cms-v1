@@ -9,8 +9,6 @@ import { localCache } from '@/utils/cache'
 const CACHE_NAME = 'name'
 const CACHE_PASSWORD = 'password'
 
-const emits = defineEmits(['handleValidChange'])
-
 // 1.定义account数据
 const account = reactive<IAccount>({
 	name: localCache.getCache(CACHE_NAME) ?? '',

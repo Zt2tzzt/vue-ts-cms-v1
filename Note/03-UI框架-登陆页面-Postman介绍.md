@@ -94,7 +94,7 @@ export default defineConfig({
 
 > 像 `ELMessage`、`ELLoading` 这样的”反馈组件“，没有在 `<template>` 中使用；
 >
-> 按需引入不会自动导入，需要手动导入，或者另外配置它们的自动导入，[详细导入方式见下方](#6.反馈组件引入)。
+> 按需引入不会自动导入，需要手动导入，或者另外配置它们的自动导入，[详细配置方式见下方](#6.反馈组件引入)。
 
 ## 4.手动导入
 
@@ -130,9 +130,9 @@ src\main.ts
 
 ```typescript
 //...
-import registerIcons from '@/global/register-icons'
+import icon from '@/global/register-icons'
 //...
-app.use(registerIcons)
+app.use(icon)
 ```
 
 ## 6.反馈组件引入
@@ -255,7 +255,7 @@ src\views\login\Login.vue
 
 src\views\login\cpns\LoginPanel.vue
 
-2.在 Login 中引入。
+2.在 `Login.vue` 中引入。
 
 src\views\login\Login.vue
 
@@ -323,7 +323,7 @@ const isRemPwd = ref(false)
 
 4.立即登录按钮（组件）
 
-使用 El 组件
+使用 `<el-button>`
 
 ```vue
 <el-button class="login-btn" type="primary" size="large" @click="handleLoginBtnClick">
@@ -364,7 +364,7 @@ src\views\login\cpns\LoginPanel.vue
 
 ### 3.帐号登录 form
 
-创建 `PanelAccount.vue` 组件，在其中搭建账号登陆 form
+创建 `PanelAccount.vue` 组件，在其中搭建账号登陆的 form
 
 src\views\login\cpns\PanelAccount.vue
 
@@ -461,7 +461,7 @@ const handleLoginBtnClick = () => {
 >
 > .vue 文件中导出的是组件对象，在 Vue 框架中是当作构造器来使用的。
 >
-> 引入的 Ele 组件，可以加 `class` 属性
+> 引入的 El 组件，可以加 `class` 属性
 
 src\views\login\cpns\PanelAccount.vue
 

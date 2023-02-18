@@ -21,7 +21,7 @@ class Cache {
 	}
 	getCache(key: string) {
 		const result = this.storage.getItem(key)
-		if (result) {
+		if (result !== undefined && result !== null) {
 			return JSON.parse(result)
 		}
 	}

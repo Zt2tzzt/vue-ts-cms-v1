@@ -17,15 +17,19 @@ const handleMenuIconClick = () => {
 
 <template>
 	<div class="main-header">
+
+		<!-- 图标 -->
 		<div class="menu-icon" @click="handleMenuIconClick">
 			<el-icon size="28px">
 				<component :is="isFold ? 'Expand' : 'Fold'"></component>
 			</el-icon>
 		</div>
+
 		<div class="content">
 			<Breadcrumb></Breadcrumb>
 			<UserState></UserState>
 		</div>
+		
 	</div>
 </template>
 
