@@ -22,15 +22,15 @@ export let firstRoute: RouteRecordRaw
 /**
  * @description: 此函数用于：根据用户的用拥有的菜单，筛选出对应的本地路由（用于 loginStore 中，获取 userMenus 后，进行路由映射）。
  * @Author: ZeT1an
- * @param {IUserMenuResData} userMenu 用户菜单列表
+ * @param {IUserMenuResData[]} userMenu 用户菜单列表
  * @return {RouteRecordRaw[]} 菜单映射后的路由列表
  */
-export const mapMenusToRoutes = (userMenu: IUserMenuResData) => {
+export const mapMenusToRoutes = (userMenu: IUserMenuResData[]): RouteRecordRaw[] => {
 	const localRoutes = loadLocalRoutes()
 
 	const routes: RouteRecordRaw[] = []
 
-	const _getRoute = (userMenu: IUserMenuResData | IUserMenuChild[]) => {
+	const _getRoute = (userMenu: IUserMenuResData[] | IUserMenuChild[]) => {
 		userMenu.forEach(item => {
 			switch (item.type) {
 				case 1:

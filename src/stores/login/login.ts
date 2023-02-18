@@ -9,10 +9,10 @@ import { mapMenusToRoutes } from '@/utils/map-menu'
 interface ILoginState {
 	token: string
 	userInfo: IUserInfoResData
-	userMenus: IUserMenuResData
+	userMenus: IUserMenuResData[]
 }
 
-const dynamicLoadingRoutes = (userMenus: IUserMenuResData) => {
+const dynamicLoadingRoutes = (userMenus: IUserMenuResData[]) => {
 	const routes = mapMenusToRoutes(userMenus)
 	routes.forEach(route => router.addRoute('main', route))
 }

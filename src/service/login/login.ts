@@ -13,6 +13,6 @@ export const getUserInfoById = (id: number) =>
 	})
 
 export const getUserMenusByRoleId = (id: number) =>
-	ztRequest.get<IResponse<IUserMenuResData>>({
+	ztRequest.get<IResponse<IUserMenuResData[]>>({
 		url: `/role/${id}/menu`
 	})

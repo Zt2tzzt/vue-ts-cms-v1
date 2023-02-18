@@ -54,7 +54,7 @@ export interface IUserMenuChild {
 	parentId: number
 }
 
-export interface IUserMenuFather {
+export interface IUserMenuResData {
 	id: number
 	url: string
 	name: string
@@ -69,9 +69,4 @@ export interface IBreadcrumb {
 	path: string
 }
 
-export type IUserMenuResData = Array<IUserMenuFather>
 
-export interface IResponse<T> {
-	code: number
-	data: T
-}
