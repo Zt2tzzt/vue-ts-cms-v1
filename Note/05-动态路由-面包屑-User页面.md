@@ -63,7 +63,9 @@ npx coderwhy add3page_setup Department -d src/views/main/system/department
 - webpack：`require.context`
 - vite：`import.meta.glob()`
 
-默认取到的是一个对象，key 是文件的路径，value 是对应加载文件的 get 函数。
+默认取到的是一个对象，
+
+- 其中 key 是文件的路径文本，value 是对应加载文件的 get 函数。
 
 这种方式通常用于懒加载。
 
@@ -71,7 +73,9 @@ npx coderwhy add3page_setup Department -d src/views/main/system/department
 import.meta.glob('../../router/main/**/*.ts')
 ```
 
-添加一个参数 `{eager: true}`。取到的是文件路径，对应的文件模块。
+添加一个参数 `{eager: true}`。取到的是一个对象。
+
+- 其中 key 是文件路径文本，value 是对应的文件模块。
 
 ```typescript
 import.meta.glob('../../router/main/**/*.ts', { eager: true })
@@ -115,6 +119,7 @@ import type { IUserMenuResData, IUserMenuChild } from '@/types'
  * @return {RouteRecordRaw[]} 菜单映射后的路由列表
  */
 export const mapMenusToRoutes = (userMenu: IUserMenuResData[])： RouteRecordRaw[] => {
+  
 	const localRoutes = loadLocalRoutes()
 
 	const routes: RouteRecordRaw[] = []
@@ -169,6 +174,7 @@ export let firstRoute: RouteRecordRaw
  * @return {RouteRecordRaw[]} 菜单映射后的路由列表
  */
 export const mapMenusToRoutes = (userMenu: IUserMenuResData[]) => {
+  
 	const localRoutes = loadLocalRoutes()
 
 	const routes: RouteRecordRaw[] = []
@@ -254,7 +260,9 @@ loadLocalCacheAction() {
 }
 ```
 
-在 `main.ts` 中，`use(pinia)` 后，就去读取本地缓存。将该操作封装成一个插件。
+在 `main.ts` 中，`use(pinia)` 后，就去读取本地缓存，并动态添加路由。
+
+将该操作封装成一个插件。
 
 src\stores\index.ts
 
@@ -291,11 +299,11 @@ app.use(router)
 
 上述操作，使得登陆后匹配到了第一个路由，刷新页面后，动态添加的路由，仍然存在；
 
-但在一个路由下刷新，菜单索引又回到了第一个页面。这是不对的。
+但菜单索引又回到了第一个。这是不对的。
 
-还需要再匹配当前页对应的菜单索引，并进行设置。
+刷新页面时，还需要再匹配当前页对应的菜单索引，并进行设置。
 
-封装一个工具函数 `mapPathToMenu`，返回当前页 url （`route.path`）匹配到的菜单对象。
+封装一个工具函数 `mapPathToMenu`，该函数返回当前页 url （`route.path`）匹配到的菜单对象。
 
 src\utils\map-path.ts
 
@@ -396,6 +404,8 @@ export const mapPathToBreadcrumb = (
 }
 ```
 
+> 当要从循环中直接返回结果时，`for...of` 比 `forEach` 更合适。
+
 使用计算属性，获取响应式的面包屑。
 
 src\components\main-header\cpns\Breadcrumb.vue
@@ -420,7 +430,7 @@ const breadcrumbs = computed(() => mapPathToBreadcrumb(route.path, loginStore.us
 
 改变 `<el-form>` 中 `<el-form-item>` 的高度。
 
-修改 `<el-form-item>` padding，调整间距。
+- 修改 `<el-form-item>` padding，调整间距。
 
 > 为了方便扩展，一个 `<el-raw>` 中允许放多个 `<el-col>`，根据其上的 `span` 属性数值，控制是否进行换行显示。
 >
@@ -551,13 +561,13 @@ export default useSystemStore
 
 使用 `<el-tabel>` 展示数据。
 
-在第一列加入多选列 `type="selection" `。
+- 在第一列加入多选列 `type="selection" `。
 
-最后一列操作列，使用插槽插入按钮。
+- 最后一列操作列，使用插槽插入按钮。
 
-设置每列宽度，没有设置的列，自动平分剩余的宽度。
+- 设置每列宽度，没有设置的列，自动平分剩余的宽度 `width="xxx"`。
 
-每列居中显示 `align="center"`。
+- 每列居中显示 `align="center"`。
 
 调整每一行的内间距。
 

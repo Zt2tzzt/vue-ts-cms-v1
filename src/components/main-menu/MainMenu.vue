@@ -15,7 +15,7 @@ withDefaults(defineProps<{
 const loginStore = useLoginStore()
 const userMenu = loginStore.userMenus
 
-// 2.监听 item 点击
+// 2.监听 item 点击，路由跳转
 const router = useRouter()
 const handleItemClick = (item: IUserMenuChild) => {
 	const url = item.url
@@ -34,7 +34,7 @@ const defaultActive = computed(() => {
 	<div class="main-menu">
 		<!-- logo -->
 		<div class="logo">
-			<img class="img" src="@/assets/img/logo.svg" alt="" >
+			<img src="@/assets/img/logo.svg" alt="" >
 			<h2 class="title" v-show="!isFold">ZT 后台管理系统</h2>
 		</div>
 
@@ -50,13 +50,16 @@ const defaultActive = computed(() => {
 
 				<!-- 渲染整个菜单 -->
 				<template v-for="item of userMenu" :key="item.id">
+
 					<el-sub-menu :index="item.id + ''">
+
 						<template #title>
 							<el-icon>
 								<Component :is="item.icon.split('-icon-').pop()"></Component>
 							</el-icon>
 							<span>{{ item.name }}</span>
 						</template>
+
 						<template v-for="subitem of item.children" :key="subitem.id">
 							<el-menu-item
 								:index="subitem.id + ''"
@@ -65,7 +68,9 @@ const defaultActive = computed(() => {
 								{{ subitem.name }}
 							</el-menu-item>
 						</template>
+
 					</el-sub-menu>
+
 				</template>
 
 			</el-menu>
@@ -86,7 +91,7 @@ const defaultActive = computed(() => {
 		align-items: center;
 		overflow: hidden;
 
-		.img {
+		img {
 			height: 100%;
 			margin: 0 10px;
 		}

@@ -11,7 +11,7 @@ const handleFoldChange = (flag: boolean) => {
 
 <template>
 	<div class="main">
-		<el-container class="main-container">
+		<el-container>
 			<el-aside :width="isFold ? `60px` : '200px'">
 				<MainMenu :is-fold="isFold"></MainMenu>
 			</el-aside>
@@ -30,18 +30,21 @@ const handleFoldChange = (flag: boolean) => {
 <style scoped lang="less">
 .main {
 	height: 100%;
-	.main-container {
+	.el-container {
 		height: 100%;
 	}
 	.el-aside {
 		overflow-x: hidden;
 		overflow-y: auto;
+
 		line-height: 200px;
 		text-align: left;
 		cursor: pointer;
 		background-color: #001529;
+
 		scrollbar-width: none; /* firefox */
 		-ms-overflow-style: none; /* IE */
+		
 		transition: width 0.3s ease;
 
 		&::-webkit-scrollbar {
