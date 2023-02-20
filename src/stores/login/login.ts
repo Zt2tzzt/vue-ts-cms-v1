@@ -8,7 +8,7 @@ import { mapMenusToRoutes } from '@/utils/map-menu'
 
 interface ILoginState {
 	token: string
-	userInfo: IUserInfoResData
+	userInfo: IUserInfoResData | object
 	userMenus: IUserMenuResData[]
 }
 
@@ -19,9 +19,9 @@ const dynamicLoadingRoutes = (userMenus: IUserMenuResData[]) => {
 
 const useLoginStore = defineStore('login', {
 	state: (): ILoginState => ({
-		token: localCache.getCache(LOGIN_TOKEN) ?? '',
-		userInfo: localCache.getCache(USER_INFO) ?? {},
-		userMenus: localCache.getCache(USER_MENU) ?? []
+		token: '',
+		userInfo: {},
+		userMenus: []
 	}),
 	actions: {
 		loginAccountAction(account: IAccount) {

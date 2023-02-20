@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import useSystemStore from '@/stores/main/system/system'
+import useSystemStore from '@/stores/main/system/user'
 import { storeToRefs } from 'pinia'
 
 const systemStore = useSystemStore()
