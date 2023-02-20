@@ -40,7 +40,7 @@ export const mapPathToMenu = (
 export const mapPathToBreadcrumb = (
 	path: string,
 	userMenus: IUserMenuResData[] | IUserMenuChild[]
-) => {
+): IBreadcrumb[] => {
 	const breadcrumbs: IBreadcrumb[] = []
 	mapPathToMenu(path, userMenus, breadcrumbs)
 	return breadcrumbs

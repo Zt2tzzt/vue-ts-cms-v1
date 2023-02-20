@@ -2,7 +2,7 @@
 
 ## 1.思路整理
 
-[回顾 RBAC 设计的三种方案](./04-登录退出-用户权限-菜单树-头部区域-注册路由.md/#5.RBAC 设计思想理解)
+[回顾 RBAC 设计的三种方案](./04-登录退出-用户权限-菜单树-头部区域-注册路由.md/#5RBAC 设计思想理解)
 
 基于角色添加路由（方案二）步骤：
 
@@ -109,7 +109,7 @@ src\utils\map-menu.ts
 import type { IUserMenuResData, IUserMenuChild } from '@/types'
 
 /**
- * @description: 此函数用于：根据用户的用拥有的菜单，筛选出对应的本地路由（用于 loginStore 中，获取 userMenus 后，进行路由映射）。
+ * @description: 此函数用于：根据用户拥有的菜单，筛选出对应的本地路由（用于 loginStore 中，获取 userMenus 后，进行路由映射）。
  * @Author: ZeT1an
  * @param {IUserMenuResData[]} userMenu 用户菜单列表
  * @return {RouteRecordRaw[]} 菜单映射后的路由列表
@@ -160,10 +160,10 @@ src\utils\map-menu.ts
 ```typescript
 import type { IUserMenuResData[], IUserMenuChild } from '@/types'
 
-export let firstRoute: RouteRecordRaw
+export let firstRoute: RouteRecordRaw // 用于保存第一个路由。
 
 /**
- * @description: 此函数用于：根据用户的用拥有的菜单，筛选出对应的本地路由（用于 loginStore 中，获取 userMenus 后，进行路由映射）。
+ * @description: 此函数用于：根据用户拥有的菜单，筛选出对应的本地路由（用于 loginStore 中，获取 userMenus 后，进行路由映射）。
  * @Author: ZeT1an
  * @param {IUserMenuResData[]} userMenu 用户菜单列表
  * @return {RouteRecordRaw[]} 菜单映射后的路由列表
@@ -287,7 +287,7 @@ app.use(store)
 app.use(router)
 ```
 
-## 7.登陆后匹配菜单索引
+## 7.登陆/刷新匹配菜单索引
 
 上述操作，使得登陆后匹配到了第一个路由，刷新页面后，动态添加的路由，仍然存在；
 
@@ -295,7 +295,7 @@ app.use(router)
 
 还需要再匹配当前页对应的菜单索引，并进行设置。
 
-封装一个工具函数 `mapPathToMenu`，返回当前页 url （`route.path`）匹配到的菜单对象。
+封装一个工具函数 `mapPathToMenu`，返回当前页 url（`route.path`）匹配到的菜单对象。
 
 src\utils\map-path.ts
 
@@ -389,7 +389,7 @@ export const mapPathToMenu = (
 export const mapPathToBreadcrumb = (
 	path: string,
 	userMenus: IUserMenuResData[] | IUserMenuChild[]
-) => {
+): IBreadcrumb[] => {
 	const breadcrumbs: IBreadcrumb[] = []
 	mapPathToMenu(path, userMenus, breadcrumbs)
 	return breadcrumbs
