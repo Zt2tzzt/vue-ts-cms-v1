@@ -9,7 +9,7 @@
  * 测试环境：text
  */
 let BASE_URL: string
-const TIME_OUT = 3000
+const TIME_OUT = 25000
 
 switch (import.meta.env.PROD) {
 	case true:

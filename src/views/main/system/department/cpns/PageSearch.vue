@@ -1,15 +1,13 @@
 <script setup lang="ts">
 import type { ElForm } from 'element-plus'
 import { reactive, ref } from 'vue'
-import type { IUserQueryFormData } from '@/types'
+import type { IDepartmentQueryFormData } from '@/types'
 
 const emits = defineEmits(['queryClick', 'resetClick'])
 
-const searchForm = reactive<IUserQueryFormData>({
+const searchForm = reactive<IDepartmentQueryFormData>({
 	name: '',
-	realname: '',
-	cellphone: '',
-	enable: 1,
+	leader: '',
 	createAt: ''
 })
 
@@ -25,35 +23,18 @@ const onQueryClick = () => {
 </script>
 
 <template>
-	<div class="user-search">
+	<div class="page-search">
 		<!-- 表单 -->
 		<el-form :model="searchForm" ref="formRef" label-width="80px" size="large">
 			<el-row :gutter="20">
 				<el-col :span="8">
-					<el-form-item label="用户名" prop="name">
-						<el-input v-model="searchForm.name" placeholder="请输入查询的用户名"></el-input>
+					<el-form-item label="部门名" prop="name">
+						<el-input v-model="searchForm.name" placeholder="请输入查询的部门名称"></el-input>
 					</el-form-item>
 				</el-col>
 				<el-col :span="8">
-					<el-form-item label="真实姓名" prop="realname">
-						<el-input v-model="searchForm.realname" placeholder="请输入查询的真是姓名"></el-input>
-					</el-form-item>
-				</el-col>
-				<el-col :span="8">
-					<el-form-item label="手机号码" prop="cellphone">
-						<el-input v-model="searchForm.cellphone" placeholder="请输入查询的手机号码"></el-input>
-					</el-form-item>
-				</el-col>
-				<el-col :span="8">
-					<el-form-item label="状态" prop="enable">
-						<el-select
-							v-model="searchForm.enable"
-							placeholder="请选择查询的状态"
-							style="width: 100%"
-						>
-							<el-option label="启用" :value="1"></el-option>
-							<el-option label="禁用" :value="0"></el-option>
-						</el-select>
+					<el-form-item label="部门领导" prop="leader">
+						<el-input v-model="searchForm.leader" placeholder="请输入查询的部门领导"></el-input>
 					</el-form-item>
 				</el-col>
 				<el-col :span="8">
@@ -69,6 +50,7 @@ const onQueryClick = () => {
 				</el-col>
 			</el-row>
 		</el-form>
+
 		<!-- 按钮 -->
 		<div class="btns">
 			<el-button icon="Refresh" @click="onResetClick">重置</el-button>
@@ -78,7 +60,7 @@ const onQueryClick = () => {
 </template>
 
 <style scoped lang="less">
-.user-search {
+.page-search {
 	background-color: #fff;
 	padding: 20px;
 

@@ -5,6 +5,7 @@ import { defineStore } from 'pinia'
 import { LOGIN_TOKEN, USER_INFO, USER_MENU } from '@/global/constance'
 import router from '@/router'
 import { mapMenusToRoutes } from '@/utils/map-menu'
+import useMainStore from '../main/main'
 
 interface ILoginState {
 	token: string
@@ -60,6 +61,9 @@ const useLoginStore = defineStore('login', {
 				this.token = token
 				this.userInfo = userInfo
 				this.userMenus = userMenus
+
+				const mainStore = useMainStore()
+				mainStore.fetchEntireDataAction()
 
 				dynamicLoadingRoutes(userMenus)
 			}

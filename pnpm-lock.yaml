@@ -10,6 +10,7 @@ specifiers:
   '@vue/tsconfig': ^0.1.3
   axios: ^1.3.2
   coderwhy: ^1.2.2
+  dayjs: ^1.11.7
   element-plus: ^2.2.30
   eslint: ^8.22.0
   eslint-plugin-prettier: ^4.2.1
@@ -31,6 +32,7 @@ specifiers:
 dependencies:
   '@element-plus/icons-vue': registry.npmmirror.com/@element-plus/icons-vue/2.0.10_vue@3.2.47
   axios: registry.npmmirror.com/axios/1.3.2
+  dayjs: registry.npmmirror.com/dayjs/1.11.7
   element-plus: registry.npmmirror.com/element-plus/2.2.30_vue@3.2.47
   normalize.css: 8.0.1
   pinia: 2.0.30_5yi2kxxaqg74pgvs6b75qdtvru
