@@ -40,7 +40,7 @@ npm install coderwhy -D
 npx coderwhy --version
 ```
 
-2.使用工具，比如要创建 `department` 路由对象，以及 `Department.vue` 组件，可以执行以下命令。
+2.使用工具，比如要创建 `Department` 路由对象，以及 `Department.vue` 组件，可以执行以下命令。
 
 ```shell
 npx coderwhy add3page_setup Department -d src/views/main/system/department
@@ -243,17 +243,19 @@ const dynamicLoadingRoutes = (userMenus: IUserMenuResData[]) => {
 }
 
 //...
-loadLocalCacheAction() {
-  // 页面载入、刷新，从缓存中加载数据
-  const token = localCache.getCache(LOGIN_TOKEN)
-  const userInfo = localCache.getCache(USER_INFO)
-  const userMenus = localCache.getCache(USER_MENU)
-  if (token && userInfo && userMenus) {
-    this.token = token
-    this.userInfo = userInfo
-    this.userMenus = userMenus
+const actions = {
+  loadLocalCacheAction() {
+    // 页面载入、刷新，从缓存中加载数据
+    const token = localCache.getCache(LOGIN_TOKEN)
+    const userInfo = localCache.getCache(USER_INFO)
+    const userMenus = localCache.getCache(USER_MENU)
+    if (token && userInfo && userMenus) {
+      this.token = token
+      this.userInfo = userInfo
+      this.userMenus = userMenus
 
-    dynamicLoadingRoutes(userMenus)
+      dynamicLoadingRoutes(userMenus)
+    }
   }
 }
 ```
@@ -430,7 +432,9 @@ const breadcrumbs = computed(() => mapPathToBreadcrumb(route.path, loginStore.us
 
 - 修改 `<el-form-item>` padding，调整间距。
 
-> 为了方便扩展，一个 `<el-raw>` 中允许放多个 `<el-col>`，根据其上的 `span` 属性数值，控制是否进行换行显示。
+> 为了方便扩展，一个 `<el-raw>` 中允许放多个 `<el-col>`，
+>
+> 根据其上的 `span` 属性数值，控制是否进行换行显示。
 >
 > 一个 `<el-raw>` 的宽度是 `24`
 
@@ -438,11 +442,9 @@ src\views\main\system\user\cpns\UserSearch.vue
 
 ### 2.按钮区域
 
-重置和搜索按钮编写。
+”重置“和”搜索“按钮编写。
 
-功能编写。
-
-重置操作编写，如果要使用 UI 框架提供的 API，需要进行以下设置。
+重置功能编写，如果要使用 UI 框架（Element Plus）提供的 API，需要进行以下设置。
 
 - 给 `<el-form>` 加上 `model` 属性。
 - 给 `<el-form-item>` 加上 `prop` 属性，对应 `model` 中的键值。
@@ -506,7 +508,7 @@ src\views\main\system\user\cpns\UserContent.vue
 
 ### 2.数据列表
 
-获取 user 的数据并展示：
+获取 user 列表的数据并展示：
 
 封装获取用户列表的请求。
 

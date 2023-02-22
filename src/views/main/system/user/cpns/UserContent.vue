@@ -51,11 +51,14 @@ defineExpose({
 
 <template>
 	<div class="user-content">
+
+		<!-- 头部 -->
 		<div class="header">
 			<h3 class="title">用户列表</h3>
 			<el-button type="primary" @click="onNewclick">新建用户</el-button>
 		</div>
 
+		<!-- 表格 -->
 		<div class="table">
 			<el-table :data="users" stripe border style="width: 100%">
 				<el-table-column align="center" type="selection" width="50px"></el-table-column>
@@ -100,6 +103,7 @@ defineExpose({
 			</el-table>
 		</div>
 
+		<!-- 分页器 -->
 		<div class="pagination">
 			<el-pagination
 				v-model:current-page="currentPage"
@@ -111,6 +115,7 @@ defineExpose({
 				@current-change="onCurrentChange"
 			></el-pagination>
 		</div>
+		
 	</div>
 </template>
 

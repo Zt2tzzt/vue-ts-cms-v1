@@ -1,7 +1,11 @@
 <template>
 	<div class="user">
 		<UserSearch @query-click="handleQueryClick" @reset-click="handleResetClick"></UserSearch>
-		<UserContent ref="contentRef" @new-click="handleNewClick" @edit-click="handleEditClick"></UserContent>
+		<UserContent
+			ref="contentRef"
+			@new-click="handleNewClick"
+			@edit-click="handleEditClick"
+		></UserContent>
 		<UserModal ref="modalRef"></UserModal>
 	</div>
 </template>
@@ -11,7 +15,7 @@ import UserContent from './cpns/UserContent.vue'
 import UserSearch from './cpns/UserSearch.vue'
 import type { IUserQueryFormData, IUser } from '@/types'
 import { ref } from 'vue'
-import UserModal from './cpns/UserModal.vue';
+import UserModal from './cpns/UserModal.vue'
 
 const contentRef = ref<InstanceType<typeof UserContent>>()
 const handleQueryClick = (formData: IUserQueryFormData) => {
@@ -23,12 +27,11 @@ const handleResetClick = () => {
 
 const modalRef = ref<InstanceType<typeof UserModal>>()
 const handleNewClick = () => {
-	modalRef.value?.setModalVisible({isNew: true})
+	modalRef.value?.setModalVisible({ isNew: true })
 }
 const handleEditClick = (itemData: IUser) => {
-	modalRef.value?.setModalVisible({isNew: false, itemData})
+	modalRef.value?.setModalVisible({ isNew: false, itemData })
 }
-
 </script>
 
 <style scoped>

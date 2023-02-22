@@ -26,6 +26,7 @@ const onQueryClick = () => {
 
 <template>
 	<div class="user-search">
+		
 		<!-- 表单 -->
 		<el-form :model="searchForm" ref="formRef" label-width="80px" size="large">
 			<el-row :gutter="20">
@@ -69,11 +70,13 @@ const onQueryClick = () => {
 				</el-col>
 			</el-row>
 		</el-form>
+
 		<!-- 按钮 -->
 		<div class="btns">
 			<el-button icon="Refresh" @click="onResetClick">重置</el-button>
 			<el-button icon="Search" type="primary" @click="onQueryClick">查询</el-button>
 		</div>
+
 	</div>
 </template>
 

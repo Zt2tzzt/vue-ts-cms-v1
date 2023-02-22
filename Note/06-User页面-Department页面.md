@@ -1,4 +1,4 @@
-# 一、User页面
+# 一、User 页面
 
 ## 1.状态格式化
 
@@ -24,7 +24,7 @@ src\views\main\system\user\cpns\UserContent.vue
 
 使用 `<el-table-column>` 的作用域插槽。
 
-使用 *day.js* 和其中的 *utc* 插件，零时区转东八区时间。
+使用 *day.js* 和其中的 *utc* 插件，将零时区转成东八区时间。
 
 src\utils\format.ts
 
@@ -79,7 +79,7 @@ src\views\main\system\user\cpns\UserContent.vue
 ```vue
 <script setup lang="ts">
 //...
-  
+
 const systemStore = useSystemStore()
 const { users, usersTotalCount } = storeToRefs(systemStore)
 
@@ -90,10 +90,10 @@ const fetchUserListData = (formatData: any = {}) => {
 	// 1.获取 offset 和 limit
 	const limit = pageSize.value
 	const offset = (currentPage.value - 1) * limit
-	const QueryParam = {size: limit, offset}
+	const queryParam = {size: limit, offset}
 
 	// 2.发送请求
-	systemStore.postUsersAction({ ...QueryParam, ...formatData })
+	systemStore.postUsersAction({ ...queryParam, ...formatData })
 }
 
 fetchUserListData()
@@ -127,37 +127,13 @@ const handleCurrentChange = () => {
 
 在 `UserContent.vue` 中进行条件查询。
 
+将条件查询的方法 `fetchUserListData` 暴露给 `User.vue`
+
 > 事件总线，通常用于跨度比较大的组件。存在不可控的缺陷。
 
 src\views\main\system\user\cpns\UserContent.vue
 
 ```typescript
-const systemStore = useSystemStore()
-const { users, usersTotalCount } = storeToRefs(systemStore)
-
-const currentPage = ref(1)
-const pageSize = ref(10)
-
-const fetchUserListData = (formatData: IUserFormData | object = {}) => {
-	// 1.获取 offset 和 limit
-	const limit = pageSize.value
-	const offset = (currentPage.value - 1) * limit
-	const queryParam = {size: limit, offset}
-
-	// 2.发送请求
-	systemStore.postUsersAction({...queryParam, ...formatData})
-}
-
-fetchUserListData()
-
-
-const onSizeChange = () => {
-	fetchUserListData()
-}
-const onCurrentChange = () => {
-	fetchUserListData()
-}
-
 defineExpose({
 	fetchUserListData
 })
@@ -165,7 +141,7 @@ defineExpose({
 
 在 `UserSerach.vue` 中，点击查询时，将查询条件，发送给 `User.vue`。
 
-- 注意：“创建时间”的初始化值，不能使用空数组，后端接口无法处理。
+- 注意：“创建时间”的初始值，不能使用空数组，后端接口无法处理。
 
 将 `UserSerach.vue` 中，点击重置按钮时，也要发送网络请求，请求所有数据。
 
@@ -265,9 +241,9 @@ deleteUserByIdAction(id: number) {
 - 使用 `<el-dialog>` 组件进行布局。
 - 在其中使用 `<el-form>` 进行布局。
 
-在 `UserContent.vue` 中发送事件，传递“新建会话框”的“隐藏/显示”状态。
+在 `UserContent.vue` 中发送事件，传递 `UserModal.vue` 的“隐藏/显示”状态。
 
-在 `User.vue` 中拿到该状态，去调用 `UserModal.vue` 中暴露的方法，改变其中的状态，
+在 `User.vue` 中拿到该状态，去调用 `UserModal.vue` 中暴露的方法 `setModalVisible`，改变其中的状态，
 
 > 在组件中一般暴露方法，因为方法中可以进行拦截，更加可控。
 
@@ -281,7 +257,7 @@ const onNewclick = () => {
 </script>
 
 <template>
-<el-button type="primary" @click="onNewclick">新建用户</el-button>
+  <el-button type="primary" @click="onNewclick">新建用户</el-button>
 </template>
 ```
 
@@ -295,8 +271,7 @@ const handleNewClick = () => {
 </script>
 
 <template>
-		<UserModal ref="modalRef"></UserModal>
-
+  <UserModal ref="modalRef"></UserModal>
 </template>
 ```
 
@@ -327,14 +302,14 @@ defineExpose({
   center
 >
   <!--...-->
-</el-dialog>  
+</el-dialog>
 
 </template>
 ```
 
 ### 2.加载“角色”和“部门”
 
-在 `UserModal.vue` 中“选择角色”和“选择部门”需要使用服务器请求下来的数据。
+新建用户时，在 `UserModal.vue` 中“选择角色”和“选择部门”，需要使用服务器请求下来的数据。
 
 使用“获取角色列表”和“获取部门列表”接口。封装网络请求。
 
@@ -407,21 +382,21 @@ src\views\main\system\user\cpns\UserModal.vue
 const systemStore = useSystemStore()
 const onConfigClick = () => {
 	showdialog.value = false
-	if (isAdd.value && editData.value) {
+	if (isAdd.value && editId.value !== -1) {
 		// 编辑
 	} else {
 		// 新增
-		systemStore.postNewUserAction(formData)
+		systemStore.postNewUserAction({...formData})
 	}
 }
 </script>
 
 <template>
-<el-button type="primary" @click="onConfigClick"> 确定 </el-button>
+  <el-button type="primary" @click="onConfigClick"> 确定 </el-button>
 </template>
 ```
 
-封装创建用户的网络请求，在 systenStore 中创建 action。在 UserModal 中调用。
+封装创建用户的网络请求，在 systenStore 中创建 action。在 `UserModal.vue` 中调用。
 
 新建成功后，发送网络请求，进行数据重载。
 
@@ -440,13 +415,13 @@ postNewUserAction(addParam: IUserCreateFormData) {
 
 在 `UserContent.vue` 中，编写用户修改功能。
 
-点击“编辑”按钮，弹出 modal，并将用户数据传给 `UserModal.vue`。
+点击表格中吗每条记录后的“编辑”按钮，弹出 `UserModal.vue`，并将用户数据传给 `UserModal.vue`。
 
 src\views\main\system\user\cpns\UserContent.vue
 
 ```vue
 <template>
-<el-button size="small" icon="Edit" type="primary" text @click="onEditClick(scope.row)">编辑</el-button>
+  <el-button size="small" icon="Edit" type="primary" text @click="onEditClick(scope.row)">编辑</el-button>
 </template>
 
 <script>
@@ -474,7 +449,7 @@ const handleEditClick = (itemData: IUser) => {
 </script>
 ```
 
-在 `UserModal.vue` 中，使用一个标识符 `isAdd` 来区分新建还是编辑。
+在 `UserModal.vue` 中，使用一个标识符 `isAdd` 来区分打开 modal 是为了新建还是编辑。
 
 编辑完成后，进行数据重载。
 
@@ -525,11 +500,11 @@ defineExpose({
 })
 ```
 
-#### 1.遍历对象时，key的类型写法
+#### 1.遍历对象时，key 的类型写法
 
 [参考资料](https://juejin.cn/post/7079687437445922853)
 
-在对象中，所有 key 的类型，都是 string 类型。
+在对象中，所有 key 的类型，都是 `string` 类型。
 
 所以无法分配给对象类型中 keys 具体的字面量类型，需要使用类型断言。
 
@@ -618,32 +593,33 @@ src\stores\main\system\system.ts
 
 ```typescript
 // 通用的封装
-postPageListAction<T>(pageName: string, queryParam: T) {
-  console.log(pageName, 'queryParam:', queryParam)
-  postPageList<T, IResponseListData>(pageName, queryParam).then(res => {
-    console.log(pageName, 'res:', res)
-    this.pageList = res.data.list
-    this.pageTotalCount = res.data.totalCount
-  })
-},
-deletePageByIdAction(pageName: string, id: number) {
-  deletePageById(pageName, id).then(res => {
-    console.log(pageName, 'delete res:', res)
-    this.postPageListAction(pageName, { offset: 0, size: 10 })
-  })
-},
-postNewPageRecordAction<T>(pageName: string, record: T) {
-  postNewPageRecord(pageName, record).then(res => {
-    console.log(pageName, 'add res:', res)
-    this.postPageListAction(pageName, { offset: 0, size: 10 })
-  })
-},
-pathEditPageRecordByIdAction<T>(pageName: string, id: number, record: T) {
-  pathEditPageRecordById(pageName, id, record).then(res => {
-    console.log(pageName, 'edit res:', res)
-    this.postPageListAction(pageName, { offset: 0, size: 10 })
-  })
-}
+const actions = {
+  postPageListAction<T>(pageName: string, queryParam: T) {
+    console.log(pageName, 'queryParam:', queryParam)
+    postPageList<T, IResponseListData>(pageName, queryParam).then(res => {
+      console.log(pageName, 'res:', res)
+      this.pageList = res.data.list
+      this.pageTotalCount = res.data.totalCount
+    })
+  },
+  deletePageByIdAction(pageName: string, id: number) {
+    deletePageById(pageName, id).then(res => {
+      console.log(pageName, 'delete res:', res)
+      this.postPageListAction(pageName, { offset: 0, size: 10 })
+    })
+  },
+  postNewPageRecordAction<T>(pageName: string, record: T) {
+    postNewPageRecord(pageName, record).then(res => {
+      console.log(pageName, 'add res:', res)
+      this.postPageListAction(pageName, { offset: 0, size: 10 })
+    })
+  },
+  pathEditPageRecordByIdAction<T>(pageName: string, id: number, record: T) {
+    pathEditPageRecordById(pageName, id, record).then(res => {
+      console.log(pageName, 'edit res:', res)
+      this.postPageListAction(pageName, { offset: 0, size: 10 })
+    })
+  }
 }
 ```
 
@@ -735,7 +711,7 @@ const onConfigClick = () => {
 
 将 `PageSearch.vue` 移动到 Component 目录下。在其中进行抽取和封装。
 
-> 动态组件对一些精准的组件，不太好控制。
+> 动态组件对一些需要精准控制的组件，不太合适。
 
 src\views\main\system\department\config\search-config.ts
 
@@ -836,7 +812,6 @@ const onQueryClick = () => {
 							</template>
 
 							<template v-if="item.type === 'date-picker'">
-
 								<el-date-picker
 									v-model="searchForm[item.prop]"
 									type="daterange"
@@ -873,7 +848,7 @@ const onQueryClick = () => {
 </template>
 ```
 
-#### 1.将对象属性字面量最为联合类型
+#### 1.将对象属性值字面量类型作为联合类型
 
 【补充】：[TypeScript 如何将对象属性值的字面量作为联合类型](https://zhuanlan.zhihu.com/p/406211160)。
 
@@ -884,7 +859,6 @@ interface Student {
 }
 type propTypes = Student[keyof Student]
 ```
-
 
 
 # 三、Role 页面（简单搭建）
@@ -934,11 +908,3 @@ import PageSearch from '@/components/page-search/page-search.vue'
 import searchConfig from './config/search.config'
 </script>
 ```
-
-
-
-# 四、User 页面配置文件
-
-编写 User 的配置文件。
-
-思考：当 options 来自服务器时，配置文件应该如何编写。

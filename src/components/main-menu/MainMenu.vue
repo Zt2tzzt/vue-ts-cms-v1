@@ -2,7 +2,7 @@
 import useLoginStore from '@/stores/login/login'
 import { useRoute, useRouter } from 'vue-router';
 import type { IUserMenuChild } from '@/types';
-import { computed } from 'vue';
+import { computed, onMounted, ref } from 'vue';
 import { mapPathToMenu } from '@/utils/map-path';
 
 withDefaults(defineProps<{
@@ -24,10 +24,15 @@ const handleItemClick = (item: IUserMenuChild) => {
 
 // 3.默认激活的菜单
 const route = useRoute()
-const defaultActive = computed(() => {
+const defaultActive = ref('-1')
+onMounted(() => {
+	const menu = mapPathToMenu(route.path, userMenu)
+	defaultActive.value = menu? menu.id + '' : '-1'
+})
+/* const defaultActive = computed(() => {
 	const menu = mapPathToMenu(route.path, userMenu)
 	return menu? menu.id + '' : '-1'
-})
+}) */
 </script>
 
 <template>
