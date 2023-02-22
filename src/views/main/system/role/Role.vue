@@ -6,7 +6,7 @@
 
 <script setup lang="ts" name="role">
 import PageSearch from '@/components/page-search/PageSearch.vue';
-import searchConfig from './config/search-config'
+import searchConfig from './config/search.config'
 
 </script>
 

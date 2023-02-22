@@ -20,7 +20,7 @@ import PageModal from './cpns/PageModal.vue'
 import PageSearch from '../../../../components/page-search/PageSearch.vue'
 import type { IUserQueryFormData, IDepartment } from '@/types'
 import { ref } from 'vue'
-import searchConfig from './config/search-config'
+import searchConfig from './config/search.config'
 
 const contentRef = ref<InstanceType<typeof PageContent>>()
 const handleQueryClick = (formData: IUserQueryFormData) => {
