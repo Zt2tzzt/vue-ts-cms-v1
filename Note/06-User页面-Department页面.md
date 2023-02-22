@@ -582,16 +582,363 @@ src\views\main\system\department\cpns\Pagesearch.vue
 
 src\views\main\system\department\cpns\PageContent.vue
 
+## 2.封装网络请求
+
+在 systemStore 中，针对 `Department.vue` 的内容，封装动态的网络请求。
+
+src\service\main\system\system.ts
+
+```typescript
+// 通用的封装
+export const postPageList = <T, R>(pageName: string, queryParam: T) =>
+	ztRequest.post<IResponse<R>>({
+		url: `/${pageName}/list`,
+		data: queryParam
+	})
+
+export const deletePageById = (pageName: string, id: number) =>
+	ztRequest.delete({
+		url: `/${pageName}/${id}`
+	})
+
+export const postNewPageRecord = <T>(pageName: string, record: T) =>
+	ztRequest.post({
+		url: `/${pageName}`,
+		data: record
+	})
+
+export const pathEditPageRecordById = <T>(pageName: string, id: number, record: T) =>
+	ztRequest.patch({
+		url: `/${pageName}/${id}`,
+		data: record
+	})
+```
+
+src\stores\main\system\system.ts
+
+```typescript
+// 通用的封装
+postPageListAction<T>(pageName: string, queryParam: T) {
+  console.log(pageName, 'queryParam:', queryParam)
+  postPageList<T, IResponseListData>(pageName, queryParam).then(res => {
+    console.log(pageName, 'res:', res)
+    this.pageList = res.data.list
+    this.pageTotalCount = res.data.totalCount
+  })
+},
+deletePageByIdAction(pageName: string, id: number) {
+  deletePageById(pageName, id).then(res => {
+    console.log(pageName, 'delete res:', res)
+    this.postPageListAction(pageName, { offset: 0, size: 10 })
+  })
+},
+postNewPageRecordAction<T>(pageName: string, record: T) {
+  postNewPageRecord(pageName, record).then(res => {
+    console.log(pageName, 'add res:', res)
+    this.postPageListAction(pageName, { offset: 0, size: 10 })
+  })
+},
+pathEditPageRecordByIdAction<T>(pageName: string, id: number, record: T) {
+  pathEditPageRecordById(pageName, id, record).then(res => {
+    console.log(pageName, 'edit res:', res)
+    this.postPageListAction(pageName, { offset: 0, size: 10 })
+  })
+}
+}
+```
+
+## 3.实现查询、重置、删除
+
+在 `PageSearch.vue` 中，实现 Department 的查询，重置
+
+发送查询的事件
+
+src\views\main\system\department\cpns\PageSearch.vue
+
+```typescript
+const onResetClick = () => {
+	formRef.value?.resetFields()
+	emits('resetClick')
+}
+const onQueryClick = () => {
+	emits('queryClick', { ...searchForm })
+}
+```
+
+在 `PageSearch.vue` 中，实现 Department 的查询，
+
+调用查询的接口。
+
+src\views\main\system\department\cpns\PageContent.vue
+
+```typescript
+const fetchPageListData = (formatData: IDepartmentQueryFormData | object = {}) => {
+	// 1.获取 offset 和 limit
+	const limit = pageSize.value
+	const offset = (currentPage.value - 1) * limit
+	const queryParam = { size: limit, offset }
+
+	// 2.发送请求
+	systemStore.postPageListAction<IDepartmentQueryParam>(DEPARTMENT, {
+		...queryParam,
+		...formatData
+	})
+}
+
+fetchPageListData()
+
+const onSizeChange = () => {
+	fetchPageListData()
+}
+const onCurrentChange = () => {
+	fetchPageListData()
+}
+
+defineExpose({
+	fetchPageListData
+})
+```
+
+在 `PageContent.vue` 中，实现 Department 的删除功能
+
+src\views\main\system\department\cpns\PageContent.vue
+
+```typescript
+const onDeleteClick = (id: number) => {
+	systemStore.deletePageByIdAction(DEPARTMENT, id)
+}
+```
+
+## 4.实现新增、编辑
+
+创建 `PageModal.vue` 组件，实现新增，修改等功能。
+
+src\views\main\system\department\cpns\PageModal.vue
+
+```typescript
+// 点击“确认”
+const systemStore = useSystemStore()
+const onConfigClick = () => {
+	showdialog.value = false
+	if (!isAdd.value && editId.value !== -1) {
+		// 编辑
+		const { ...editFormData} = formData
+		systemStore.pathEditPageRecordByIdAction<IDepartmentEditFormData>(DEPARTMENT, editId.value, editFormData)
+	} else {
+		// 新增
+		systemStore.postNewPageRecordAction<IDepartmentCreateFormData>(DEPARTMENT, {...formData})
+	}
+}
+```
+
+## 5.目录重构
+
+将 `PageSearch.vue` 移动到 Component 目录下。在其中进行抽取和封装。
+
+> 动态组件对一些精准的组件，不太好控制。
+
+src\views\main\system\department\config\search-config.ts
+
+```typescript
+import type { IDepartmentQueryFormData } from '@/types'
+
+interface IDepartmentFormItem {
+	type: 'input' | 'date-picker' | 'select'
+	prop: keyof IDepartmentQueryFormData
+	label: string
+	placeholder?: string
+	initialvalue: IDepartmentQueryFormData[keyof IDepartmentQueryFormData]
+}
+
+export interface IDepartmentSearchConfig {
+  formItems: Array<IDepartmentFormItem>
+}
+
+const searchConfig: IDepartmentSearchConfig = {
+	formItems: [
+		{
+			type: 'input',
+			prop: 'name',
+			label: '部门名称',
+			placeholder: '请输入查询的部门名称',
+			initialvalue: ''
+		},
+		{
+			type: 'input',
+			prop: 'leader',
+			label: '部门领导',
+			placeholder: '请输入查询的领导名称',
+			initialvalue: ''
+		},
+		{
+			type: 'date-picker',
+			prop: 'createAt',
+			label: '创建事件',
+			initialvalue: ''
+		}
+	]
+}
+
+export default searchConfig
+```
+
+src\components\page-search\PageSearch.vue
+
+```vue
+<script setup lang="ts">
+import type { ElForm } from 'element-plus'
+import { reactive, ref } from 'vue'
+
+interface IProps {
+	searchConfig: {
+		labelWidth?: string
+		formItems: any[]
+	}
+}
+const props = defineProps<IProps>()
+const emits = defineEmits(['queryClick', 'resetClick'])
+
+// 初始化表单
+const initialForm = props.searchConfig.formItems.reduce((accumulate, item) => {
+	accumulate[item.prop] = item.initialvalue
+	return accumulate
+}, {})
+const searchForm = reactive(initialForm)
+
+// 重置
+const formRef = ref<InstanceType<typeof ElForm>>()
+const onResetClick = () => {
+	formRef.value?.resetFields()
+	emits('resetClick')
+}
+
+// 查询
+const onQueryClick = () => {
+	emits('queryClick', { ...searchForm })
+}
+</script>
+
+<template>
+	<div class="page-search">
+		<!-- 表单 -->
+		<el-form :model="searchForm" ref="formRef" label-width="80px" size="large">
+			<el-row :gutter="20">
+
+				<template v-for="item of searchConfig.formItems" :key="item.prop">
+					<el-col :span="8">
+						<el-form-item :label="item.label" :prop="item.prop">
+
+							<template v-if="item.type === 'input'">
+								<el-input
+									v-model="searchForm[item.prop]"
+									:placeholder="item.placeholder"
+								></el-input>
+							</template>
+
+							<template v-if="item.type === 'date-picker'">
+
+								<el-date-picker
+									v-model="searchForm[item.prop]"
+									type="daterange"
+									range-separator="-"
+									start-placeholder="开始时间"
+									end-placeholder="结束时间"
+								></el-date-picker>
+							</template>
+
+							<template v-if="item.type === 'select'">
+								<el-select
+									v-model="searchForm[item.prop]"
+									:placeholder="item.placeholder"
+									style="width: ;100%"
+								>
+									<template v-for="option in item.options" :key="option.value">
+										<el-option :label="option.label" :value="option.value"></el-option>
+									</template>
+								</el-select>
+							</template>
+
+						</el-form-item>
+					</el-col>
+				</template>
+			</el-row>
+		</el-form>
+
+		<!-- 按钮 -->
+		<div class="btns">
+			<el-button icon="Refresh" @click="onResetClick">重置</el-button>
+			<el-button icon="Search" type="primary" @click="onQueryClick">查询</el-button>
+		</div>
+	</div>
+</template>
+```
+
+#### 1.将对象属性字面量最为联合类型
+
+【补充】：[TypeScript 如何将对象属性值的字面量作为联合类型](https://zhuanlan.zhihu.com/p/406211160)。
+
+```typescript
+interface Student {
+   name: string;
+   age: number;
+}
+type propTypes = Student[keyof Student]
+```
 
 
-在 systemStore 中，针对 Department 的内容，封装动态的网络请求。
 
-在 Department 中，实现查询，重置，删除等功能。
+# 三、Role 页面（简单搭建）
 
----
+快速搭建 Role.vue 页面
 
-创建 PageModal 组件，实现新增，修改等功能。
+src\views\main\system\role\config\search.config.ts
 
----
+```typescript
+const searchConfig = {
+  formItems: [
+    {
+      type: 'input',
+      prop: 'name',
+      label: '角色名称',
+      placeholder: '请输入查询的角色名称',
+      initialValue: 'abc'
+    },
+    {
+      type: 'input',
+      prop: 'leader',
+      label: '权限介绍',
+      placeholder: '请输入查询的权限介绍'
+    },
+    {
+      type: 'date-picker',
+      prop: 'createAt',
+      label: '创建时间'
+    }
+  ]
+}
 
-将 PageSearch 移动到 Component 目录下。在其中进行抽取和封装。
+export default searchConfig
+```
+
+src\views\main\system\role\role.vue
+
+```vue
+<template>
+  <div class="role">
+    <page-search :search-config="searchConfig" />
+  </div>
+</template>
+
+<script setup lang="ts">
+import PageSearch from '@/components/page-search/page-search.vue'
+import searchConfig from './config/search.config'
+</script>
+```
+
+
+
+# 四、User 页面配置文件
+
+编写 User 的配置文件。
+
+思考：当 options 来自服务器时，配置文件应该如何编写。

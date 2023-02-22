@@ -1,3 +1,5 @@
+import { IResponseListData } from './global.d';
+import { IResponse } from '@/types';
 // 部门
 export interface IDepartment {
 	id: number
@@ -6,11 +8,6 @@ export interface IDepartment {
 	createAt: string
 	updateAt: string
 	leader: string
-}
-
-export interface IDepartmentsResult {
-	list: Array<IDepartment>
-	totalCount: number
 }
 
 // 角色
@@ -53,11 +50,21 @@ export interface IRole {
 	menuList: Array<IMenu>
 }
 
-export interface IRoleSResult {
-	list: Array<IRole>
+// 查询
+export interface IQueryParam {
+	offset: number
+	size: number
+}
+
+// 返回
+export interface IResponseListData<T = any> {
+	list: Array<T>
 	totalCount: number
 }
 
+export type IRoleSResult = IResponseListData<IRole>
+
+export type IDepartmentsResult = IResponseListData<IDepartment>
 
 export interface IResponse<T> {
 	code: number

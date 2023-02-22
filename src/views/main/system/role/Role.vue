@@ -1,10 +1,14 @@
 <template>
   <div class="role">
-    <h2>role</h2>
+		<PageSearch :search-config="searchConfig"></PageSearch>
   </div>
 </template>
 
-<script setup lang="ts" name="role"></script>
+<script setup lang="ts" name="role">
+import PageSearch from '@/components/page-search/PageSearch.vue';
+import searchConfig from './config/search-config'
+
+</script>
 
 <style scoped>
 .role {

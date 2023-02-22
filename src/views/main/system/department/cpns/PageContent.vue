@@ -3,49 +3,57 @@ import useSystemStore from '@/stores/main/system/system'
 import { storeToRefs } from 'pinia'
 import { formatUTC } from '@/utils/format'
 import { ref } from 'vue'
-import type { IUserQueryFormData, IUser } from '@/types'
+import type {
+	IDepartmentQueryFormData,
+	IDepartment,
+	IDepartmentQueryParam,
+} from '@/types'
+import { DEPARTMENT } from '@/global/constance'
 
 const emits = defineEmits(['newClick', 'editClick'])
 
 const systemStore = useSystemStore()
-const { users, usersTotalCount } = storeToRefs(systemStore)
+const { pageList, pageTotalCount } = storeToRefs(systemStore)
 
 const currentPage = ref(1)
 const pageSize = ref(10)
 
-const fetchUserListData = (formatData: IUserQueryFormData | object = {}) => {
+const fetchPageListData = (formatData: IDepartmentQueryFormData | object = {}) => {
 	// 1.获取 offset 和 limit
 	const limit = pageSize.value
 	const offset = (currentPage.value - 1) * limit
 	const queryParam = { size: limit, offset }
 
 	// 2.发送请求
-	systemStore.postUsersAction({ ...queryParam, ...formatData })
+	systemStore.postPageListAction<IDepartmentQueryParam>(DEPARTMENT, {
+		...queryParam,
+		...formatData
+	})
 }
 
-fetchUserListData()
+fetchPageListData()
 
 const onSizeChange = () => {
-	fetchUserListData()
+	fetchPageListData()
 }
 const onCurrentChange = () => {
-	fetchUserListData()
+	fetchPageListData()
 }
 
 const onDeleteClick = (id: number) => {
-	systemStore.deleteUserByIdAction(id)
+	systemStore.deletePageByIdAction(DEPARTMENT, id)
 }
 
 const onNewclick = () => {
 	emits('newClick')
 }
 
-const onEditClick = (itemData: IUser) => {
+const onEditClick = (itemData: IDepartment) => {
 	emits('editClick', itemData)
 }
 
 defineExpose({
-	fetchUserListData
+	fetchPageListData
 })
 </script>
 
@@ -57,27 +65,22 @@ defineExpose({
 		</div>
 
 		<div class="table">
-			<el-table :data="users" stripe border style="width: 100%">
+			<el-table :data="pageList" stripe border style="width: 100%">
 				<el-table-column align="center" type="selection" width="50px"></el-table-column>
 				<el-table-column align="center" type="index" label="序号" width="60"></el-table-column>
-				<el-table-column align="center" label="用户名" prop="name" width="200"></el-table-column>
+				<el-table-column align="center" label="部门名称" prop="name" width="200"></el-table-column>
 				<el-table-column
 					align="center"
-					label="真是姓名"
-					prop="realname"
+					label="部门编号"
+					prop="leader"
 					width="200"
 				></el-table-column>
 				<el-table-column
 					align="center"
-					label="手机号码"
-					prop="cellphone"
-					width="250"
+					label="上级部门"
+					prop="parentId"
+					width="150"
 				></el-table-column>
-				<el-table-column align="center" label="状态" prop="enable" width="100" #default="scope">
-					<el-button size="small" :type="scope.row.enable ? 'primary' : 'danger'">
-						{{ scope.row.enable ? '启用' : '禁用' }}
-					</el-button>
-				</el-table-column>
 				<el-table-column align="center" label="创建时间" prop="createAt" #default="scope">
 					{{ formatUTC(scope.row.createAt) }}
 				</el-table-column>
@@ -87,7 +90,9 @@ defineExpose({
 					</template>
 				</el-table-column>
 				<el-table-column align="center" label="操作" width="250" #default="scope">
-					<el-button size="small" icon="Edit" type="primary" text @click="onEditClick(scope.row)">编辑</el-button>
+					<el-button size="small" icon="Edit" type="primary" text @click="onEditClick(scope.row)"
+						>编辑</el-button
+					>
 					<el-button
 						size="small"
 						icon="Delete"
@@ -106,7 +111,7 @@ defineExpose({
 				v-model:page-size="pageSize"
 				:page-sizes="[10, 20, 30]"
 				layout="total, sizes, prev, pager, next, jumper"
-				:total="usersTotalCount"
+				:total="pageTotalCount"
 				@size-change="onSizeChange"
 				@current-change="onCurrentChange"
 			></el-pagination>

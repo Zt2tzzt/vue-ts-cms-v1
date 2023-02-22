@@ -1,3 +1,5 @@
+import { IQueryParam } from './global';
+
 interface IUserFormDataBasic {
   name: string
   realname: string
@@ -22,11 +24,7 @@ export interface IUserQueryFormData extends IUserFormDataBasic {
 
 type IUserQueryFormDataPartial = Partial<IUserQueryFormData>
 
-
-export interface IUserQueryParam extends IUserQueryFormDataPartial {
-	offset: number
-	size: number
-}
+export type IUserQueryParam = IQueryParam & IUserQueryFormDataPartial
 
 // 返回结果
 export interface IUser extends IUserRoleAndDepartment, IUserQueryFormData {
@@ -38,8 +36,3 @@ export interface IUser extends IUserRoleAndDepartment, IUserQueryFormData {
 	updateAt: string
 }
 
-
-export interface IUsersData {
-	list: Array<IUser>
-	totalCount: number
-}
