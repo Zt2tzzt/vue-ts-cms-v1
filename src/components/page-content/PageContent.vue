@@ -3,7 +3,7 @@ import useSystemStore from '@/stores/main/system/system'
 import { storeToRefs } from 'pinia'
 import { formatUTC } from '@/utils/format'
 import { computed, ref } from 'vue'
-import type { IDepartmentQueryFormData, IDepartment, IDepartmentQueryParam } from '@/types'
+import type { IDepartment } from '@/types'
 import type { IDepartmentProp } from '@/views/main/system/department/config/content.config';
 
 interface IProps {
@@ -36,7 +36,7 @@ const fetchPageListData = <T>(formatData: T | object = {}) => {
 	const queryParam = { size: limit, offset }
 
 	// 2.发送请求
-	systemStore.postPageListAction<T>(pageName.value, {
+	systemStore.postPageListAction(pageName.value, {
 		...queryParam,
 		...formatData
 	})

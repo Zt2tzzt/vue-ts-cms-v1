@@ -26,7 +26,7 @@ const formItems: IDepartmentFormItem[] = [
 	{
 		type: 'date-picker',
 		prop: 'createAt',
-		label: '创建事件',
+		label: '创建时间',
 		initialvalue: ''
 	}
 ]

@@ -2,14 +2,14 @@
 	<div class="department">
 		<PageSearch
 			:search-config="searchConfig"
-			@query-click="handleQueryClick"
-			@reset-click="handleResetClick"
+			@query-click="handleQueryClick as HookFnType"
+			@reset-click="handleResetClick as HookFnType"
 		></PageSearch>
 		<PageContent
 			ref="contentRef"
 			:content-config="contentConfig"
-			@new-click="handleNewClick"
-			@edit-click="handleEditClick"
+			@new-click="handleNewClick as HookFnType"
+			@edit-click="handleEditClick as HookFnType"
 		></PageContent>
 		<PageModal :modal-config="modalConfigREf" ref="modalRef"></PageModal>
 	</div>
@@ -19,12 +19,12 @@
 import PageContent from '@/components/page-content/PageContent.vue'
 import PageModal from '@/components/page-modal/PageModal.vue'
 import PageSearch from '@/components/page-search/PageSearch.vue'
-import type { IUserQueryFormData, IDepartment } from '@/types'
 import { computed, ref } from 'vue'
 import searchConfig from './config/search.config'
 import contentConfig from './config/content.config'
 import modalConfig from './config/modal.config'
 import useMainStore from '@/stores/main/main'
+import usePageSearch from '@/hooks/usePageSearch'
 import usePageContent from '@/hooks/usePageContent'
 
 
@@ -42,17 +42,12 @@ const modalConfigREf = computed(() => {
 
 })
 
-usePageContent
+const [contentRef, handleQueryClick, handleResetClick] = usePageSearch()
 
+const [modalRef, handleNewClick, handleEditClick] = usePageContent()
 
+type HookFnType = (...args: any[]) => any
 
-const modalRef = ref<InstanceType<typeof PageModal>>()
-const handleNewClick = () => {
-	modalRef.value?.setModalVisible({ isNew: true })
-}
-const handleEditClick = (itemData: IDepartment) => {
-	modalRef.value?.setModalVisible({ isNew: false, itemData })
-}
 </script>
 
 <style scoped>

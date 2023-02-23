@@ -1,6 +1,6 @@
-# 一、高阶组件封装
+# 一、高阶组件封装（一）
 
-已 Department 页面为例，封装和完善高阶组件 `PageContent.vue` 和 `PageModal.vue`.
+以 Department 页面为例，封装和完善高阶组件 `PageContent.vue` 和 `PageModal.vue`.
 
 ## 1.PageContent 组件
 
@@ -290,9 +290,69 @@ src\components\page-modal\PageModal.vue
 
 ## 3.Hooks 封装
 
-再 `Department.vue` 中，对相同的逻辑进行抽取，使用 hooks。
+在 `Department.vue` 中，对相同的逻辑进行抽取，使用 hooks。
+
+src\hooks\usePageSearch.ts
+
+```typescript
+import { ref } from 'vue';
+import type PageContent from '@/components/page-content/PageContent.vue'
+import type { IDepartmentQueryFormData } from '@/types'
+
+const usePageSearch = () => {
+
+	const contentRef = ref<InstanceType<typeof PageContent>>()
+                                      
+	const handleQueryClick = <T extends IDepartmentQueryFormData>(formData: T) => {
+		contentRef.value?.fetchPageListData(formData)
+	}
+
+	const handleResetClick = () => {
+		contentRef.value?.fetchPageListData()
+	}
+
+	return [contentRef, handleQueryClick, handleResetClick]
+}
+
+export default usePageSearch
+```
+
+src\hooks\usePageContent.ts
+
+```typescript
+import type PageModal from '@/components/page-modal/PageModal.vue'
+import { ref } from 'vue';
+import type { IDepartment } from '@/types'
+
+const usePageContent = () => {
+
+	const modalRef = ref<InstanceType<typeof PageModal>>()
+
+	const handleNewClick = () => {
+		modalRef.value?.setModalVisible({ isNew: true })
+	}
+
+	const handleEditClick = <T extends IDepartment>(itemData: T) => {
+		modalRef.value?.setModalVisible({ isNew: false, itemData })
+	}
+
+	return [modalRef, handleNewClick, handleEditClick]
+}
+
+export default usePageContent
 
 
+```
+
+src\views\main\system\department\Department.vue
+
+```typescript
+const [contentRef, handleQueryClick, handleResetClick] = usePageSearch()
+
+const [modalRef, handleNewClick, handleEditClick] = usePageContent()
+```
+
+# 二、高阶组件封装（二）
 
 
 

@@ -1,18 +1,21 @@
+import type PageModal from '@/components/page-modal/PageModal.vue'
 import { ref } from 'vue';
-import type PageContent from '@/components/page-content/PageContent.vue'
+import type { IDepartment } from '@/types'
 
 const usePageContent = () => {
 
-	const contentRef = ref<InstanceType<typeof PageContent>>()
-	const handleQueryClick = <T>(formData: T) => {
-		contentRef.value?.fetchPageListData(formData)
-	}
-	const handleResetClick = () => {
-		contentRef.value?.fetchPageListData()
+	const modalRef = ref<InstanceType<typeof PageModal>>()
+
+	const handleNewClick = () => {
+		modalRef.value?.setModalVisible({ isNew: true })
 	}
 
-	return [contentRef, handleQueryClick, handleResetClick]
+	const handleEditClick = <T extends IDepartment>(itemData: T) => {
+		modalRef.value?.setModalVisible({ isNew: false, itemData })
+	}
+
+	return [modalRef, handleNewClick, handleEditClick]
 }
 
-
 export default usePageContent
+
