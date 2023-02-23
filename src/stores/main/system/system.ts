@@ -65,7 +65,7 @@ const useSystemStore = defineStore('system', {
 		},
 
 		// 通用的封装
-		postPageListAction<T>(pageName: string, queryParam: T) {
+		postPageListAction<T = any>(pageName: string, queryParam: T) {
 			console.log(pageName, 'queryParam:', queryParam)
 			postPageList<T, IResponseListData>(pageName, queryParam).then(res => {
 				console.log(pageName, 'res:', res)

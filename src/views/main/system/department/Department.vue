@@ -7,28 +7,44 @@
 		></PageSearch>
 		<PageContent
 			ref="contentRef"
+			:content-config="contentConfig"
 			@new-click="handleNewClick"
 			@edit-click="handleEditClick"
 		></PageContent>
-		<PageModal ref="modalRef"></PageModal>
+		<PageModal :modal-config="modalConfigREf" ref="modalRef"></PageModal>
 	</div>
 </template>
 
 <script setup lang="ts" name="Department">
-import PageContent from './cpns/PageContent.vue'
-import PageModal from './cpns/PageModal.vue'
-import PageSearch from '../../../../components/page-search/PageSearch.vue'
+import PageContent from '@/components/page-content/PageContent.vue'
+import PageModal from '@/components/page-modal/PageModal.vue'
+import PageSearch from '@/components/page-search/PageSearch.vue'
 import type { IUserQueryFormData, IDepartment } from '@/types'
-import { ref } from 'vue'
+import { computed, ref } from 'vue'
 import searchConfig from './config/search.config'
+import contentConfig from './config/content.config'
+import modalConfig from './config/modal.config'
+import useMainStore from '@/stores/main/main'
+import usePageContent from '@/hooks/usePageContent'
 
-const contentRef = ref<InstanceType<typeof PageContent>>()
-const handleQueryClick = (formData: IUserQueryFormData) => {
-	contentRef.value?.fetchPageListData(formData)
-}
-const handleResetClick = () => {
-	contentRef.value?.fetchPageListData()
-}
+
+// 获取 roles / departments 数据
+const modalConfigREf = computed(() => {
+
+	const mainStore = useMainStore()
+	const selectFormItem = modalConfig.formItems.find(item => item.prop === 'parentId')
+
+	if (selectFormItem)	selectFormItem.options =  mainStore.entireDepartments.map(item => ({
+		label: item.name, value: item.id
+	}))
+
+	return modalConfig
+
+})
+
+usePageContent
+
+
 
 const modalRef = ref<InstanceType<typeof PageModal>>()
 const handleNewClick = () => {

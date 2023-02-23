@@ -1,11 +1,13 @@
 <script setup lang="ts">
 import type { ElForm } from 'element-plus'
 import { reactive, ref } from 'vue'
+import type { IDepartmentFormItem } from '@/views/main/system/department/config/search.config';
+import type { IDepartmentQueryFormData } from '@/types'
 
 interface IProps {
 	searchConfig: {
 		labelWidth?: string
-		formItems: any[]
+		formItems: IDepartmentFormItem[]
 	}
 }
 const props = defineProps<IProps>()
@@ -13,9 +15,9 @@ const emits = defineEmits(['queryClick', 'resetClick'])
 
 // 初始化表单
 const initialForm = props.searchConfig.formItems.reduce((accumulate, item) => {
-	accumulate[item.prop] = item.initialvalue
+	accumulate[item.prop] = item.initialvalue as keyof IDepartmentQueryFormData
 	return accumulate
-}, {})
+}, {} as IDepartmentQueryFormData)
 const searchForm = reactive(initialForm)
 
 // 重置
@@ -74,28 +76,6 @@ const onQueryClick = () => {
 						</el-form-item>
 					</el-col>
 				</template>
-
-				<!-- <el-col :span="8">
-					<el-form-item label="部门名" prop="name">
-						<el-input v-model="searchForm.name" placeholder="请输入查询的部门名称"></el-input>
-					</el-form-item>
-				</el-col>
-				<el-col :span="8">
-					<el-form-item label="部门领导" prop="leader">
-						<el-input v-model="searchForm.leader" placeholder="请输入查询的部门领导"></el-input>
-					</el-form-item>
-				</el-col>
-				<el-col :span="8">
-					<el-form-item label="创建时间" prop="createAt">
-						<el-date-picker
-							v-model="searchForm.createAt"
-							type="daterange"
-							range-separator="-"
-							start-placeholder="开始时间"
-							end-placeholder="结束时间"
-						></el-date-picker>
-					</el-form-item>
-				</el-col> -->
 			</el-row>
 		</el-form>
 

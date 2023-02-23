@@ -1,28 +1,37 @@
 <script setup lang="ts">
-import { reactive, ref } from 'vue'
+import { computed, reactive, ref } from 'vue'
 import type { IDepartmentCreateFormData, IDepartment, IDepartmentEditFormData } from '@/types'
-import useMainStore from '@/stores/main/main'
 import useSystemStore from '@/stores/main/system/system'
-import { storeToRefs } from 'pinia';
-import { DEPARTMENT } from '@/global/constance';
+import type { IDepartmentFormItem } from '@/views/main/system/department/config/modal.config';
+
+const props = defineProps<{
+	modalConfig: {
+		pageName: string
+		header: {
+			newBtnLabel: string
+			editBtnLabel: string
+		},
+		formItems: IDepartmentFormItem[]
+	}
+}>()
+const pageName = computed(() => props.modalConfig.pageName)
 
 const showdialog = ref(false)
 const isAdd = ref(true) // 新建：true；修改：false
 const editId = ref(-1)
 
 // 表单属性
-const formData = reactive<IDepartmentCreateFormData>({
-	name: '',
-	leader: '',
-	parentId: ''
-})
+const initialFormData: IDepartmentCreateFormData = props.modalConfig.formItems.reduce((accumulate, item) => {
+	accumulate[item.prop] = ''
+	return accumulate
+}, {} as any)
+const formData = reactive(initialFormData)
 
 
 type OpenDialogParamType = {
 	isNew?: boolean
 	itemData?: IDepartment
 }
-
 // 设置 dialog 是否显示
 const setModalVisible = ({isNew = true, itemData}: OpenDialogParamType) => {
 	showdialog.value = true
@@ -44,9 +53,6 @@ const setModalVisible = ({isNew = true, itemData}: OpenDialogParamType) => {
 	}
 }
 
-// 获取 roles / departments 数据
-const mainStore = useMainStore()
-const { entireDepartments } = storeToRefs(mainStore)
 
 // 点击“确认”
 const systemStore = useSystemStore()
@@ -55,10 +61,10 @@ const onConfigClick = () => {
 	if (!isAdd.value && editId.value !== -1) {
 		// 编辑
 		const { ...editFormData} = formData
-		systemStore.pathEditPageRecordByIdAction<IDepartmentEditFormData>(DEPARTMENT, editId.value, editFormData)
+		systemStore.pathEditPageRecordByIdAction<IDepartmentEditFormData>(pageName.value, editId.value, editFormData)
 	} else {
 		// 新增
-		systemStore.postNewPageRecordAction<IDepartmentCreateFormData>(DEPARTMENT, {...formData})
+		systemStore.postNewPageRecordAction<IDepartmentCreateFormData>(pageName.value, {...formData})
 	}
 }
 
@@ -71,30 +77,36 @@ defineExpose({
 	<div class="user-modal">
 		<el-dialog
 			v-model="showdialog"
-			:title="isAdd ? '新建部门' : '修改部门'"
+			:title="isAdd ? modalConfig.header.newBtnLabel: modalConfig.header.editBtnLabel"
 			width="30%"
 			destroy-on-close
 			center
 		>
 			<div class="form">
 				<el-form :model="formData" label-width="80px" size="large">
-					<el-form-item label="部门名称" prop="name">
-						<el-input v-model="formData.name" placeholder="请输入部门名称"></el-input>
-					</el-form-item>
-					<el-form-item label="部门编号" prop="leader">
-						<el-input v-model="formData.leader" placeholder="请输入部门编号"></el-input>
-					</el-form-item>
-					<el-form-item label="选择部门" prop="parentId">
-						<el-select
-							v-model="formData.parentId"
-							placeholder="请选择部门"
-							style="width: 100%"
-						>
-							<template v-for="item of entireDepartments" :key="item.id">
-								<el-option :label="item.name" :value="item.id"></el-option>
+
+					<template v-for="item of modalConfig.formItems" :key="item.prop">
+						<el-form-item :label="item.label" :prop="item.prop">
+
+							<template v-if="item.type === 'input'">
+								<el-input v-model="formData[item.prop]" :placeholder="item.placeholder"></el-input>
 							</template>
-						</el-select>
-					</el-form-item>
+
+							<template v-else-if="item.type === 'select'">
+								<el-select
+									v-model="formData[item.prop]"
+									:placeholder="item.placeholder"
+									style="width: 100%"
+								>
+									<template v-for="option of item.options" :key="option.value">
+										<el-option :label="option.label" :value="option.value"></el-option>
+									</template>
+								</el-select>
+							</template>
+
+						</el-form-item>
+					</template>
+
 				</el-form>
 			</div>
 

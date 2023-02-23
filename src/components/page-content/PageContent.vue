@@ -2,37 +2,48 @@
 import useSystemStore from '@/stores/main/system/system'
 import { storeToRefs } from 'pinia'
 import { formatUTC } from '@/utils/format'
-import { ref } from 'vue'
-import type {
-	IDepartmentQueryFormData,
-	IDepartment,
-	IDepartmentQueryParam,
-} from '@/types'
-import { DEPARTMENT } from '@/global/constance'
+import { computed, ref } from 'vue'
+import type { IDepartmentQueryFormData, IDepartment, IDepartmentQueryParam } from '@/types'
+import type { IDepartmentProp } from '@/views/main/system/department/config/content.config';
 
+interface IProps {
+	contentConfig: {
+		pageName: string
+		header?: {
+			title: string
+			btnLabel: string
+		}
+		propList: IDepartmentProp[]
+	}
+}
+const props = defineProps<IProps>()
 const emits = defineEmits(['newClick', 'editClick'])
+const pageName = computed(() => props.contentConfig.pageName)
 
+// 页面数据
 const systemStore = useSystemStore()
 const { pageList, pageTotalCount } = storeToRefs(systemStore)
 
+// 分页参数
 const currentPage = ref(1)
 const pageSize = ref(10)
 
-const fetchPageListData = (formatData: IDepartmentQueryFormData | object = {}) => {
+// 查询
+const fetchPageListData = <T>(formatData: T | object = {}) => {
 	// 1.获取 offset 和 limit
 	const limit = pageSize.value
 	const offset = (currentPage.value - 1) * limit
 	const queryParam = { size: limit, offset }
 
 	// 2.发送请求
-	systemStore.postPageListAction<IDepartmentQueryParam>(DEPARTMENT, {
+	systemStore.postPageListAction<T>(pageName.value, {
 		...queryParam,
 		...formatData
 	})
 }
-
 fetchPageListData()
 
+// 分页器
 const onSizeChange = () => {
 	fetchPageListData()
 }
@@ -40,14 +51,17 @@ const onCurrentChange = () => {
 	fetchPageListData()
 }
 
+// 删除
 const onDeleteClick = (id: number) => {
-	systemStore.deletePageByIdAction(DEPARTMENT, id)
+	systemStore.deletePageByIdAction(pageName.value, id)
 }
 
+// 新增
 const onNewclick = () => {
 	emits('newClick')
 }
 
+// 修改
 const onEditClick = (itemData: IDepartment) => {
 	emits('editClick', itemData)
 }
@@ -59,49 +73,55 @@ defineExpose({
 
 <template>
 	<div class="user-content">
+		<!--  头部  -->
 		<div class="header">
-			<h3 class="title">部门列表</h3>
-			<el-button type="primary" @click="onNewclick">新建部门</el-button>
+			<h3 class="title">{{ contentConfig?.header?.title ?? `数据列表` }}</h3>
+			<el-button type="primary" @click="onNewclick">{{
+				contentConfig?.header?.btnLabel ?? `新建数据`
+			}}</el-button>
 		</div>
 
+		<!-- 列表 -->
 		<div class="table">
 			<el-table :data="pageList" stripe border style="width: 100%">
-				<el-table-column align="center" type="selection" width="50px"></el-table-column>
-				<el-table-column align="center" type="index" label="序号" width="60"></el-table-column>
-				<el-table-column align="center" label="部门名称" prop="name" width="200"></el-table-column>
-				<el-table-column
-					align="center"
-					label="部门编号"
-					prop="leader"
-					width="200"
-				></el-table-column>
-				<el-table-column
-					align="center"
-					label="上级部门"
-					prop="parentId"
-					width="150"
-				></el-table-column>
-				<el-table-column align="center" label="创建时间" prop="createAt" #default="scope">
-					{{ formatUTC(scope.row.createAt) }}
-				</el-table-column>
-				<el-table-column align="center" label="修改时间" prop="updateAt">
-					<template #default="scope">
-						{{ formatUTC(scope.row.updateAt) }}
+
+				<template v-for="item of contentConfig.propList" :key="item.prop">
+
+					<!-- 很多页面都有的列。分情况处理 -->
+					<template v-if="item.gener === 'timer'">
+						<el-table-column align="center" v-bind="item" #default="scope">
+							{{ formatUTC(scope.row.createAt) }}
+						</el-table-column>
 					</template>
-				</el-table-column>
-				<el-table-column align="center" label="操作" width="250" #default="scope">
-					<el-button size="small" icon="Edit" type="primary" text @click="onEditClick(scope.row)"
-						>编辑</el-button
-					>
-					<el-button
-						size="small"
-						icon="Delete"
-						type="danger"
-						text
-						@click="onDeleteClick(scope.row.id)"
-						>删除</el-button
-					>
-				</el-table-column>
+
+					<template v-else-if="item.gener === 'handler'">
+						<el-table-column align="center" v-bind="item" #default="scope">
+							<el-button
+								size="small"
+								icon="Edit"
+								type="primary"
+								text
+								@click="onEditClick(scope.row)"
+								>编辑</el-button
+							>
+							<el-button
+								size="small"
+								icon="Delete"
+								type="danger"
+								text
+								@click="onDeleteClick(scope.row.id)"
+								>删除</el-button
+							>
+						</el-table-column>
+					</template>
+
+					<!-- 较为通用的列 -->
+					<template v-else>
+						<el-table-column align="center" v-bind="item"></el-table-column>
+					</template>
+
+				</template>
+
 			</el-table>
 		</div>
 
