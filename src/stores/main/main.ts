@@ -1,26 +1,32 @@
 import { defineStore } from 'pinia'
-import { getEntireRoles, getEntireDepartment } from '@/service/main/main'
-import type { IRole, IDepartment } from '@/types';
+import { postEntireRoles, postEntireDepartment, postEntireMenus } from '@/service/main/main'
+import type { IRole, IMenu, IDepartment } from '@/types'
 
 interface IMainStore {
 	entireRoles: IRole[]
-entireDepartments: IDepartment[]
+	entireDepartments: IDepartment[]
+	entireMenus: IMenu[]
 }
 
 const useMainStore = defineStore('main', {
 	state: (): IMainStore => ({
 		entireRoles: [],
-		entireDepartments: []
+		entireDepartments: [],
+		entireMenus: []
 	}),
 	actions: {
 		fetchEntireDataAction() {
-			getEntireRoles().then(res => {
-				console.log('role res:', res)
+			postEntireRoles().then(res => {
+				console.log('entire roles res:', res)
 				this.entireRoles = res.data.list
 			})
-			getEntireDepartment().then(res => {
-				console.log('department res:', res)
+			postEntireDepartment().then(res => {
+				console.log('entire departments res:', res)
 				this.entireDepartments = res.data.list
+			})
+			postEntireMenus().then(res => {
+				console.log('entire menus res:', res)
+				this.entireMenus = res.data.list
 			})
 		}
 	}

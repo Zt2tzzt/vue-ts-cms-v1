@@ -34,39 +34,8 @@ export interface IUserInfoResData {
 	}
 }
 
-export interface IUserMenuChild2 {
-	id: number
-	url: any
-	name: string
-	sort: any
-	type: 3
-	parentId: number
-	permission: string
-}
-
-export interface IUserMenuChild {
-	id: number
-	url: string
-	name: string
-	sort: number
-	type: 2
-	children?: Array<IUserMenuChild2>
-	parentId: number
-}
-
-export interface IUserMenuResData {
-	id: number
-	url: string
-	name: string
-	sort: number
-	type: 1
-	icon: string
-	children: Array<IUserMenuChild>
-}
 
 export interface IBreadcrumb {
-	name: string,
+	name: string
 	path: string
 }
-
-

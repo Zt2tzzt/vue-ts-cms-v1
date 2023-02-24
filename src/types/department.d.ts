@@ -1,7 +1,7 @@
-import { IQueryParam } from './global';
+import { IQueryFormItem,IQueryParam, IResponseListData } from './global';
 
 export interface IDepartmentCreateFormData {
-	name: ''
+	name: string
 	leader: string
 	parentId: number | ''
 }
@@ -16,6 +16,8 @@ export interface IDepartmentQueryFormData {
 
 export type IDepartmentQueryParam = IQueryParam & Partial<IDepartmentQueryFormData>
 
+export type IDepartmentQueryFormItem = IQueryFormItem<IDepartmentQueryFormData>
+
 export interface IDepartment {
 	id: number
 	name: string
@@ -24,4 +26,7 @@ export interface IDepartment {
 	updateAt: string
 	leader: string
 }
+
+export type IDepartmentsResult = IResponseListData<IDepartment>
+
 

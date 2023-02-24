@@ -1,5 +1,5 @@
 import { accountLoginRequest, getUserInfoById, getUserMenusByRoleId } from '@/service/login/login'
-import type { IAccount, IUserInfoResData, IUserMenuResData } from '@/types'
+import type { IAccount, IUserInfoResData, IMenuInRole } from '@/types'
 import { localCache } from '@/utils/cache'
 import { defineStore } from 'pinia'
 import { LOGIN_TOKEN, USER_INFO, USER_MENU } from '@/global/constance'
@@ -10,10 +10,10 @@ import useMainStore from '../main/main'
 interface ILoginState {
 	token: string
 	userInfo: IUserInfoResData | object
-	userMenus: IUserMenuResData[]
+	userMenus: IMenuInRole[]
 }
 
-const dynamicLoadingRoutes = (userMenus: IUserMenuResData[]) => {
+const dynamicLoadingRoutes = (userMenus: IMenuInRole[]) => {
 	const routes = mapMenusToRoutes(userMenus)
 	routes.forEach(route => router.addRoute('main', route))
 }

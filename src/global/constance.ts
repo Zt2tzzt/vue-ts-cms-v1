@@ -5,3 +5,4 @@ export const USER_MENU = 'login/userMenu'
 
 // api
 export const DEPARTMENT = 'department'
+export const ROLE = 'role'

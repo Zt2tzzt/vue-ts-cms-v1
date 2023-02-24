@@ -1,4 +1,4 @@
-import type { IAccount, ILoginResData, IUserInfoResData, IUserMenuResData, IResponse } from '@/types'
+import type { IAccount, ILoginResData, IUserInfoResData, IMenuInRole, IResponse } from '@/types'
 import ztRequest from '..'
 
 export const accountLoginRequest = (account: IAccount) =>
@@ -13,6 +13,6 @@ export const getUserInfoById = (id: number) =>
 	})
 
 export const getUserMenusByRoleId = (id: number) =>
-	ztRequest.get<IResponse<IUserMenuResData[]>>({
+	ztRequest.get<IResponse<IMenuInRole[]>>({
 		url: `/role/${id}/menu`
 	})

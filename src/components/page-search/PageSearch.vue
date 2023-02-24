@@ -1,23 +1,22 @@
 <script setup lang="ts">
 import type { ElForm } from 'element-plus'
 import { reactive, ref } from 'vue'
-import type { IDepartmentFormItem } from '@/views/main/system/department/config/search.config';
-import type { IDepartmentQueryFormData } from '@/types'
+import type { QueryFormItemType, QueryFormDataType } from '@/types'
 
-interface IProps {
+
+const props = defineProps<{
 	searchConfig: {
 		labelWidth?: string
-		formItems: IDepartmentFormItem[]
+		formItems: QueryFormItemType[]
 	}
-}
-const props = defineProps<IProps>()
+}>()
 const emits = defineEmits(['queryClick', 'resetClick'])
 
 // 初始化表单
 const initialForm = props.searchConfig.formItems.reduce((accumulate, item) => {
-	accumulate[item.prop] = item.initialvalue as keyof IDepartmentQueryFormData
+	accumulate[item.prop] = item.initialvalue as keyof QueryFormDataType
 	return accumulate
-}, {} as IDepartmentQueryFormData)
+}, {} as QueryFormDataType)
 const searchForm = reactive(initialForm)
 
 // 重置
@@ -60,18 +59,6 @@ const onQueryClick = () => {
 									end-placeholder="结束时间"
 								></el-date-picker>
 							</template>
-
-							<!-- <template v-if="item.type === 'select'">
-								<el-select
-									v-model="searchForm[item.prop]"
-									:placeholder="item.placeholder"
-									style="width: ;100%"
-								>
-									<template v-for="option in item.options" :key="option.value">
-										<el-option :label="option.label" :value="option.value"></el-option>
-									</template>
-								</el-select>
-							</template> -->
 
 						</el-form-item>
 					</el-col>

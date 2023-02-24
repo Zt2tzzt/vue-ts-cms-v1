@@ -110,20 +110,20 @@ const loadLocalRoutes = (): RouteRecordRaw[] => {
 src\utils\map-menu.ts
 
 ```typescript
-import type { IUserMenuResData, IUserMenuChild } from '@/types'
+import type { IMenuInRole, IMenuInRoleChild } from '@/types'
 
 /**
  * @description: 此函数用于：根据用户拥有的菜单，筛选出对应的本地路由（用于 loginStore 中，获取 userMenus 后，进行路由映射）。
  * @Author: ZeT1an
- * @param {IUserMenuResData[]} userMenu 用户菜单列表
+ * @param {IMenuInRole[]} userMenu 用户菜单列表
  * @return {RouteRecordRaw[]} 菜单映射后的路由列表
  */
-export const mapMenusToRoutes = (userMenu: IUserMenuResData[])： RouteRecordRaw[] => {
+export const mapMenusToRoutes = (userMenu: IMenuInRole[])： RouteRecordRaw[] => {
 	const localRoutes = loadLocalRoutes()
 
 	const routes: RouteRecordRaw[] = []
 
-	const _getRoute = (userMenu: IUserMenuResData[] | IUserMenuChild[]) => {
+	const _getRoute = (userMenu: IMenuInRole[] | IMenuInRoleChild[]) => {
 		userMenu.forEach(item => {
 			switch (item.type) {
 				case 1:
@@ -162,22 +162,22 @@ routes.forEach(route => router.addRoute('main', route))
 src\utils\map-menu.ts
 
 ```typescript
-import type { IUserMenuResData[], IUserMenuChild } from '@/types'
+import type { IMenuInRole[], IMenuInRoleChild } from '@/types'
 
 export let firstRoute: RouteRecordRaw // 用于保存第一个路由。
 
 /**
  * @description: 此函数用于：根据用户拥有的菜单，筛选出对应的本地路由（用于 loginStore 中，获取 userMenus 后，进行路由映射）。
  * @Author: ZeT1an
- * @param {IUserMenuResData[]} userMenu 用户菜单列表
+ * @param {IMenuInRole[]} userMenu 用户菜单列表
  * @return {RouteRecordRaw[]} 菜单映射后的路由列表
  */
-export const mapMenusToRoutes = (userMenu: IUserMenuResData[]) => {
+export const mapMenusToRoutes = (userMenu: IMenuInRole[]) => {
 	const localRoutes = loadLocalRoutes()
 
 	const routes: RouteRecordRaw[] = []
 
-	const _getRoute = (userMenu: IUserMenuResData[] | IUserMenuChild[]) => {
+	const _getRoute = (userMenu: IMenuInRole[] | IMenuInRoleChild[]) => {
 		userMenu.forEach(item => {
 			switch (item.type) {
 				case 1:
@@ -237,26 +237,26 @@ src\stores\login\login.ts
 
 ```typescript
 //...
-const dynamicLoadingRoutes = (userMenus: IUserMenuResData[]) => {
+const dynamicLoadingRoutes = (userMenus: IMenuInRole[]) => {
 	const routes = mapMenusToRoutes(userMenus)
 	routes.forEach(route => router.addRoute('main', route))
 }
 
 //...
 const actions = {
-  loadLocalCacheAction() {
-    // 页面载入、刷新，从缓存中加载数据
-    const token = localCache.getCache(LOGIN_TOKEN)
-    const userInfo = localCache.getCache(USER_INFO)
-    const userMenus = localCache.getCache(USER_MENU)
-    if (token && userInfo && userMenus) {
-      this.token = token
-      this.userInfo = userInfo
-      this.userMenus = userMenus
+	loadLocalCacheAction() {
+		// 页面载入、刷新，从缓存中加载数据
+		const token = localCache.getCache(LOGIN_TOKEN)
+		const userInfo = localCache.getCache(USER_INFO)
+		const userMenus = localCache.getCache(USER_MENU)
+		if (token && userInfo && userMenus) {
+			this.token = token
+			this.userInfo = userInfo
+			this.userMenus = userMenus
 
-      dynamicLoadingRoutes(userMenus)
-    }
-  }
+			dynamicLoadingRoutes(userMenus)
+		}
+	}
 }
 ```
 
@@ -308,19 +308,19 @@ app.use(router)
 src\utils\map-path.ts
 
 ```typescript
-import type { IUserMenuResData, IUserMenuChild, IBreadcrumb } from '@/types'
+import type { IMenuInRole, IMenuInRoleChild, IBreadcrumb } from '@/types'
 
 /**
  * @description: 此函数用于：根据当前路径，匹配用户菜单（用于 MainMenu.vue 中显示激活的菜单索引），
  * @Author: ZeT1an
  * @param {string} path 当前路径
- * @param {IUserMenuResData[]} userMenus 用户菜单列表
- * @return {IUserMenuChild | undefined} 激活的菜单，或者未匹配到/
+ * @param {IMenuInRole[]} userMenus 用户菜单列表
+ * @return {IMenuInRoleChild | undefined} 激活的菜单，或者未匹配到/
  */
 export const mapPathToMenu = (
 	path: string,
-	userMenus: IUserMenuResData[] | IUserMenuChild[],
-): IUserMenuChild | undefined => {
+	userMenus: IMenuInRole[] | IMenuInRoleChild[]
+): IMenuInRoleChild | undefined => {
 	for (const item of userMenus) {
 		switch (item.type) {
 			case 1:
@@ -361,15 +361,14 @@ src\utils\map-path.ts
  * @description: 此函数用于：根据当前路径，匹配用户菜单（用于 MainMenu.vue 中显示激活的菜单索引），
  * @Author: ZeT1an
  * @param {string} path 当前路径
- * @param {IUserMenuResData[]} userMenus 用户菜单列表
- * @return {IUserMenuChild | undefined} 激活的菜单，或者未匹配到/
+ * @param {IMenuInRole[]} userMenus 用户菜单列表
+ * @return {IMenuInRoleChild | undefined} 激活的菜单，或者未匹配到/
  */
 export const mapPathToMenu = (
 	path: string,
-	userMenus: IUserMenuResData[] | IUserMenuChild[],
+	userMenus: IMenuInRole[] | IMenuInRoleChild[],
 	breadcrumb?: IBreadcrumb[]
-): IUserMenuChild | undefined => {
-
+): IMenuInRoleChild | undefined => {
 	for (const item of userMenus) {
 		switch (item.type) {
 			case 1:
@@ -391,12 +390,12 @@ export const mapPathToMenu = (
  * @description: 此函数用于：根据当前路径，匹配面包屑（用于 MainHeader.vue 中显示面包屑）
  * @Author: ZeT1an
  * @param {string} path 当前路径
- * @param {IUserMenuResData[]} userMenus 用户菜单列表
+ * @param {IMenuInRole[]} userMenus 用户菜单列表
  * @return {IBreadcrumb[]} 面包屑列表
  */
 export const mapPathToBreadcrumb = (
 	path: string,
-	userMenus: IUserMenuResData[] | IUserMenuChild[]
+	userMenus: IMenuInRole[] | IMenuInRoleChild[]
 ): IBreadcrumb[] => {
 	const breadcrumbs: IBreadcrumb[] = []
 	mapPathToMenu(path, userMenus, breadcrumbs)

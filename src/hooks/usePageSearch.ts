@@ -1,11 +1,11 @@
 import { ref } from 'vue';
 import type PageContent from '@/components/page-content/PageContent.vue'
-import type { IDepartmentQueryFormData } from '@/types'
+import type { QueryFormDataType } from '@/types'
 
 const usePageSearch = () => {
 
 	const contentRef = ref<InstanceType<typeof PageContent>>()
-	const handleQueryClick = <T extends IDepartmentQueryFormData>(formData: T) => {
+	const handleQueryClick = <T extends QueryFormDataType>(formData: T) => {
 		contentRef.value?.fetchPageListData(formData)
 	}
 	const handleResetClick = () => {

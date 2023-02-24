@@ -356,17 +356,27 @@ const [modalRef, handleNewClick, handleEditClick] = usePageContent()
 
 
 
-再 Role 中，应用封装好的组件。编写配置文件。
+以 Role 页面为例，封装和完善高阶组件 `PageContent.vue` 和 `PageModal.vue`.
+
+## 1.Role 配置文件
+
+在 Role 中，应用封装好的组件。编写配置文件。
+
+src\views\main\system\role\config\search.config.ts
+
+src\views\main\system\role\config\contnt.config.ts
+
+src\views\main\system\role\config\modal.config.ts
 
 
 
+## 2.Menu 配置文件
 
+在 Menu 中，应用封装的组件，展示菜单。
 
-再 Menu 中，应用封装的组件，展示菜单。
+在 table 中实现行的展开。使用树形数据和懒加载。
 
-再 table 中实现行的展开。使用树形数据和懒加载。
-
-再 PageContent 中，为 el-table 设置 `row-key` 属性
+在 PageContent 中，为 el-table 设置 `row-key` 属性
 
 > 最好不要给 config 配置文件中的 iten 加属性 type，使用 v-bind 绑定属性对象时，会覆盖 UI 框架上的属性。
 
@@ -382,13 +392,15 @@ const [modalRef, handleNewClick, handleEditClick] = usePageContent()
 
 再 PageModal 中，传入的 Props 黎，新增 otherInfo 属性，将选中的菜单信息传入进去。并在创建角色时携带。
 
+> Vue 中 slotname 最好不要使用大写字母。
+
 
 
 在 Role 中，编辑时，发现菜单树是上次打开 Modal 时选择的（modal 组件没有被销毁。）。
 
 需要针对角色对应的菜单树进行回显：
 
-给 hook usePageModal 中传入一个回调函数 editCallback，将 menuList 传入其中。
+给 hook usePageContent 中传入一个回调函数 editCallback，将 menuList 传入其中。
 
 封装一个工具函数，将菜单（子菜单）映射出 Id 列表，使用递归。
 

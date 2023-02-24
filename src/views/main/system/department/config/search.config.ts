@@ -1,14 +1,7 @@
-import type { IDepartmentQueryFormData } from '@/types'
+import type { IDepartmentQueryFormItem  } from '@/types'
 
-export interface IDepartmentFormItem {
-	type: 'input' | 'date-picker' | 'select'
-	prop: keyof IDepartmentQueryFormData
-	label: string
-	placeholder?: string
-	initialvalue: IDepartmentQueryFormData[keyof IDepartmentQueryFormData]
-}
 
-const formItems: IDepartmentFormItem[] = [
+const formItems: IDepartmentQueryFormItem[] = [
 	{
 		type: 'input',
 		prop: 'name',

@@ -19,34 +19,34 @@
 import PageContent from '@/components/page-content/PageContent.vue'
 import PageModal from '@/components/page-modal/PageModal.vue'
 import PageSearch from '@/components/page-search/PageSearch.vue'
-import { computed, ref } from 'vue'
+import { computed } from 'vue'
 import searchConfig from './config/search.config'
 import contentConfig from './config/content.config'
 import modalConfig from './config/modal.config'
 import useMainStore from '@/stores/main/main'
 import usePageSearch from '@/hooks/usePageSearch'
 import usePageContent from '@/hooks/usePageContent'
-
+import type { HookFnType } from '@/types'
 
 // 获取 roles / departments 数据
 const modalConfigREf = computed(() => {
 
 	const mainStore = useMainStore()
-	const selectFormItem = modalConfig.formItems.find(item => item.prop === 'parentId')
+	const selectFormItem = modalConfig.formItems.find(item => {
+		item.type === 'select' && item.prop === 'parentId'
+	})
 
-	if (selectFormItem)	selectFormItem.options =  mainStore.entireDepartments.map(item => ({
+	if (selectFormItem && 'options' in selectFormItem)	selectFormItem.options =  mainStore.entireDepartments.map(item => ({
 		label: item.name, value: item.id
 	}))
 
 	return modalConfig
-
 })
 
 const [contentRef, handleQueryClick, handleResetClick] = usePageSearch()
 
 const [modalRef, handleNewClick, handleEditClick] = usePageContent()
 
-type HookFnType = (...args: any[]) => any
 
 </script>
 

@@ -1,12 +1,17 @@
 import ztRequest from '..'
-import type { IDepartmentsResult, IRoleSResult, IResponse } from '@/types'
+import type { IDepartmentsResult, IRoleSResult, IMenuResult, IResponse } from '@/types'
 
-export const getEntireRoles = () =>
+export const postEntireRoles = () =>
 	ztRequest.post<IResponse<IRoleSResult>>({
 		url: '/role/list'
 	})
 
-export const getEntireDepartment = () =>
+export const postEntireDepartment = () =>
 	ztRequest.post<IResponse<IDepartmentsResult>>({
 		url: '/department/list'
+	})
+
+export const postEntireMenus = () =>
+	ztRequest.post<IResponse<IMenuResult>>({
+		url: '/menu/list'
 	})

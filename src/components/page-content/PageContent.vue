@@ -4,7 +4,7 @@ import { storeToRefs } from 'pinia'
 import { formatUTC } from '@/utils/format'
 import { computed, ref } from 'vue'
 import type { IDepartment } from '@/types'
-import type { IDepartmentProp } from '@/views/main/system/department/config/content.config';
+import type { IContentProp } from '@/types';
 
 interface IProps {
 	contentConfig: {
@@ -13,7 +13,7 @@ interface IProps {
 			title: string
 			btnLabel: string
 		}
-		propList: IDepartmentProp[]
+		propList: IContentProp[]
 	}
 }
 const props = defineProps<IProps>()

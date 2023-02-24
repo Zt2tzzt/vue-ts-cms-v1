@@ -1,15 +1,18 @@
 <script setup lang="ts">
 import useLoginStore from '@/stores/login/login'
-import { useRoute, useRouter } from 'vue-router';
-import type { IUserMenuChild } from '@/types';
-import { computed, onMounted, ref } from 'vue';
-import { mapPathToMenu } from '@/utils/map-path';
+import { useRoute, useRouter } from 'vue-router'
+import type { IMenuInRoleChild } from '@/types'
+import { computed, onMounted, ref } from 'vue'
+import { mapPathToMenu } from '@/utils/map-path'
 
-withDefaults(defineProps<{
-	isFold: boolean
-}>(), {
-	isFold: false
-})
+withDefaults(
+	defineProps<{
+		isFold: boolean
+	}>(),
+	{
+		isFold: false
+	}
+)
 
 // 1.获取动态菜单
 const loginStore = useLoginStore()
@@ -17,7 +20,7 @@ const userMenu = loginStore.userMenus
 
 // 2.监听 item 点击，路由跳转
 const router = useRouter()
-const handleItemClick = (item: IUserMenuChild) => {
+const handleItemClick = (item: IMenuInRoleChild) => {
 	const url = item.url
 	router.push(url)
 }
@@ -27,7 +30,7 @@ const route = useRoute()
 const defaultActive = ref('-1')
 onMounted(() => {
 	const menu = mapPathToMenu(route.path, userMenu)
-	defaultActive.value = menu? menu.id + '' : '-1'
+	defaultActive.value = menu ? menu.id + '' : '-1'
 })
 /* const defaultActive = computed(() => {
 	const menu = mapPathToMenu(route.path, userMenu)
@@ -39,7 +42,7 @@ onMounted(() => {
 	<div class="main-menu">
 		<!-- logo -->
 		<div class="logo">
-			<img src="@/assets/img/logo.svg" alt="" >
+			<img src="@/assets/img/logo.svg" alt="" />
 			<h2 class="title" v-show="!isFold">ZT 后台管理系统</h2>
 		</div>
 
@@ -52,12 +55,9 @@ onMounted(() => {
 				active-text-color="#fff"
 				background-color="#001529"
 			>
-
 				<!-- 渲染整个菜单 -->
 				<template v-for="item of userMenu" :key="item.id">
-
 					<el-sub-menu :index="item.id + ''">
-
 						<template #title>
 							<el-icon>
 								<Component :is="item.icon.split('-icon-').pop()"></Component>
@@ -66,18 +66,12 @@ onMounted(() => {
 						</template>
 
 						<template v-for="subitem of item.children" :key="subitem.id">
-							<el-menu-item
-								:index="subitem.id + ''"
-								@click="handleItemClick(subitem)"
-							>
+							<el-menu-item :index="subitem.id + ''" @click="handleItemClick(subitem)">
 								{{ subitem.name }}
 							</el-menu-item>
 						</template>
-
 					</el-sub-menu>
-
 				</template>
-
 			</el-menu>
 		</div>
 	</div>

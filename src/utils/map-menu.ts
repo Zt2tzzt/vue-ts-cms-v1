@@ -1,4 +1,4 @@
-import type { IUserMenuResData, IUserMenuChild } from '@/types'
+import type { IMenuInRole, IMenuInRoleChild, IMenuInRoleChild2 } from '@/types'
 import type { RouteRecordRaw } from 'vue-router'
 
 /**
@@ -20,17 +20,17 @@ const loadLocalRoutes = (): RouteRecordRaw[] => {
 export let firstRoute: RouteRecordRaw
 
 /**
- * @description: 此函数用于：根据用户的用拥有的菜单，筛选出对应的本地路由（用于 loginStore 中，获取 userMenus 后，进行路由映射）。
+ * @description: 此函数用于：根据用户拥有的菜单，筛选出对应的本地路由（用于 loginStore 中，获取 userMenus 后，进行路由映射）。
  * @Author: ZeT1an
- * @param {IUserMenuResData[]} userMenu 用户菜单列表
+ * @param {IMenuInRole[]} userMenu 用户菜单列表
  * @return {RouteRecordRaw[]} 菜单映射后的路由列表
  */
-export const mapMenusToRoutes = (userMenu: IUserMenuResData[]): RouteRecordRaw[] => {
+export const mapMenusToRoutes = (userMenu: IMenuInRole[]): RouteRecordRaw[] => {
 	const localRoutes = loadLocalRoutes()
 
 	const routes: RouteRecordRaw[] = []
 
-	const _getRoute = (userMenu: IUserMenuResData[] | IUserMenuChild[]) => {
+	const _getRoute = (userMenu: IMenuInRole[] | IMenuInRoleChild[]) => {
 		userMenu.forEach(item => {
 			switch (item.type) {
 				case 1:
@@ -54,4 +54,27 @@ export const mapMenusToRoutes = (userMenu: IUserMenuResData[]): RouteRecordRaw[]
 	_getRoute(userMenu)
 
 	return routes
+}
+
+/**
+ * @description: 此函数用于：根据用户拥有的菜单，筛选出对应的权限 id（用于 Role 中，创建/编辑角色时，展示角色拥有的菜单）
+ * @Author: ZeT1an
+ * @param {IMenuInRole} menuList
+ * @return {*}
+ */
+export const mapMenusToIds = (menuList: IMenuInRole[]): number[] => {
+	const ids: number[] = []
+
+	const _getIds = (menuList: IMenuInRole[] | IMenuInRoleChild[] | IMenuInRoleChild2[]) => {
+		menuList.forEach(menu => {
+			if ('children' in menu && menu.children) {
+				_getIds(menu.children)
+			} else {
+				ids.push(menu.id)
+			}
+		});
+	}
+	_getIds(menuList)
+
+	return ids
 }
