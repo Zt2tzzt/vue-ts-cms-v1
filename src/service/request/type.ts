@@ -22,5 +22,3 @@ export interface ZTRequestConfig<T = AxiosResponse> extends AxiosRequestConfig {
 	interceptor?: ZTRequestInterceptor<T>
 	showLoading?: boolean
 }
-
-

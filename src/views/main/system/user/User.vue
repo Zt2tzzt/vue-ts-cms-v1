@@ -13,12 +13,12 @@
 <script setup lang="ts" name="user">
 import UserContent from './cpns/UserContent.vue'
 import UserSearch from './cpns/UserSearch.vue'
-import type { IUserQueryFormData, IUser } from '@/types'
+import type { IUserSearchFormData, IUser } from '@/types'
 import { ref } from 'vue'
 import UserModal from './cpns/UserModal.vue'
 
 const contentRef = ref<InstanceType<typeof UserContent>>()
-const handleQueryClick = (formData: IUserQueryFormData) => {
+const handleQueryClick = (formData: IUserSearchFormData) => {
 	contentRef.value?.fetchUserListData(formData)
 }
 const handleResetClick = () => {

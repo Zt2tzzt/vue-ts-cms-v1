@@ -1,4 +1,4 @@
-import type { IResponseListData,IQueryFormItem } from './global';
+import type { IResponseListData, ISearchFormItem } from './global'
 
 // 角色
 export interface IMenuInRoleChild2 {
@@ -40,8 +40,8 @@ export interface IRole {
 	menuList: Array<IMenuInRole>
 }
 
-// QueryFormData
-export interface IRoleQueryFormData {
+// SearchFormData
+export interface IRoleSearchFormData {
 	name: string
 	intro: string
 	createAt: string | string[]
@@ -53,7 +53,7 @@ export interface IRoleCreateFormData {
 	intro: string
 }
 
-export type IRoleQueryFormItem = IQueryFormItem<IRoleQueryFormData>
+export type IRoleSearchFormItem = ISearchFormItem<IRoleSearchFormData>
 
 export type IRoleEditFormData = Partial<IRoleCreateFormData>
 

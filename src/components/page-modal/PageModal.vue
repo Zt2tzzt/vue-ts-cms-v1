@@ -1,23 +1,16 @@
 <script setup lang="ts">
 import { computed, reactive, ref } from 'vue'
-import type { IModalFormItem } from '@/types'
+import type { IModalConfig } from '@/types'
 import useSystemStore from '@/stores/main/system/system'
 import type {
-	CreateFormType,
-	EditFormType,
+	CreateFormDataType,
+	EditFormDataType,
 	IModalFormItemGeneral,
 	IModalFormItemCustom
 } from '@/types'
 
 const props = defineProps<{
-	modalConfig: {
-		pageName: string
-		header: {
-			newBtnLabel: string
-			editBtnLabel: string
-		}
-		formItems: IModalFormItem[]
-	}
+	modalConfig: IModalConfig
 	otherInfo?: object
 }>()
 const pageName = computed(() => props.modalConfig.pageName)
@@ -30,7 +23,7 @@ const editId = ref(-1)
 const initialFormData = props.modalConfig.formItems.reduce((accumulate, item) => {
 	if ('prop' in item) accumulate[item.prop] = ''
 	return accumulate
-}, {} as any)
+}, {} as CreateFormDataType | EditFormDataType)
 const formData = reactive(initialFormData)
 
 interface OpenDialogParamType<T> {
@@ -48,7 +41,7 @@ const setModalVisible = <T extends { id: number }, F>({
 		// 编辑
 		Object.keys({ ...formData }).forEach(key => {
 			if (key in itemData) {
-				;(formData[key as keyof F] as any) = itemData[key as keyof T]
+				formData[key as keyof F] = itemData[key as keyof T]
 			}
 		})
 		editId.value = itemData.id
@@ -64,7 +57,6 @@ const setModalVisible = <T extends { id: number }, F>({
 // 点击“确认”
 const systemStore = useSystemStore()
 const onConfigClick = () => {
-
 	showdialog.value = false
 
 	let editFormData = { ...formData }
@@ -75,14 +67,14 @@ const onConfigClick = () => {
 
 	if (!isAdd.value && editId.value !== -1) {
 		// 编辑
-		systemStore.pathEditPageRecordByIdAction<EditFormType>(
+		systemStore.pathEditPageRecordByIdAction<EditFormDataType>(
 			pageName.value,
 			editId.value,
 			editFormData
 		)
 	} else {
 		// 新增
-		systemStore.postNewPageRecordAction<CreateFormType>(pageName.value, editFormData)
+		systemStore.postNewPageRecordAction<CreateFormDataType>(pageName.value, editFormData)
 	}
 }
 

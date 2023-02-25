@@ -1,5 +1,5 @@
-import type { IMenuInRoleChild2, IMenuInRoleChild, IMenuInRole } from './role';
-import type { IResponseListData } from './global';
+import type { IMenuInRoleChild2, IMenuInRoleChild, IMenuInRole } from './role'
+import type { IResponseListData } from './global'
 
 export interface IMenuChild2 extends IMenuInRoleChild2 {
 	createAt: string
@@ -19,4 +19,6 @@ export interface IMenu extends IMenuInRole {
 	children: Array<IMenuChild>
 }
 
-export interface IMenuResult { list: Array<IMenu> }
+export interface IMenuResult {
+	list: Array<IMenu>
+}

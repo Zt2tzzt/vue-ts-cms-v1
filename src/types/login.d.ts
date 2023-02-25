@@ -34,7 +34,6 @@ export interface IUserInfoResData {
 	}
 }
 
-
 export interface IBreadcrumb {
 	name: string
 	path: string

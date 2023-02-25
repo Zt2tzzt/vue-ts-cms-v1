@@ -18,4 +18,3 @@ import LoginPanel from './cpns/LoginPanel.vue'
 	background-image: url(@/assets/img/login-bg.svg);
 }
 </style>
-

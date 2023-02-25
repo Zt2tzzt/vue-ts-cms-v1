@@ -24,7 +24,7 @@ src\views\main\system\user\cpns\UserContent.vue
 
 使用 `<el-table-column>` 的作用域插槽。
 
-使用 *day.js* 和其中的 *utc* 插件，将零时区转成东八区时间。
+使用 _day.js_ 和其中的 _utc_ 插件，将零时区转成东八区时间。
 
 src\utils\format.ts
 
@@ -90,7 +90,7 @@ const fetchUserListData = (formatData: any = {}) => {
 	// 1.获取 offset 和 limit
 	const limit = pageSize.value
 	const offset = (currentPage.value - 1) * limit
-	const queryParam = {size: limit, offset}
+	const queryParam = { size: limit, offset }
 
 	// 2.发送请求
 	systemStore.postUsersAction({ ...queryParam, ...formatData })
@@ -104,22 +104,20 @@ const handleSizeChange = () => {
 const handleCurrentChange = () => {
 	fetchUserListData()
 }
-
-
 </script>
 
 <template>
-<!--...--->
-<el-pagination
-  v-model:current-page="currentPage"
-  v-model:page-size="pageSize"
-  :page-sizes="[10, 20, 30]"
-  layout="total, sizes, prev, pager, next, jumper"
-  :total="usersTotalCount"
-  @size-change="handleSizeChange"
-  @current-change="handleCurrentChange"
-></el-pagination>
-<!--...--->
+	<!--...--->
+	<el-pagination
+		v-model:current-page="currentPage"
+		v-model:page-size="pageSize"
+		:page-sizes="[10, 20, 30]"
+		layout="total, sizes, prev, pager, next, jumper"
+		:total="usersTotalCount"
+		@size-change="handleSizeChange"
+		@current-change="handleCurrentChange"
+	></el-pagination>
+	<!--...--->
 </template>
 ```
 
@@ -166,7 +164,7 @@ const onResetClick = () => {
 	emits('resetClick')
 }
 const onQueryClick = () => {
-	emits('queryClick', {...searchForm})
+	emits('queryClick', { ...searchForm })
 }
 ```
 
@@ -204,18 +202,13 @@ const onDeleteClick = (id: number) => {
 </script>
 
 <template>
-<!--...-->
-<el-table-column align="center" label="操作" width="250" #default="scope">
-  <el-button size="small" icon="Edit" type="primary" text>编辑</el-button>
-  <el-button
-    size="small"
-    icon="Delete"
-    type="danger"
-    text
-    @click="onDeleteClick(scope.row.id)"
-    >删除</el-button
-  >
-</el-table-column>
+	<!--...-->
+	<el-table-column align="center" label="操作" width="250" #default="scope">
+		<el-button size="small" icon="Edit" type="primary" text>编辑</el-button>
+		<el-button size="small" icon="Delete" type="danger" text @click="onDeleteClick(scope.row.id)"
+			>删除</el-button
+		>
+	</el-table-column>
 </template>
 ```
 
@@ -257,7 +250,7 @@ const onNewclick = () => {
 </script>
 
 <template>
-  <el-button type="primary" @click="onNewclick">新建用户</el-button>
+	<el-button type="primary" @click="onNewclick">新建用户</el-button>
 </template>
 ```
 
@@ -271,7 +264,7 @@ const handleNewClick = () => {
 </script>
 
 <template>
-  <UserModal ref="modalRef"></UserModal>
+	<UserModal ref="modalRef"></UserModal>
 </template>
 ```
 
@@ -293,17 +286,15 @@ defineExpose({
 </script>
 
 <template>
-
-<el-dialog
-  v-model="showdialog"
-  :title="isAdd ? '新建用户' : '修改用户'"
-  width="30%"
-  destroy-on-close
-  center
->
-  <!--...-->
-</el-dialog>
-
+	<el-dialog
+		v-model="showdialog"
+		:title="isAdd ? '新建用户' : '修改用户'"
+		width="30%"
+		destroy-on-close
+		center
+	>
+		<!--...-->
+	</el-dialog>
 </template>
 ```
 
@@ -386,13 +377,13 @@ const onConfigClick = () => {
 		// 编辑
 	} else {
 		// 新增
-		systemStore.postNewUserAction({...formData})
+		systemStore.postNewUserAction({ ...formData })
 	}
 }
 </script>
 
 <template>
-  <el-button type="primary" @click="onConfigClick"> 确定 </el-button>
+	<el-button type="primary" @click="onConfigClick"> 确定 </el-button>
 </template>
 ```
 
@@ -421,7 +412,9 @@ src\views\main\system\user\cpns\UserContent.vue
 
 ```vue
 <template>
-  <el-button size="small" icon="Edit" type="primary" text @click="onEditClick(scope.row)">编辑</el-button>
+	<el-button size="small" icon="Edit" type="primary" text @click="onEditClick(scope.row)"
+		>编辑</el-button
+	>
 </template>
 
 <script>
@@ -435,16 +428,20 @@ src\views\main\system\user\User.vue
 
 ```vue
 <template>
-  <!--...--->
-  <UserContent ref="contentRef" @new-click="handleNewClick" @edit-click="handleEditClick"></UserContent>
-  <UserModal ref="modalRef"></UserModal>
+	<!--...--->
+	<UserContent
+		ref="contentRef"
+		@new-click="handleNewClick"
+		@edit-click="handleEditClick"
+	></UserContent>
+	<UserModal ref="modalRef"></UserModal>
 </template>
 
 <script setup lang="ts" name="user">
 //...
 const modalRef = ref<InstanceType<typeof UserModal>>()
 const handleEditClick = (itemData: IUser) => {
-	modalRef.value?.setModalVisible({isNew: false, itemData})
+	modalRef.value?.setModalVisible({ isNew: false, itemData })
 }
 </script>
 ```
@@ -459,20 +456,20 @@ src\views\main\system\user\cpns\UserModal.vue
 //...
 
 // 设置 dialog 是否显示
-const setModalVisible = ({isNew = true, itemData}: OpenDialogParamType) => {
+const setModalVisible = ({ isNew = true, itemData }: OpenDialogParamType) => {
 	showdialog.value = true
 	isAdd.value = isNew
 	if (!isNew && itemData) {
 		// 编辑
-		Object.keys({...formData}).forEach((key) => {
+		Object.keys({ ...formData }).forEach(key => {
 			if (key in itemData) {
-				(formData[key as keyof IUserCreateFormData] as any) = itemData[key as keyof IUser]
+				;(formData[key as keyof IUserCreateFormData] as any) = itemData[key as keyof IUser]
 			}
 		})
 		editId.value = itemData.id
 	} else {
 		// 新建
-		Object.keys({...formData}).forEach(key => {
+		Object.keys({ ...formData }).forEach(key => {
 			formData[key as keyof IUserCreateFormData] = ''
 		})
 		editId.value = -1
@@ -487,11 +484,11 @@ const onConfigClick = () => {
 	showdialog.value = false
 	if (!isAdd.value && editId.value !== -1) {
 		// 编辑
-		const {password, ...editFormData} = formData
+		const { password, ...editFormData } = formData
 		systemStore.pathEditUserByIdAction(editId.value, editFormData)
 	} else {
 		// 新增
-		systemStore.postNewUserAction({...formData})
+		systemStore.postNewUserAction({ ...formData })
 	}
 }
 
@@ -511,12 +508,12 @@ defineExpose({
 for...in
 
 ```typescript
-function print(obj:Person){
-  let key: keyof Person;
-  for (key in obj) {
-    // ✅
-    console.log(key, obj[key].toUpperCase());
-  }
+function print(obj: Person) {
+	let key: keyof Person
+	for (key in obj) {
+		// ✅
+		console.log(key, obj[key].toUpperCase())
+	}
 }
 ```
 
@@ -524,10 +521,10 @@ Object.keys
 
 ```typescript
 function print(obj: Person) {
-  Object.keys(obj).forEach((k) => {
-    // ...
-    console.log(k, obj[k as keyof Person].toUpperCase());
-  });
+	Object.keys(obj).forEach(k => {
+		// ...
+		console.log(k, obj[k as keyof Person].toUpperCase())
+	})
 }
 ```
 
@@ -540,8 +537,6 @@ export const getKeysFronObj = <T>(obj: T) => Object.keys(obj) as Array<keyof T>
 #### 1.箭头函数的泛型（补充）
 
 写在函数参数的前面，见上面的例子。
-
-
 
 # 二、Department 页面
 
@@ -594,32 +589,32 @@ src\stores\main\system\system.ts
 ```typescript
 // 通用的封装
 const actions = {
-  postPageListAction<T>(pageName: string, queryParam: T) {
-    console.log(pageName, 'queryParam:', queryParam)
-    postPageList<T, IResponseListData>(pageName, queryParam).then(res => {
-      console.log(pageName, 'res:', res)
-      this.pageList = res.data.list
-      this.pageTotalCount = res.data.totalCount
-    })
-  },
-  deletePageByIdAction(pageName: string, id: number) {
-    deletePageById(pageName, id).then(res => {
-      console.log(pageName, 'delete res:', res)
-      this.postPageListAction(pageName, { offset: 0, size: 10 })
-    })
-  },
-  postNewPageRecordAction<T>(pageName: string, record: T) {
-    postNewPageRecord(pageName, record).then(res => {
-      console.log(pageName, 'add res:', res)
-      this.postPageListAction(pageName, { offset: 0, size: 10 })
-    })
-  },
-  pathEditPageRecordByIdAction<T>(pageName: string, id: number, record: T) {
-    pathEditPageRecordById(pageName, id, record).then(res => {
-      console.log(pageName, 'edit res:', res)
-      this.postPageListAction(pageName, { offset: 0, size: 10 })
-    })
-  }
+	postPageListAction<T>(pageName: string, queryParam: T) {
+		console.log(pageName, 'queryParam:', queryParam)
+		postPageList<T, IResponseListData>(pageName, queryParam).then(res => {
+			console.log(pageName, 'res:', res)
+			this.pageList = res.data.list
+			this.pageTotalCount = res.data.totalCount
+		})
+	},
+	deletePageByIdAction(pageName: string, id: number) {
+		deletePageById(pageName, id).then(res => {
+			console.log(pageName, 'delete res:', res)
+			this.postPageListAction(pageName, { offset: 0, size: 10 })
+		})
+	},
+	postNewPageRecordAction<T>(pageName: string, record: T) {
+		postNewPageRecord(pageName, record).then(res => {
+			console.log(pageName, 'add res:', res)
+			this.postPageListAction(pageName, { offset: 0, size: 10 })
+		})
+	},
+	pathEditPageRecordByIdAction<T>(pageName: string, id: number, record: T) {
+		pathEditPageRecordById(pageName, id, record).then(res => {
+			console.log(pageName, 'edit res:', res)
+			this.postPageListAction(pageName, { offset: 0, size: 10 })
+		})
+	}
 }
 ```
 
@@ -648,7 +643,7 @@ const onQueryClick = () => {
 src\views\main\system\department\cpns\PageContent.vue
 
 ```typescript
-const fetchPageListData = (formatData: IDepartmentQueryFormData | object = {}) => {
+const fetchPageListData = (formatData: IDepartmentSearchFormData | object = {}) => {
 	// 1.获取 offset 和 limit
 	const limit = pageSize.value
 	const offset = (currentPage.value - 1) * limit
@@ -698,11 +693,15 @@ const onConfigClick = () => {
 	showdialog.value = false
 	if (!isAdd.value && editId.value !== -1) {
 		// 编辑
-		const { ...editFormData} = formData
-		systemStore.pathEditPageRecordByIdAction<IDepartmentEditFormData>(DEPARTMENT, editId.value, editFormData)
+		const { ...editFormData } = formData
+		systemStore.pathEditPageRecordByIdAction<IDepartmentEditFormData>(
+			DEPARTMENT,
+			editId.value,
+			editFormData
+		)
 	} else {
 		// 新增
-		systemStore.postNewPageRecordAction<IDepartmentCreateFormData>(DEPARTMENT, {...formData})
+		systemStore.postNewPageRecordAction<IDepartmentCreateFormData>(DEPARTMENT, { ...formData })
 	}
 }
 ```
@@ -716,18 +715,18 @@ const onConfigClick = () => {
 src\views\main\system\department\config\search-config.ts
 
 ```typescript
-import type { IDepartmentQueryFormData } from '@/types'
+import type { IDepartmentSearchFormData } from '@/types'
 
 interface IDepartmentFormItem {
 	type: 'input' | 'date-picker' | 'select'
-	prop: keyof IDepartmentQueryFormData
+	prop: keyof IDepartmentSearchFormData
 	label: string
 	placeholder?: string
-	initialvalue: IDepartmentQueryFormData[keyof IDepartmentQueryFormData]
+	initialvalue: IDepartmentSearchFormData[keyof IDepartmentSearchFormData]
 }
 
 export interface IDepartmentSearchConfig {
-  formItems: Array<IDepartmentFormItem>
+	formItems: Array<IDepartmentFormItem>
 }
 
 const searchConfig: IDepartmentSearchConfig = {
@@ -799,11 +798,9 @@ const onQueryClick = () => {
 		<!-- 表单 -->
 		<el-form :model="searchForm" ref="formRef" label-width="80px" size="large">
 			<el-row :gutter="20">
-
 				<template v-for="item of searchConfig.formItems" :key="item.prop">
 					<el-col :span="8">
 						<el-form-item :label="item.label" :prop="item.prop">
-
 							<template v-if="item.type === 'input'">
 								<el-input
 									v-model="searchForm[item.prop]"
@@ -832,7 +829,6 @@ const onQueryClick = () => {
 									</template>
 								</el-select>
 							</template>
-
 						</el-form-item>
 					</el-col>
 				</template>
@@ -854,12 +850,11 @@ const onQueryClick = () => {
 
 ```typescript
 interface Student {
-   name: string;
-   age: number;
+	name: string
+	age: number
 }
 type propTypes = Student[keyof Student]
 ```
-
 
 # 三、Role 页面（简单搭建）
 
@@ -869,26 +864,26 @@ src\views\main\system\role\config\search.config.ts
 
 ```typescript
 const searchConfig = {
-  formItems: [
-    {
-      type: 'input',
-      prop: 'name',
-      label: '角色名称',
-      placeholder: '请输入查询的角色名称',
-      initialValue: 'abc'
-    },
-    {
-      type: 'input',
-      prop: 'leader',
-      label: '权限介绍',
-      placeholder: '请输入查询的权限介绍'
-    },
-    {
-      type: 'date-picker',
-      prop: 'createAt',
-      label: '创建时间'
-    }
-  ]
+	formItems: [
+		{
+			type: 'input',
+			prop: 'name',
+			label: '角色名称',
+			placeholder: '请输入查询的角色名称',
+			initialValue: 'abc'
+		},
+		{
+			type: 'input',
+			prop: 'leader',
+			label: '权限介绍',
+			placeholder: '请输入查询的权限介绍'
+		},
+		{
+			type: 'date-picker',
+			prop: 'createAt',
+			label: '创建时间'
+		}
+	]
 }
 
 export default searchConfig
@@ -898,9 +893,9 @@ src\views\main\system\role\role.vue
 
 ```vue
 <template>
-  <div class="role">
-    <page-search :search-config="searchConfig" />
-  </div>
+	<div class="role">
+		<page-search :search-config="searchConfig" />
+	</div>
 </template>
 
 <script setup lang="ts">

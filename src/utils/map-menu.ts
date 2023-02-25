@@ -72,7 +72,7 @@ export const mapMenusToIds = (menuList: IMenuInRole[]): number[] => {
 			} else {
 				ids.push(menu.id)
 			}
-		});
+		})
 	}
 	_getIds(menuList)
 

@@ -3,7 +3,7 @@ import { reactive, ref } from 'vue'
 import type { IUserCreateFormData, IUser } from '@/types'
 import useMainStore from '@/stores/main/main'
 import useSystemStore from '@/stores/main/system/system'
-import { storeToRefs } from 'pinia';
+import { storeToRefs } from 'pinia'
 
 const showdialog = ref(false)
 const isAdd = ref(true) // 新建：true；修改：false
@@ -19,27 +19,26 @@ const formData = reactive<IUserCreateFormData>({
 	departmentId: ''
 })
 
-
 type OpenDialogParamType = {
 	isNew?: boolean
 	itemData?: IUser
 }
 
 // 设置 dialog 是否显示
-const setModalVisible = ({isNew = true, itemData}: OpenDialogParamType) => {
+const setModalVisible = ({ isNew = true, itemData }: OpenDialogParamType) => {
 	showdialog.value = true
 	isAdd.value = isNew
 	if (!isNew && itemData) {
 		// 编辑
-		Object.keys({...formData}).forEach((key) => {
+		Object.keys({ ...formData }).forEach(key => {
 			if (key in itemData) {
-				(formData[key as keyof IUserCreateFormData] as any) = itemData[key as keyof IUser]
+				;(formData[key as keyof IUserCreateFormData] as any) = itemData[key as keyof IUser]
 			}
 		})
 		editId.value = itemData.id
 	} else {
 		// 新建
-		Object.keys({...formData}).forEach(key => {
+		Object.keys({ ...formData }).forEach(key => {
 			formData[key as keyof IUserCreateFormData] = ''
 		})
 		editId.value = -1
@@ -56,11 +55,11 @@ const onConfigClick = () => {
 	showdialog.value = false
 	if (!isAdd.value && editId.value !== -1) {
 		// 编辑
-		const {password, ...editFormData} = formData
+		const { password, ...editFormData } = formData
 		systemStore.pathEditUserByIdAction(editId.value, editFormData)
 	} else {
 		// 新增
-		systemStore.postNewUserAction({...formData})
+		systemStore.postNewUserAction({ ...formData })
 	}
 }
 
@@ -93,22 +92,14 @@ defineExpose({
 						<el-input v-model="formData.cellphone" placeholder="请输入手机号码"></el-input>
 					</el-form-item>
 					<el-form-item label="选择角色" prop="roleId">
-						<el-select
-							v-model="formData.roleId"
-							placeholder="请选择角色"
-							style="width: 100%"
-						>
+						<el-select v-model="formData.roleId" placeholder="请选择角色" style="width: 100%">
 							<template v-for="item of entireRoles" :key="item.id">
 								<el-option :label="item.name" :value="item.id"></el-option>
 							</template>
 						</el-select>
 					</el-form-item>
 					<el-form-item label="选择部门" prop="departmentId">
-						<el-select
-							v-model="formData.departmentId"
-							placeholder="请选择部门"
-							style="width: 100%"
-						>
+						<el-select v-model="formData.departmentId" placeholder="请选择部门" style="width: 100%">
 							<template v-for="item of entireDepartments" :key="item.id">
 								<el-option :label="item.name" :value="item.id"></el-option>
 							</template>

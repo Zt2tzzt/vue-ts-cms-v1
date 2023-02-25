@@ -3,7 +3,7 @@ import useSystemStore from '@/stores/main/system/system'
 import { storeToRefs } from 'pinia'
 import { formatUTC } from '@/utils/format'
 import { ref } from 'vue'
-import type { IUserQueryFormData, IUser } from '@/types'
+import type { IUserSearchFormData, IUser } from '@/types'
 
 const emits = defineEmits(['newClick', 'editClick'])
 
@@ -13,7 +13,7 @@ const { users, usersTotalCount } = storeToRefs(systemStore)
 const currentPage = ref(1)
 const pageSize = ref(10)
 
-const fetchUserListData = (formatData: IUserQueryFormData | object = {}) => {
+const fetchUserListData = (formatData: IUserSearchFormData | object = {}) => {
 	// 1.获取 offset 和 limit
 	const limit = pageSize.value
 	const offset = (currentPage.value - 1) * limit
@@ -51,7 +51,6 @@ defineExpose({
 
 <template>
 	<div class="user-content">
-
 		<!-- 头部 -->
 		<div class="header">
 			<h3 class="title">用户列表</h3>
@@ -90,7 +89,9 @@ defineExpose({
 					</template>
 				</el-table-column>
 				<el-table-column align="center" label="操作" width="250" #default="scope">
-					<el-button size="small" icon="Edit" type="primary" text @click="onEditClick(scope.row)">编辑</el-button>
+					<el-button size="small" icon="Edit" type="primary" text @click="onEditClick(scope.row)"
+						>编辑</el-button
+					>
 					<el-button
 						size="small"
 						icon="Delete"
@@ -115,7 +116,6 @@ defineExpose({
 				@current-change="onCurrentChange"
 			></el-pagination>
 		</div>
-		
 	</div>
 </template>
 

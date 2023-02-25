@@ -4,19 +4,11 @@ import { storeToRefs } from 'pinia'
 import { formatUTC } from '@/utils/format'
 import { computed, ref } from 'vue'
 import type { IDepartment } from '@/types'
-import type { IContentProp } from '@/types';
+import type { IContentConfig } from '@/types'
 
-interface IProps {
-	contentConfig: {
-		pageName: string
-		header?: {
-			title: string
-			btnLabel: string
-		}
-		propList: IContentProp[]
-	}
-}
-const props = defineProps<IProps>()
+const props = defineProps<{
+	contentConfig: IContentConfig
+}>()
 const emits = defineEmits(['newClick', 'editClick'])
 const pageName = computed(() => props.contentConfig.pageName)
 
@@ -83,11 +75,15 @@ defineExpose({
 
 		<!-- 列表 -->
 		<div class="table">
-			<el-table :data="pageList" stripe border style="width: 100%">
-
+			<el-table
+				:data="pageList"
+				stripe
+				border
+				style="width: 100%"
+				v-bind="contentConfig?.childrenTree"
+			>
 				<template v-for="item of contentConfig.propList" :key="item.prop">
-
-					<!-- 很多页面都有的列。分情况处理 -->
+					<!-- 处理 timer、handler 列 -->
 					<template v-if="item.gener === 'timer'">
 						<el-table-column align="center" v-bind="item" #default="scope">
 							{{ formatUTC(scope.row.createAt) }}
@@ -119,9 +115,7 @@ defineExpose({
 					<template v-else>
 						<el-table-column align="center" v-bind="item"></el-table-column>
 					</template>
-
 				</template>
-
 			</el-table>
 		</div>
 

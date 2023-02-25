@@ -1,16 +1,16 @@
 import type {
 	IDepartment,
-	IDepartmentQueryFormData,
+	IDepartmentSearchFormData,
 	IDepartmentCreateFormData,
 	IDepartmentEditFormDataIRole,
-	IDepartmentQueryFormItem
+	IDepartmentSearchFormItem
 } from './department'
 import type {
 	IRole,
-	IRoleQueryFormData,
+	IRoleSearchFormData,
 	IRoleCreateFormData,
 	IRoleEditFormData,
-	IRoleQueryFormItem
+	IRoleSearchFormItem
 } from './role'
 
 // 查询
@@ -29,8 +29,15 @@ export interface IResponse<T> {
 	data: T
 }
 
+// itemType, CreateFormDataType, EditFormDataType
+export type ItemType = IDepartment | IRole
+export type CreateFormDataType = IDepartmentCreateFormData & IRoleCreateFormData
+export type EditFormDataType = IDepartmentEditFormData & IRoleEditFormData
+export type SearchFormDataType = IDepartmentSearchFormData & IRoleSearchFormData
+export type SearchFormItemType = IRoleSearchFormItem | IDepartmentSearchFormItem
+
 // PageSearch 配置文件
-export interface IQueryFormItem<T> {
+export interface ISearchFormItem<T> {
 	type: 'input' | 'date-picker' | 'select'
 	prop: keyof T
 	label: string
@@ -38,29 +45,41 @@ export interface IQueryFormItem<T> {
 	initialvalue: T[keyof T]
 }
 
+export interface ISearchConfig {
+	labelWidth?: string
+	formItems: SearchFormItemType[]
+}
+
 // PageContent 配置文件
 export interface IContentProp {
-	type?: string
 	label: string
 	width?: string
 	prop?: string
-	gener?: string
+	type?: 'selection' | 'index'
+	gener?: 'handler' | 'timer' | 'custom'
 }
 
-// HookFnType
-export type HookFnType = (...args: any[]) => any
+export interface IContentConfig {
+	pageName: string
+	header: {
+		title: string
+		btnLabel: string
+	}
+	propList: Array<IContentProp>
+	// 子树
+	childrenTree?: {
+		rowKey: string
+		treeProps: {
+			children: string
+		}
+	}
+}
 
-// itemType, CreateFormType, EditFormType
-export type ItemType = IDepartment | IRole
-export type CreateFormType = IDepartmentCreateFormData & IRoleCreateFormData
-export type EditFormType = IDepartmentEditFormData & IRoleEditFormData
-export type QueryFormDataType = IDepartmentQueryFormData & IRoleQueryFormData
-export type QueryFormItemType = IRoleQueryFormItem | IDepartmentQueryFormItem
-
+// PageModal 配置文件
 export interface IModalFormItemGeneral {
 	type: string
 	label: string
-	prop: keyof CreateFormType
+	prop: keyof CreateFormDataType
 	placeholder: string
 	options?: Array<{ label: string; value: number }>
 }
@@ -70,5 +89,16 @@ export interface IModalFormItemCustom {
 	slotname?: string
 }
 
-// PageModal 配置文件
 export type IModalFormItem = IModalFormItemGeneral | IModalFormItemCustom
+
+export interface IModalConfig {
+	pageName: string
+	header: {
+		newBtnLabel: string
+		editBtnLabel: string
+	}
+	formItems: IModalFormItem[]
+}
+
+// HookFnType
+export type HookFnType = (...args: any[]) => any

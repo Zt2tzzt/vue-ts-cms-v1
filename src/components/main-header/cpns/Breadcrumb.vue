@@ -22,5 +22,4 @@ const breadcrumbs = computed(() => mapPathToBreadcrumb(route.path, loginStore.us
 	</div>
 </template>
 
-<style scoped lang="less">
-</style>
+<style scoped lang="less"></style>

@@ -1,11 +1,11 @@
 <script setup lang="ts">
 import type { ElForm } from 'element-plus'
 import { reactive, ref } from 'vue'
-import type { IUserQueryFormData } from '@/types'
+import type { IUserSearchFormData } from '@/types'
 
 const emits = defineEmits(['queryClick', 'resetClick'])
 
-const searchForm = reactive<IUserQueryFormData>({
+const searchForm = reactive<IUserSearchFormData>({
 	name: '',
 	realname: '',
 	cellphone: '',
@@ -26,7 +26,6 @@ const onQueryClick = () => {
 
 <template>
 	<div class="user-search">
-		
 		<!-- 表单 -->
 		<el-form :model="searchForm" ref="formRef" label-width="80px" size="large">
 			<el-row :gutter="20">
@@ -76,7 +75,6 @@ const onQueryClick = () => {
 			<el-button icon="Refresh" @click="onResetClick">重置</el-button>
 			<el-button icon="Search" type="primary" @click="onQueryClick">查询</el-button>
 		</div>
-
 	</div>
 </template>
 

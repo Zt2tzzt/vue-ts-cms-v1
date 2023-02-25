@@ -40,7 +40,7 @@ import { nextTick, ref } from 'vue'
 import PageModal from '@/components/page-modal/PageModal.vue'
 import modalConfig from './config/modal.config'
 import type { ElTree } from 'element-plus'
-import { mapMenusToIds } from '@/utils/map-menu';
+import { mapMenusToIds } from '@/utils/map-menu'
 
 const mainStore = useMainStore()
 const { entireMenus } = storeToRefs(mainStore)
@@ -66,5 +66,4 @@ const [contentRef, handleQueryClick, handleResetClick] = usePageSearch()
 const [modalRef, handleNewClick, handleEditClick] = usePageContent(editCallback)
 </script>
 
-<style scoped>
-</style>
+<style scoped></style>

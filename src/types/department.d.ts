@@ -1,4 +1,4 @@
-import { IQueryFormItem,IQueryParam, IResponseListData } from './global';
+import { ISearchFormItem, IQueryParam, IResponseListData } from './global'
 
 export interface IDepartmentCreateFormData {
 	name: string
@@ -8,15 +8,15 @@ export interface IDepartmentCreateFormData {
 
 export type IDepartmentEditFormData = Partial<IDepartmentCreateFormData>
 
-export interface IDepartmentQueryFormData {
+export interface IDepartmentSearchFormData {
 	name: string
 	leader: string
 	createAt: string | string[]
 }
 
-export type IDepartmentQueryParam = IQueryParam & Partial<IDepartmentQueryFormData>
+export type IDepartmentQueryParam = IQueryParam & Partial<IDepartmentSearchFormData>
 
-export type IDepartmentQueryFormItem = IQueryFormItem<IDepartmentQueryFormData>
+export type IDepartmentSearchFormItem = ISearchFormItem<IDepartmentSearchFormData>
 
 export interface IDepartment {
 	id: number
@@ -28,5 +28,3 @@ export interface IDepartment {
 }
 
 export type IDepartmentsResult = IResponseListData<IDepartment>
-
-

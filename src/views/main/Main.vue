@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import MainMenu from '@/components/main-menu/MainMenu.vue';
-import MainHeader from '@/components/main-header/MainHeader.vue';
-import { ref } from 'vue';
+import MainMenu from '@/components/main-menu/MainMenu.vue'
+import MainHeader from '@/components/main-header/MainHeader.vue'
+import { ref } from 'vue'
 
 const isFold = ref(false)
 const handleFoldChange = (flag: boolean) => {
@@ -44,7 +44,7 @@ const handleFoldChange = (flag: boolean) => {
 
 		scrollbar-width: none; /* firefox */
 		-ms-overflow-style: none; /* IE */
-		
+
 		transition: width 0.3s ease;
 
 		&::-webkit-scrollbar {

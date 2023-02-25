@@ -36,7 +36,4 @@ class Cache {
 const localCache = new Cache(CacheType.LOCAL)
 const sessionCache = new Cache(CacheType.SESSION)
 
-export {
-	localCache,
-	sessionCache
-}
+export { localCache, sessionCache }

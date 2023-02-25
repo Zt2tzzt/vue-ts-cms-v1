@@ -1,38 +1,37 @@
-import { IQueryParam } from './global';
+import { IQueryParam } from './global'
 
 interface IUserFormDataBasic {
-  name: string
-  realname: string
-  cellphone: number | ''
+	name: string
+	realname: string
+	cellphone: number | ''
 }
 
 interface IUserRoleAndDepartment {
 	roleId: number | ''
-  departmentId: number | ''
+	departmentId: number | ''
 }
 
 export interface IUserCreateFormData extends IUserFormDataBasic, IUserRoleAndDepartment {
-  password: string
+	password: string
 }
 
 export type IUserEditFormData = Partial<IUserFormDataBasic & IUserRoleAndDepartment>
 
-export interface IUserQueryFormData extends IUserFormDataBasic {
+export interface IUserSearchFormData extends IUserFormDataBasic {
 	enable: number
 	createAt: string | string[]
 }
 
-type IUserQueryFormDataPartial = Partial<IUserQueryFormData>
+type IUserSearchFormDataPartial = Partial<IUserSearchFormData>
 
-export type IUserQueryParam = IQueryParam & IUserQueryFormDataPartial
+export type IUserQueryParam = IQueryParam & IUserSearchFormDataPartial
 
 // 返回结果
-export interface IUser extends IUserRoleAndDepartment, IUserQueryFormData {
+export interface IUser extends IUserRoleAndDepartment, IUserSearchFormData {
 	id: number
 	cellphone: number
 	roleId: number
-  departmentId: number
+	departmentId: number
 	createAt: string
 	updateAt: string
 }
-

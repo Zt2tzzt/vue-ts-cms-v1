@@ -1,23 +1,25 @@
 <script setup lang="ts">
-import Breadcrumb from './cpns/Breadcrumb.vue';
+import Breadcrumb from './cpns/Breadcrumb.vue'
 import UserState from './cpns/UserState.vue'
 
-const props = withDefaults(defineProps<{
-	isFold: boolean
-}>(), {
-	isFold: false
-})
+const props = withDefaults(
+	defineProps<{
+		isFold: boolean
+	}>(),
+	{
+		isFold: false
+	}
+)
 
 const emit = defineEmits(['handleFoldChange'])
 
 const handleMenuIconClick = () => {
- emit('handleFoldChange', !props.isFold)
+	emit('handleFoldChange', !props.isFold)
 }
 </script>
 
 <template>
 	<div class="main-header">
-
 		<!-- 图标 -->
 		<div class="menu-icon" @click="handleMenuIconClick">
 			<el-icon size="28px">
@@ -29,29 +31,28 @@ const handleMenuIconClick = () => {
 			<Breadcrumb></Breadcrumb>
 			<UserState></UserState>
 		</div>
-		
 	</div>
 </template>
 
 <style scoped lang="less">
 .main-header {
-  display: flex;
-  align-items: center;
-  flex: 1;
-  height: 100%;
+	display: flex;
+	align-items: center;
+	flex: 1;
+	height: 100%;
 
-  .menu-icon {
-    display: flex;
-    align-items: center;
-    cursor: pointer;
-  }
+	.menu-icon {
+		display: flex;
+		align-items: center;
+		cursor: pointer;
+	}
 
-  .content {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    flex: 1;
-    padding: 0 18px;
-  }
+	.content {
+		display: flex;
+		justify-content: space-between;
+		align-items: center;
+		flex: 1;
+		padding: 0 18px;
+	}
 }
 </style>

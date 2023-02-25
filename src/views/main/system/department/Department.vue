@@ -11,7 +11,7 @@
 			@new-click="handleNewClick as HookFnType"
 			@edit-click="handleEditClick as HookFnType"
 		></PageContent>
-		<PageModal :modal-config="modalConfigREf" ref="modalRef"></PageModal>
+		<PageModal :modal-config="modalConfigRef" ref="modalRef"></PageModal>
 	</div>
 </template>
 
@@ -29,25 +29,23 @@ import usePageContent from '@/hooks/usePageContent'
 import type { HookFnType } from '@/types'
 
 // 获取 roles / departments 数据
-const modalConfigREf = computed(() => {
-
+const modalConfigRef = computed(() => {
 	const mainStore = useMainStore()
 	const selectFormItem = modalConfig.formItems.find(item => {
 		item.type === 'select' && item.prop === 'parentId'
 	})
 
-	if (selectFormItem && 'options' in selectFormItem)	selectFormItem.options =  mainStore.entireDepartments.map(item => ({
-		label: item.name, value: item.id
-	}))
+	if (selectFormItem && 'options' in selectFormItem)
+		selectFormItem.options = mainStore.entireDepartments.map(item => ({
+			label: item.name,
+			value: item.id
+		}))
 
 	return modalConfig
 })
 
 const [contentRef, handleQueryClick, handleResetClick] = usePageSearch()
-
 const [modalRef, handleNewClick, handleEditClick] = usePageContent()
-
-
 </script>
 
 <style scoped>

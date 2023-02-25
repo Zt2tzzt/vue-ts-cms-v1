@@ -1,7 +1,6 @@
-import type { IDepartmentQueryFormItem  } from '@/types'
+import type { IDepartmentSearchFormItem } from '@/types'
 
-
-const formItems: IDepartmentQueryFormItem[] = [
+const formItems: IDepartmentSearchFormItem[] = [
 	{
 		type: 'input',
 		prop: 'name',

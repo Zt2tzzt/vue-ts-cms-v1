@@ -30,7 +30,6 @@ router.beforeEach(to => {
 	const token = localCache.getCache(LOGIN_TOKEN)
 
 	if (to.path.startsWith('/main')) {
-
 		if (!token) return '/login'
 
 		if (to.path === '/main') return firstRoute?.path

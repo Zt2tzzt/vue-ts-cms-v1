@@ -52,8 +52,8 @@ npm install -D unplugin-vue-components unplugin-auto-import
 
 2.在配置文件中进行配置
 
-- *webpack* 在 `vue.config.ts` 配置。
-- *vite* 在 `vite.config.ts` 配置（项目中使用）。
+- _webpack_ 在 `vue.config.ts` 配置。
+- _vite_ 在 `vite.config.ts` 配置（项目中使用）。
 
 。/vite.config.ts
 
@@ -67,16 +67,15 @@ import { ElementPlusResolver } from 'unplugin-vue-components/resolvers'
 
 export default defineConfig({
 	plugins: [
-    //...
+		//...
 		AutoImport({
 			resolvers: [ElementPlusResolver()]
 		}),
 		Components({
 			resolvers: [ElementPlusResolver()]
 		})
-	],
+	]
 })
-
 ```
 
 3.项目运行后，会生成 2 个文件
@@ -107,7 +106,7 @@ export default defineConfig({
 - [全局注册](https://element-plus.org/zh-CN/component/icon.html#%E6%B3%A8%E5%86%8C%E6%89%80%E6%9C%89%E5%9B%BE%E6%A0%87)，项目中采用。
 - [自动导入](https://element-plus.org/zh-CN/component/icon.html#%E8%87%AA%E5%8A%A8%E5%AF%BC%E5%85%A5)（配置起来较麻烦）
 
-1.编写一个注册图标的插件。
+  1.编写一个注册图标的插件。
 
 src\global\register-icons.ts
 
@@ -179,39 +178,34 @@ npm i vite-plugin-style-import -D
 
 ```typescript
 import { UserConfigExport } from 'vite'
-import {
-  createStyleImportPlugin,
-  ElementPlusResolve,
-} from 'vite-plugin-style-import'
+import { createStyleImportPlugin, ElementPlusResolve } from 'vite-plugin-style-import'
 
 export default (): UserConfigExport => {
-  return {
-    // 1. If you are using the ant-design series, you need to configure this
-    // 2. Make sure less is installed in the dependency `yarn add less -D`
-    css: {
-      preprocessorOptions: {
-        less: {
-          javascriptEnabled: true,
-        },
-      },
-    },
-    plugins: [
-      createStyleImportPlugin({
-        resolves: [
-          ElementPlusResolve(),
-        ],
-        libs: [
-          {
-            libraryName: 'element-plus',
-            esModule: true,
-            resolveStyle: (name: string) => {
-              return `element-plus/theme-chalk/${name}.css`
-            },
-          },
-        ],
-      }),
-    ],
-  }
+	return {
+		// 1. If you are using the ant-design series, you need to configure this
+		// 2. Make sure less is installed in the dependency `yarn add less -D`
+		css: {
+			preprocessorOptions: {
+				less: {
+					javascriptEnabled: true
+				}
+			}
+		},
+		plugins: [
+			createStyleImportPlugin({
+				resolves: [ElementPlusResolve()],
+				libs: [
+					{
+						libraryName: 'element-plus',
+						esModule: true,
+						resolveStyle: (name: string) => {
+							return `element-plus/theme-chalk/${name}.css`
+						}
+					}
+				]
+			})
+		]
+	}
 }
 ```
 
@@ -308,14 +302,14 @@ const activeName = ref('account')
 ```html
 <!-- 底部区域 -->
 <div class="controls">
-  <el-checkbox v-model="isRemPwd" label="记住密码" size="large" />
-  <el-link type="primary">忘记密码</el-link>
+	<el-checkbox v-model="isRemPwd" label="记住密码" size="large" />
+	<el-link type="primary">忘记密码</el-link>
 </div>
 
 <script setup lang="ts">
-import { ref } from 'vue'
+	import { ref } from 'vue'
 
-const isRemPwd = ref(false)
+	const isRemPwd = ref(false)
 </script>
 ```
 
@@ -332,9 +326,7 @@ const isRemPwd = ref(false)
 
 <script>
 // ...
-const handleLoginBtnClick = () => {
-
-}
+const handleLoginBtnClick = () => {}
 </script>
 ```
 
@@ -369,13 +361,7 @@ src\views\login\cpns\LoginPanel.vue
 src\views\login\cpns\PanelAccount.vue
 
 ```vue
-<el-form
-  :model="account"
-  :rules="accountRules"
-  label-width="60px"
-  size="large"
-  ref="formRef"
->
+<el-form :model="account" :rules="accountRules" label-width="60px" size="large" ref="formRef">
   <el-form-item label="帐号" prop="name">
     <el-input v-model="account.name" clearable  />
   </el-form-item>
@@ -388,11 +374,13 @@ src\views\login\cpns\PanelAccount.vue
 //...
 
 // 1.定义 account 数据
-const account = reactive<IAccount>({
-	name: '',
-	password: ''
-})
-
+const account =
+	reactive <
+	IAccount >
+	{
+		name: '',
+		password: ''
+	}
 </script>
 ```
 
@@ -436,7 +424,7 @@ src\views\login\cpns\LoginPanel.vue
 ```vue
 <template>
 	<!-- .. -->
-  <PanelAccount ref="accountRef"></PanelAccount>
+	<PanelAccount ref="accountRef"></PanelAccount>
 	<!-- ... -->
 	<el-button class="login-btn" type="primary" size="large" @click="handleLoginBtnClick">
 		立即登录
@@ -466,8 +454,7 @@ const handleLoginBtnClick = () => {
 src\views\login\cpns\PanelAccount.vue
 
 ```typescript
-const loginAction = () => {
-}
+const loginAction = () => {}
 
 defineExpose({
 	loginAction
@@ -490,7 +477,6 @@ const formRef = ref<InstanceType<typeof ElForm>>()
 const loginAction = () => {
 	formRef.value?.validate(valid => {
 		if (valid) {
-
 		} else {
 			ElMessage.error('Oops, 请您输入正确的格式后再操作~~.')
 		}
@@ -506,10 +492,11 @@ src\service\login\login.ts
 
 ```typescript
 //...
-export const accountLoginRequest = (account: IAccount) => ztRequest.post<IResponse<ILoginResData>>({
-	url: 'login',
-	data: account
-})
+export const accountLoginRequest = (account: IAccount) =>
+	ztRequest.post<IResponse<ILoginResData>>({
+		url: 'login',
+		data: account
+	})
 ```
 
 ### 3.在 store 和组件中使用
@@ -528,7 +515,7 @@ src\stores\login\login.ts
 //...
 const LOGIN_TOKEN = 'login/token'
 
-const useLoginStore =  defineStore('login', {
+const useLoginStore = defineStore('login', {
 	state: () => ({
 		id: 0,
 		token: localCache.getCache(LOGIN_TOKEN) ?? '',
@@ -536,7 +523,6 @@ const useLoginStore =  defineStore('login', {
 	}),
 	actions: {
 		loginAccountAction(account: IAccount) {
-
 			accountLoginRequest(account).then(res => {
 				this.id = res.data.id
 				this.token = res.data.token
@@ -566,9 +552,7 @@ const account = reactive<IAccount>({
 const loginAction = () => {
 	formRef.value?.validate(valid => {
 		if (valid) {
-
 			loginStore.loginAccountAction({ ...account })
-
 		} else {
 			ElMessage.error('Oops, 请您输入正确的格式后再操作~~.')
 		}
@@ -595,9 +579,9 @@ export interface IAccount {
 
 将在线文档，导入到 postman 中。
 
-[接⼝⽂档v1版本](https://documenter.getpostman.com/view/12387168/TzsfmQvw)
+[接⼝⽂档 v1 版本](https://documenter.getpostman.com/view/12387168/TzsfmQvw)
 
-[接⼝⽂档v2版本（有部分更新）](https://documenter.getpostman.com/view/12387168/TzzDKb12)
+[接⼝⽂档 v2 版本（有部分更新）](https://documenter.getpostman.com/view/12387168/TzzDKb12)
 
 [baseURL](http://152.136.185.210:5000)
 
@@ -606,6 +590,6 @@ export interface IAccount {
 postman 中设置全局 token 的⽅法：
 
 ```js
-const res = pm.response.json();
-pm.globals.set("token", res.data.token);
+const res = pm.response.json()
+pm.globals.set('token', res.data.token)
 ```

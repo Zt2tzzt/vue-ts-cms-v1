@@ -1,22 +1,18 @@
 <script setup lang="ts">
 import type { ElForm } from 'element-plus'
 import { reactive, ref } from 'vue'
-import type { QueryFormItemType, QueryFormDataType } from '@/types'
-
+import type { ISearchConfig, SearchFormDataType } from '@/types'
 
 const props = defineProps<{
-	searchConfig: {
-		labelWidth?: string
-		formItems: QueryFormItemType[]
-	}
+	searchConfig: ISearchConfig
 }>()
 const emits = defineEmits(['queryClick', 'resetClick'])
 
 // 初始化表单
 const initialForm = props.searchConfig.formItems.reduce((accumulate, item) => {
-	accumulate[item.prop] = item.initialvalue as keyof QueryFormDataType
+	accumulate[item.prop] = item.initialvalue as keyof SearchFormDataType
 	return accumulate
-}, {} as QueryFormDataType)
+}, {} as SearchFormDataType)
 const searchForm = reactive(initialForm)
 
 // 重置
@@ -37,11 +33,9 @@ const onQueryClick = () => {
 		<!-- 表单 -->
 		<el-form :model="searchForm" ref="formRef" label-width="80px" size="large">
 			<el-row :gutter="20">
-
 				<template v-for="item of searchConfig.formItems" :key="item.prop">
 					<el-col :span="8">
 						<el-form-item :label="item.label" :prop="item.prop">
-
 							<template v-if="item.type === 'input'">
 								<el-input
 									v-model="searchForm[item.prop]"
@@ -50,7 +44,6 @@ const onQueryClick = () => {
 							</template>
 
 							<template v-if="item.type === 'date-picker'">
-
 								<el-date-picker
 									v-model="searchForm[item.prop]"
 									type="daterange"
@@ -59,7 +52,6 @@ const onQueryClick = () => {
 									end-placeholder="结束时间"
 								></el-date-picker>
 							</template>
-
 						</el-form-item>
 					</el-col>
 				</template>
