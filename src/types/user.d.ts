@@ -1,4 +1,4 @@
-import { IQueryParam } from './global'
+import { ISearchParam } from './global'
 
 interface IUserFormDataBasic {
 	name: string
@@ -24,7 +24,7 @@ export interface IUserSearchFormData extends IUserFormDataBasic {
 
 type IUserSearchFormDataPartial = Partial<IUserSearchFormData>
 
-export type IUserQueryParam = IQueryParam & IUserSearchFormDataPartial
+export type IUserQueryParam = ISearchParam & IUserSearchFormDataPartial
 
 // 返回结果
 export interface IUser extends IUserRoleAndDepartment, IUserSearchFormData {

@@ -20,7 +20,7 @@ src\views\main\system\user\cpns\UserContent.vue
 
 ## 2.创建/修改时间格式化
 
-在 `UserContent.vue` 中，格式化“状态”，“创建日期”和“结束日期”。
+在 `UserContent.vue` 中，格式化，“创建日期”和“结束日期”。
 
 使用 `<el-table-column>` 的作用域插槽。
 
@@ -67,7 +67,7 @@ src\views\main\system\user\cpns\UserContent.vue
 src\service\main\system\system.ts
 
 ```typescript
-export const postUsers = (queryParam: IQueryParam) =>
+export const postUsers = (queryParam: ISearchParam) =>
 	ztRequest.post<IResponse<IUsersData>>({
 		url: '/users/list',
 		data: queryParam
@@ -128,6 +128,8 @@ const handleCurrentChange = () => {
 将条件查询的方法 `fetchUserListData` 暴露给 `User.vue`
 
 > 事件总线，通常用于跨度比较大的组件。存在不可控的缺陷。
+>
+> 这里使用父子组件通信的方式。
 
 src\views\main\system\user\cpns\UserContent.vue
 
@@ -215,15 +217,17 @@ const onDeleteClick = (id: number) => {
 src\stores\main\system\system.ts
 
 ```typescript
-deleteUserByIdAction(id: number) {
-  deleteUserById(id).then(res => {
-    console.log('detete res:', res)
-    this.postUsersAction({ offset: 0, size: 10 })
-  })
+const actions = {
+  deleteUserByIdAction(id: number) {
+    deleteUserById(id).then(res => {
+      console.log('detete res:', res)
+      this.postUsersAction({ offset: 0, size: 10 })
+    })
+  }
 }
 ```
 
-## 6.新增功能
+## 6.新增、编辑功能
 
 ### 1.弹出新增对话框
 
@@ -238,7 +242,9 @@ deleteUserByIdAction(id: number) {
 
 在 `User.vue` 中拿到该状态，去调用 `UserModal.vue` 中暴露的方法 `setModalVisible`，改变其中的状态，
 
-> 在组件中一般暴露方法，因为方法中可以进行拦截，更加可控。
+> 在组件中一般暴露方法，而不是直接暴露属性；
+>
+> 因为方法中可以进行拦截，更加可控。
 
 src\views\main\system\user\cpns\UserContent.vue
 
@@ -394,11 +400,13 @@ const onConfigClick = () => {
 src\stores\main\system\system.ts
 
 ```typescript
-postNewUserAction(addParam: IUserCreateFormData) {
-  postNewUserData(addParam).then(res => {
-    console.log('add user res:', res)
-    this.postUsersAction({ offset: 0, size: 10  })
-  })
+const actions = {
+  postNewUserAction(addParam: IUserCreateFormData) {
+    postNewUserData(addParam).then(res => {
+      console.log('add user res:', res)
+      this.postUsersAction({ offset: 0, size: 10  })
+    })
+  }  
 }
 ```
 
@@ -406,7 +414,7 @@ postNewUserAction(addParam: IUserCreateFormData) {
 
 在 `UserContent.vue` 中，编写用户修改功能。
 
-点击表格中吗每条记录后的“编辑”按钮，弹出 `UserModal.vue`，并将用户数据传给 `UserModal.vue`。
+点击表格中每条记录后的“编辑”按钮，弹出 `UserModal.vue`，并将用户数据传给 `UserModal.vue`。
 
 src\views\main\system\user\cpns\UserContent.vue
 
@@ -528,7 +536,7 @@ function print(obj: Person) {
 }
 ```
 
-封装一个函数，用于在 ts 中遍历对象类型。
+封装一个函数，用于在 ts 中遍历对象类型，返回有类型的 key。
 
 ```typescript
 export const getKeysFronObj = <T>(obj: T) => Object.keys(obj) as Array<keyof T>

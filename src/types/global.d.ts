@@ -14,7 +14,7 @@ import type {
 } from './role'
 
 // 查询
-export interface IQueryParam {
+export interface ISearchParam {
 	offset: number
 	size: number
 }

@@ -2,15 +2,15 @@
 
 ## 1.思路整理
 
-[回顾 RBAC 设计的三种方案](./04-登录退出-用户权限-菜单树-头部区域-注册路由.md/#5RBAC 设计思想理解)
+[回顾 RBAC 设计的三种方案](./04-登录退出-用户权限-菜单树-头部区域-注册路由.md/#5RBAC 设计思想理解)，这里我们讨论方案二、三的具体实现步骤。
 
-基于角色添加路由（方案二）步骤：
+方案二：基于角色添加路由，步骤：
 
 1. 在前端维护角色，以及角色对应的路由。
 
 2. 后端返回角色后，进行匹配，并动态添加路由。
 
-基于菜单动态匹配的方案（方案三）步骤：
+方案三（项目中采用）：基于菜单动态匹配的方案，步骤：
 
 1. 获取用户的菜单信息（已在 store 中），
 
@@ -21,8 +21,6 @@
 3. 从文件中读取所有的路由。
 
 4. 根据用户菜单，筛选路由对象，并动态添加路由。
-
-项目中采用方案三。
 
 ## 2.创建页面和路由
 
@@ -63,7 +61,7 @@ npx coderwhy add3page_setup Department -d src/views/main/system/department
 - webpack：`require.context`
 - vite：`import.meta.glob()`
 
-默认取到的是一个对象，
+使用 `import.meta.glob()`，默认取到的是一个对象，
 
 - 其中 key 是文件的路径文本，value 是对应加载文件的 get 函数。
 
@@ -113,7 +111,7 @@ src\utils\map-menu.ts
 import type { IMenuInRole, IMenuInRoleChild } from '@/types'
 
 /**
- * @description: 此函数用于：根据用户拥有的菜单，筛选出对应的本地路由（用于 loginStore 中，获取 userMenus 后，进行路由映射）。
+ * @description: 此函数用于：根据用户拥有的菜单，筛选出对应的本地路由（用于 loginStore 中，获取 userMenus 后，进行动态添加路由）。
  * @Author: ZeT1an
  * @param {IMenuInRole[]} userMenu 用户菜单列表
  * @return {RouteRecordRaw[]} 菜单映射后的路由列表
@@ -562,9 +560,9 @@ export default useSystemStore
 
 - 在第一列加入多选列 `type="selection" `。
 
-- 最后一列操作列，使用插槽插入按钮。
+- 最后一列操作列，使用 `<el-table-column>` 的插槽插入按钮。
 
-- 设置每列宽度，没有设置的列，自动平分剩余的宽度 `width="xxx"`。
+- 设置每列宽度  `width="xxx"`，没有设置的列，自动平分剩余的宽度。。
 
 - 每列居中显示 `align="center"`。
 
@@ -574,6 +572,7 @@ src\views\main\system\user\cpns\UserContent.vue
 
 ```css
 .table {
+  /* 选到的是 el-table-column */
 	:deep(.el-table__cell) {
 		padding: 12px 0;
 	}

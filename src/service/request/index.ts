@@ -7,8 +7,8 @@ import axios from 'axios'
 import type { AxiosInstance } from 'axios'
 import type { ZTInternalRequestInterceptor, ZTInternalRequestConfig, ZTRequestConfig } from './type'
 
-// import { ElLoading } from 'element-plus'
-// import type { LoadingInstance } from 'element-plus/lib/components/loading/src/loading'
+import { ElLoading } from 'element-plus'
+import type { LoadingInstance } from 'element-plus/lib/components/loading/src/loading'
 
 const DEFAULT_LOADING = true
 
@@ -16,7 +16,7 @@ class ZTRequest {
 	instance: AxiosInstance
 	interceptors?: ZTInternalRequestInterceptor
 	showLoading: boolean
-	// loadingInstance?: LoadingInstance
+	loadingInstance?: LoadingInstance
 
 	constructor(config: ZTInternalRequestConfig) {
 		// 创建axios实例
@@ -40,13 +40,13 @@ class ZTRequest {
 		this.instance.interceptors.request.use(
 			config => {
 				// console.log('全局拦截，请求成功')
-				/* if (this.showLoading) {
+				if (this.showLoading) {
 					this.loadingInstance = ElLoading.service({
 						lock: true,
 						text: '正在加载...',
 						background: 'rgba(0,0,0,0.5)'
 					})
-				} */
+				}
 				return config
 			},
 			err => {
@@ -57,15 +57,15 @@ class ZTRequest {
 		this.instance.interceptors.response.use(
 			res => {
 				// console.log('全局拦截，响应成功')
-				// 关闭loading动画
-				// this.loadingInstance?.close()
+				// 关闭 loading 动画
+				this.loadingInstance?.close()
 				const data = res.data
 				return data
 			},
 			err => {
 				// console.log('全局拦截，响应失败')
-				// 关闭loading动画
-				// this.loadingInstance?.close()
+				// 关闭 loading 动画
+				this.loadingInstance?.close()
 				return err
 			}
 		)

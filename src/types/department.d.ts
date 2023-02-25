@@ -1,4 +1,4 @@
-import { ISearchFormItem, IQueryParam, IResponseListData } from './global'
+import { ISearchFormItem, ISearchParam, IResponseListData } from './global'
 
 export interface IDepartmentCreateFormData {
 	name: string
@@ -14,7 +14,7 @@ export interface IDepartmentSearchFormData {
 	createAt: string | string[]
 }
 
-export type IDepartmentQueryParam = IQueryParam & Partial<IDepartmentSearchFormData>
+export type IDepartmentQueryParam = ISearchParam & Partial<IDepartmentSearchFormData>
 
 export type IDepartmentSearchFormItem = ISearchFormItem<IDepartmentSearchFormData>
 
