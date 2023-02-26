@@ -9,7 +9,7 @@ class Cache {
 	constructor(type: CacheType) {
 		if (type === CacheType.SESSION) this.storage = sessionStorage
 	}
-	get length() {
+	get length(): number {
 		return this.storage.length
 	}
 	setCache(key: string, value: any) {

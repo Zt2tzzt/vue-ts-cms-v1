@@ -106,7 +106,7 @@ export default defineConfig({
 - [全局注册](https://element-plus.org/zh-CN/component/icon.html#%E6%B3%A8%E5%86%8C%E6%89%80%E6%9C%89%E5%9B%BE%E6%A0%87)，项目中采用。
 - [自动导入](https://element-plus.org/zh-CN/component/icon.html#%E8%87%AA%E5%8A%A8%E5%AF%BC%E5%85%A5)（配置起来较麻烦）
 
-  1.编写一个注册图标的插件。
+1.编写一个注册图标的插件。
 
 src\global\register-icons.ts
 
@@ -166,7 +166,7 @@ src\main.ts
 import 'element-plus/theme-chalk/el-message.css'
 ```
 
-方式三：自动导入样式，需要安装插件（项目中采用）。
+方式三：自动导入样式，需要安装插件并进行配置（项目中采用）。
 
 1.安装插件 [vite-plugin-style-import](https://github.com/vbenjs/vite-plugin-style-import)
 
@@ -269,9 +269,9 @@ import LoginPanel from './cpns/LoginPanel.vue'
 
 在 `LoginPanel.vue` 中搭建整体页面。
 
-src\views\login\cpns\LoginPanel.vue
-
 1.标题
+
+src\views\login\cpns\LoginPanel.vue
 
 ```html
 <h1 class="title">ZT 后台管理系统</h1>
@@ -279,14 +279,16 @@ src\views\login\cpns\LoginPanel.vue
 
 2.tabs
 
+src\views\login\cpns\LoginPanel.vue
+
 ```vue
 <!-- tabs 区域，在帐号和手机登录之间切换。 -->
 <div class="tabs">
   <el-tabs type="border-card" stretch v-model="activeName">
-    <!-- 1.账号登录的Pane -->
+    <!-- 1.账号登录的 Pane -->
     <el-tab-pane name="account"></el-tab-pane>
 
-    <!-- 2.手机登录的Pane -->
+    <!-- 2.手机登录的 Pane -->
     <el-tab-pane name="phone"></el-tab-pane>
   </el-tabs>
 </div>
@@ -298,6 +300,8 @@ const activeName = ref('account')
 ```
 
 3.记住密码/忘记密码
+
+src\views\login\cpns\LoginPanel.vue
 
 ```html
 <!-- 底部区域 -->
@@ -319,6 +323,8 @@ const activeName = ref('account')
 
 使用 `<el-button>`
 
+src\views\login\cpns\LoginPanel.vue
+
 ```vue
 <el-button class="login-btn" type="primary" size="large" @click="handleLoginBtnClick">
   立即登录
@@ -332,11 +338,11 @@ const handleLoginBtnClick = () => {}
 
 ### 2.tabs 搭建过程
 
-src\views\login\cpns\LoginPanel.vue
-
 1.`<el-tab-pane>` 里，`label` 插槽的使用，用于 tabs 的标签。
 
 2.内容显示
+
+src\views\login\cpns\LoginPanel.vue
 
 ```vue
 <!-- 1.账号登录的Pane -->
@@ -445,11 +451,11 @@ const handleLoginBtnClick = () => {
 </script>
 ```
 
-> 在 TS 中，使用 `ref` 引用子组件实例时，不能使用子组件名称作为类型。而是这么写 `ref<InstanceType<typeof [组件名称]>>`，
+> 在 TS 编写的父组件中，使用 `ref` 引用子组件实例时，不能使用子组件名称作为类型。而是这么写 `ref<InstanceType<typeof [组件名称]>>`，
 >
 > .vue 文件中导出的是组件对象，在 Vue 框架中是当作构造器来使用的。
 >
-> 引入的 El 组件，可以加 `class` 属性
+> 引入的 El 组件，可以加 `class` 属性。
 
 src\views\login\cpns\PanelAccount.vue
 
@@ -507,7 +513,7 @@ export const accountLoginRequest = (account: IAccount) =>
 
 src\utils\cache.ts
 
-登录后，返回的登录态（token），保存到 store 和 storage 中。
+登录后，返回的登录态（token），保存到 store 并缓存到 storage 中。
 
 src\stores\login\login.ts
 
@@ -562,7 +568,7 @@ const loginAction = () => {
 
 ### 4.登录接口参数类型
 
-在全局定义 `IAccount` 类型，作为登录接口掺入参数的类型。
+在全局定义 `IAccount` 类型，作为登录接口传入参数的类型。
 
 src\types\login.d.ts
 
