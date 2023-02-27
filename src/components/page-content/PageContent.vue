@@ -2,15 +2,24 @@
 import useSystemStore from '@/stores/main/system/system'
 import { storeToRefs } from 'pinia'
 import { formatUTC } from '@/utils/format'
-import { computed, ref } from 'vue'
+import { computed, onUnmounted, ref } from 'vue'
 import type { IDepartment } from '@/types'
 import type { IContentConfig } from '@/types'
+import usePermission from '@/hooks/usePermissions'
 
 const props = defineProps<{
 	contentConfig: IContentConfig
 }>()
 const emits = defineEmits(['newClick', 'editClick'])
 const pageName = computed(() => props.contentConfig.pageName)
+
+// 增删改查，权限控制
+const permission = {
+	isCreate: usePermission(pageName.value + ':create'),
+	isDelete: usePermission(pageName.value + ':delete'),
+	isUpdate: usePermission(pageName.value + ':update'),
+	isQuery: usePermission(pageName.value + ':query')
+}
 
 // 页面数据
 const systemStore = useSystemStore()
@@ -22,6 +31,8 @@ const pageSize = ref(10)
 
 // 查询
 const fetchPageListData = <T>(formatData: T | object = {}) => {
+	if (!permission.isQuery) return
+
 	// 1.获取 offset 和 limit
 	const limit = pageSize.value
 	const offset = (currentPage.value - 1) * limit
@@ -58,6 +69,19 @@ const onEditClick = (itemData: IDepartment) => {
 	emits('editClick', itemData)
 }
 
+// 增、删、改后，将页面充值到第一页
+const onSubscribe = systemStore.$onAction(({ name, after }) => {
+	after(() => {
+		if (['deletePageByIdAction', 'postNewPageRecordAction', 'pathEditPageRecordByIdAction'].includes(name)) {
+			currentPage.value = 1
+		}
+	})
+})
+
+onUnmounted(() => {
+	onSubscribe()
+})
+
 defineExpose({
 	fetchPageListData
 })
@@ -68,20 +92,14 @@ defineExpose({
 		<!--  头部  -->
 		<div class="header">
 			<h3 class="title">{{ contentConfig?.header?.title ?? `数据列表` }}</h3>
-			<el-button type="primary" @click="onNewclick">{{
+			<el-button v-if="permission.isCreate" type="primary" @click="onNewclick">{{
 				contentConfig?.header?.btnLabel ?? `新建数据`
 			}}</el-button>
 		</div>
 
 		<!-- 列表 -->
 		<div class="table">
-			<el-table
-				:data="pageList"
-				stripe
-				border
-				style="width: 100%"
-				v-bind="contentConfig?.childrenTree"
-			>
+			<el-table :data="pageList" stripe border style="width: 100%" v-bind="contentConfig?.childrenTree">
 				<template v-for="item of contentConfig.propList" :key="item.prop">
 					<!-- 处理 timer、handler 列 -->
 					<template v-if="item.gener === 'timer'">
@@ -93,6 +111,7 @@ defineExpose({
 					<template v-else-if="item.gener === 'handler'">
 						<el-table-column align="center" v-bind="item" #default="scope">
 							<el-button
+								v-if="permission.isUpdate"
 								size="small"
 								icon="Edit"
 								type="primary"
@@ -101,6 +120,7 @@ defineExpose({
 								>编辑</el-button
 							>
 							<el-button
+								v-if="permission.isDelete"
 								size="small"
 								icon="Delete"
 								type="danger"

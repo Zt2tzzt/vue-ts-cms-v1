@@ -1,7 +1,12 @@
 <script setup lang="ts">
 import { LOGIN_TOKEN, USER_INFO, USER_MENU } from '@/global/constance'
+import useLoginStore from '@/stores/login/login'
 import { localCache } from '@/utils/cache'
+import { computed } from 'vue'
 import { useRouter } from 'vue-router'
+
+const loginStore = useLoginStore()
+const nickname = computed(() => ('name' in loginStore.userInfo ? loginStore.userInfo.name : '用户名'))
 
 const router = useRouter()
 const handleExitClick = () => {
@@ -37,7 +42,7 @@ const handleExitClick = () => {
 						:size="30"
 						src="https://portrait.gitee.com/uploads/avatars/user/1772/5318354_Zt2tzzt_1645413218.png"
 					/>
-					<span class="name">Zttzzt</span>
+					<span class="name">{{ nickname }}</span>
 				</span>
 				<template #dropdown>
 					<el-dropdown-menu>

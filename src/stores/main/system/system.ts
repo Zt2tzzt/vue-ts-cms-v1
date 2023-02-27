@@ -16,6 +16,15 @@ import {
 	pathEditPageRecordById
 } from '@/service/main/system/system'
 import { defineStore } from 'pinia'
+import { DEPARTMENT, ROLE, MENU } from '@/global/constance';
+import useMainStore from '../main';
+
+const fetchEntireData = (pageName: string) => {
+	if ([DEPARTMENT, ROLE, MENU].includes(pageName)) {
+		const mainStore = useMainStore()
+		mainStore.fetchEntireDataAction()
+	}
+}
 
 interface ISystemStore {
 	users: IUser[]
@@ -77,18 +86,27 @@ const useSystemStore = defineStore('system', {
 			deletePageById(pageName, id).then(res => {
 				console.log(pageName, 'delete res:', res)
 				this.postPageListAction(pageName, { offset: 0, size: 10 })
+
+				// 如果是部门，角色，菜单等基础数据发生增、删、改操作，要重显加载到缓存中。
+				fetchEntireData(pageName)
 			})
 		},
 		postNewPageRecordAction<T>(pageName: string, record: T) {
 			postNewPageRecord(pageName, record).then(res => {
 				console.log(pageName, 'add res:', res)
 				this.postPageListAction(pageName, { offset: 0, size: 10 })
+
+				// 如果是部门，角色，菜单等基础数据发生增、删、改操作，要重显加载到缓存中。
+				fetchEntireData(pageName)
 			})
 		},
 		pathEditPageRecordByIdAction<T>(pageName: string, id: number, record: T) {
 			pathEditPageRecordById(pageName, id, record).then(res => {
 				console.log(pageName, 'edit res:', res)
 				this.postPageListAction(pageName, { offset: 0, size: 10 })
+
+				// 如果是部门，角色，菜单等基础数据发生增、删、改操作，要重显加载到缓存中。
+				fetchEntireData(pageName)
 			})
 		}
 	}

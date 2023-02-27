@@ -46,6 +46,7 @@ export interface ISearchFormItem<T> {
 }
 
 export interface ISearchConfig {
+	pageName: string
 	labelWidth?: string
 	formItems: SearchFormItemType[]
 }

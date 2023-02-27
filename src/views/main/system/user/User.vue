@@ -1,15 +1,3 @@
-<template>
-	<div class="user">
-		<UserSearch @query-click="handleQueryClick" @reset-click="handleResetClick"></UserSearch>
-		<UserContent
-			ref="contentRef"
-			@new-click="handleNewClick"
-			@edit-click="handleEditClick"
-		></UserContent>
-		<UserModal ref="modalRef"></UserModal>
-	</div>
-</template>
-
 <script setup lang="ts" name="user">
 import UserContent from './cpns/UserContent.vue'
 import UserSearch from './cpns/UserSearch.vue'
@@ -33,6 +21,14 @@ const handleEditClick = (itemData: IUser) => {
 	modalRef.value?.setModalVisible({ isNew: false, itemData })
 }
 </script>
+
+<template>
+	<div class="user">
+		<UserSearch @query-click="handleQueryClick" @reset-click="handleResetClick"></UserSearch>
+		<UserContent ref="contentRef" @new-click="handleNewClick" @edit-click="handleEditClick"></UserContent>
+		<UserModal ref="modalRef"></UserModal>
+	</div>
+</template>
 
 <style scoped>
 .user {

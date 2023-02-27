@@ -2,11 +2,17 @@
 import type { ElForm } from 'element-plus'
 import { reactive, ref } from 'vue'
 import type { ISearchConfig, SearchFormDataType } from '@/types'
+import usePermission from '@/hooks/usePermissions';
 
 const props = defineProps<{
 	searchConfig: ISearchConfig
 }>()
 const emits = defineEmits(['queryClick', 'resetClick'])
+
+// 查询权限
+const permission = {
+	isQuery: usePermission(props.searchConfig.pageName + ':query')
+}
 
 // 初始化表单
 const initialForm = props.searchConfig.formItems.reduce((accumulate, item) => {
@@ -29,7 +35,7 @@ const onQueryClick = () => {
 </script>
 
 <template>
-	<div class="page-search">
+	<div class="page-search" v-if="permission.isQuery">
 		<!-- 表单 -->
 		<el-form :model="searchForm" ref="formRef" label-width="80px" size="large">
 			<el-row :gutter="20">

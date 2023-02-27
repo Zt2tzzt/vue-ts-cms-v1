@@ -59,8 +59,8 @@ export const mapMenusToRoutes = (userMenu: IMenuInRole[]): RouteRecordRaw[] => {
 /**
  * @description: 此函数用于：根据用户拥有的菜单，筛选出对应的权限 id（用于 Role 中，创建/编辑角色时，展示角色拥有的菜单）
  * @Author: ZeT1an
- * @param {IMenuInRole} menuList
- * @return {*}
+ * @param {IMenuInRole} menuList 用户菜单列表
+ * @return {number[]} 映射出的 id 列表
  */
 export const mapMenusToIds = (menuList: IMenuInRole[]): number[] => {
 	const ids: number[] = []
@@ -77,4 +77,27 @@ export const mapMenusToIds = (menuList: IMenuInRole[]): number[] => {
 	_getIds(menuList)
 
 	return ids
+}
+
+/**
+ * @description: 此函数用于：根据用户拥有的菜单，筛选出对应的增、删、改、查权限（用于 loginStore 中登录和刷新页面时，加载用户的权限）
+ * @Author: ZeT1an
+ * @param {IMenuInRole} menuList 用户菜单列表
+ * @return {string[]} 映射出的权限列表。
+ */
+export const mapMenusToPermission = (menuList: IMenuInRole[]): string[] => {
+	const permission: string[] = []
+
+	const _getPermission = (menus: IMenuInRole[] | IMenuInRoleChild[] | IMenuInRoleChild2[]) => {
+		menus.forEach(menu => {
+			if (menu.type === 3) {
+				permission.push(menu.permission)
+			} else {
+				_getPermission(menu.children ?? [])
+			}
+		})
+	}
+	_getPermission(menuList)
+
+	return permission
 }

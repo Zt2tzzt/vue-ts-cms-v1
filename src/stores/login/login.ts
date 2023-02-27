@@ -4,16 +4,22 @@ import { localCache } from '@/utils/cache'
 import { defineStore } from 'pinia'
 import { LOGIN_TOKEN, USER_INFO, USER_MENU } from '@/global/constance'
 import router from '@/router'
-import { mapMenusToRoutes } from '@/utils/map-menu'
+import { mapMenusToRoutes, mapMenusToPermission } from '@/utils/map-menu'
 import useMainStore from '../main/main'
 
 interface ILoginState {
 	token: string
 	userInfo: IUserInfoResData | object
 	userMenus: IMenuInRole[]
+	permissions: string[]
 }
 
-const dynamicLoadingRoutes = (userMenus: IMenuInRole[]) => {
+function dynamicLoadingPermissionAndRoutes(this: ILoginState,userMenus: IMenuInRole[]) {
+	// 加载按钮的权限
+	const permissions = mapMenusToPermission(userMenus)
+	this.permissions = permissions
+
+	// 动态添加路由
 	const routes = mapMenusToRoutes(userMenus)
 	routes.forEach(route => router.addRoute('main', route))
 }
@@ -22,7 +28,8 @@ const useLoginStore = defineStore('login', {
 	state: (): ILoginState => ({
 		token: '',
 		userInfo: {},
-		userMenus: []
+		userMenus: [],
+		permissions: []
 	}),
 	actions: {
 		loginAccountAction(account: IAccount) {
@@ -47,7 +54,7 @@ const useLoginStore = defineStore('login', {
 					localCache.setCache(USER_MENU, userMenus)
 
 					// 路由映射
-					dynamicLoadingRoutes(userMenus)
+					dynamicLoadingPermissionAndRoutes.call(this, userMenus)
 
 					router.push('/main')
 				})
@@ -65,7 +72,7 @@ const useLoginStore = defineStore('login', {
 				const mainStore = useMainStore()
 				mainStore.fetchEntireDataAction()
 
-				dynamicLoadingRoutes(userMenus)
+				dynamicLoadingPermissionAndRoutes.call(this, userMenus)
 			}
 		}
 	}

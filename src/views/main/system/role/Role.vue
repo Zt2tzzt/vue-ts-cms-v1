@@ -1,31 +1,3 @@
-<template>
-	<div class="role">
-		<PageSearch
-			:search-config="searchConfig"
-			@query-click="handleQueryClick as HookFnType"
-			@reset-click="handleResetClick as HookFnType"
-		></PageSearch>
-		<PageContent
-			ref="contentRef"
-			:content-config="contentConfig"
-			@new-click="handleNewClick as HookFnType"
-			@edit-click="handleEditClick as HookFnType"
-		></PageContent>
-		<PageModal ref="modalRef" :modal-config="modalConfig" :other-info="otherInfo">
-			<template #menulist>
-				<el-tree
-					ref="treeRef"
-					:data="entireMenus"
-					show-checkbox
-					node-key="id"
-					:props="{ children: 'children', label: 'name' }"
-					@check="handleElTreeCheck"
-				></el-tree>
-			</template>
-		</PageModal>
-	</div>
-</template>
-
 <script setup lang="ts">
 import PageSearch from '@/components/page-search/PageSearch.vue'
 import searchConfig from './config/search.config'
@@ -65,5 +37,33 @@ const editCallback = (itemData: IRole) => {
 const [contentRef, handleQueryClick, handleResetClick] = usePageSearch()
 const [modalRef, handleNewClick, handleEditClick] = usePageContent(editCallback)
 </script>
+
+<template>
+	<div class="role">
+		<PageSearch
+			:search-config="searchConfig"
+			@query-click="handleQueryClick as HookFnType"
+			@reset-click="handleResetClick as HookFnType"
+		></PageSearch>
+		<PageContent
+			ref="contentRef"
+			:content-config="contentConfig"
+			@new-click="handleNewClick as HookFnType"
+			@edit-click="handleEditClick as HookFnType"
+		></PageContent>
+		<PageModal ref="modalRef" :modal-config="modalConfig" :other-info="otherInfo">
+			<template #menulist>
+				<el-tree
+					ref="treeRef"
+					:data="entireMenus"
+					show-checkbox
+					node-key="id"
+					:props="{ children: 'children', label: 'name' }"
+					@check="handleElTreeCheck"
+				></el-tree>
+			</template>
+		</PageModal>
+	</div>
+</template>
 
 <style scoped></style>
