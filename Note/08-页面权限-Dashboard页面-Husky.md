@@ -42,7 +42,7 @@ export const mapMenusToPermission = (menuList: IMenuInRole[]): string[] => {
 src\stores\login\login.ts
 
 ```typescript
-function dynamicLoadingPermissionAndRoutes(this: ILoginState,userMenus: IMenuInRole[]) {
+function dynamicLoadingPermissionAndRoutes(this: ILoginState, userMenus: IMenuInRole[]) {
 	// 加载按钮的权限
 	const permissions = mapMenusToPermission(userMenus)
 	this.permissions = permissions
@@ -61,16 +61,16 @@ function dynamicLoadingPermissionAndRoutes(this: ILoginState,userMenus: IMenuInR
 
 由分析可知，增删改查实际上都可以在 `PageContent.vue` 中控制。
 
-在其中增加四个布尔类型的 flag，`isCreate`、`isDelete`、`isUpdate`、`isQuery`，分别表示增、删、改、查权限。
+在其中增加四个布尔类型的 flags，`isCreate`、`isDelete`、`isUpdate`、`isQuery`，分别表示增、删、改、查权限。
 
-获取到 loginstore 中的 `permissions` 后，进行判断，为 flag 赋值。
+获取到 loginstore 中的 `permissions` 后，进行判断，为 flags 赋值。
 
 将上述逻辑抽取到 hook 中。
 
 src\hooks\usePermissions.ts
 
 ```typescript
-import useLoginStore from "@/stores/login/login"
+import useLoginStore from '@/stores/login/login'
 
 const usePermission = (permissionStr: string): boolean => {
 	const loginStore = useLoginStore()
@@ -110,32 +110,24 @@ src\components\page-content\PageContent.vue
 
 ```vue
 <template>
-
-  <el-button v-if="permission.isCreate" type="primary" @click="onNewclick">{{
-    contentConfig?.header?.btnLabel ?? `新建数据`
-  }}</el-button>
+	<el-button v-if="permission.isCreate" type="primary" @click="onNewclick">{{
+		contentConfig?.header?.btnLabel ?? `新建数据`
+	}}</el-button>
 
 	<!--,,,--->
 
-  <el-button
-  v-if="permission.isUpdate"
-    size="small"
-    icon="Edit"
-    type="primary"
-    text
-    @click="onEditClick(scope.row)"
-    >编辑</el-button
-  >
-  <el-button
-  v-if="permission.isDelete"
-    size="small"
-    icon="Delete"
-    type="danger"
-    text
-    @click="onDeleteClick(scope.row.id)"
-    >删除</el-button
-  >
-
+	<el-button v-if="permission.isUpdate" size="small" icon="Edit" type="primary" text @click="onEditClick(scope.row)"
+		>编辑</el-button
+	>
+	<el-button
+		v-if="permission.isDelete"
+		size="small"
+		icon="Delete"
+		type="danger"
+		text
+		@click="onDeleteClick(scope.row.id)"
+		>删除</el-button
+	>
 </template>
 ```
 
@@ -154,8 +146,7 @@ const permission = {
 </script>
 
 <template>
-	<div class="page-search" v-if="permission.isQuery">
-  </div>
+	<div class="page-search" v-if="permission.isQuery"></div>
 </template>
 ```
 
@@ -182,33 +173,33 @@ const fetchEntireData = (pageName: string) => {
 }
 
 const actions = {
-  deletePageByIdAction(pageName: string, id: number) {
-    deletePageById(pageName, id).then(res => {
-      console.log(pageName, 'delete res:', res)
-      this.postPageListAction(pageName, { offset: 0, size: 10 })
+	deletePageByIdAction(pageName: string, id: number) {
+		deletePageById(pageName, id).then(res => {
+			console.log(pageName, 'delete res:', res)
+			this.postPageListAction(pageName, { offset: 0, size: 10 })
 
-      // 如果是部门，角色，菜单等基础数据发生增、删、改操作，要重显加载到缓存中。
-      fetchEntireData(pageName)
-    })
-  },
-  postNewPageRecordAction<T>(pageName: string, record: T) {
-    postNewPageRecord(pageName, record).then(res => {
-      console.log(pageName, 'add res:', res)
-      this.postPageListAction(pageName, { offset: 0, size: 10 })
+			// 如果是部门，角色，菜单等基础数据发生增、删、改操作，要重显加载到缓存中。
+			fetchEntireData(pageName)
+		})
+	},
+	postNewPageRecordAction<T>(pageName: string, record: T) {
+		postNewPageRecord(pageName, record).then(res => {
+			console.log(pageName, 'add res:', res)
+			this.postPageListAction(pageName, { offset: 0, size: 10 })
 
-      // 如果是部门，角色，菜单等基础数据发生增、删、改操作，要重显加载到缓存中。
-      fetchEntireData(pageName)
-    })
-  },
-  pathEditPageRecordByIdAction<T>(pageName: string, id: number, record: T) {
-    pathEditPageRecordById(pageName, id, record).then(res => {
-      console.log(pageName, 'edit res:', res)
-      this.postPageListAction(pageName, { offset: 0, size: 10 })
+			// 如果是部门，角色，菜单等基础数据发生增、删、改操作，要重显加载到缓存中。
+			fetchEntireData(pageName)
+		})
+	},
+	pathEditPageRecordByIdAction<T>(pageName: string, id: number, record: T) {
+		pathEditPageRecordById(pageName, id, record).then(res => {
+			console.log(pageName, 'edit res:', res)
+			this.postPageListAction(pageName, { offset: 0, size: 10 })
 
-      // 如果是部门，角色，菜单等基础数据发生增、删、改操作，要重显加载到缓存中。
-      fetchEntireData(pageName)
-    })
-  }
+			// 如果是部门，角色，菜单等基础数据发生增、删、改操作，要重显加载到缓存中。
+			fetchEntireData(pageName)
+		})
+	}
 }
 ```
 
@@ -223,11 +214,11 @@ src\components\main-header\cpns\UserState.vue
 ```vue
 <script>
 const loginStore = useLoginStore()
-const nickname = computed(() =>  'name' in loginStore.userInfo ? loginStore.userInfo.name : '用户名')
+const nickname = computed(() => ('name' in loginStore.userInfo ? loginStore.userInfo.name : '用户名'))
 </script>
 
 <template>
-  <span class="name">{{ nickname }}</span>
+	<span class="name">{{ nickname }}</span>
 </template>
 ```
 
@@ -241,21 +232,21 @@ const nickname = computed(() =>  'name' in loginStore.userInfo ? loginStore.user
 
 ### 1.常用两种方案
 
-父子组件通信（交推荐）。
+父子组件通信（推荐）。
 
 事件总线（少用，不可控）。
 
-### 2.store.$onAction
+### 2.store.$onAction 方案
 
-在 `PageContent.vue` 中使用 `store.$onAction` API，
+在 `PageContent.vue` 中使用 [store.$onAction](https://pinia.vuejs.org/zh/core-concepts/actions.html#subscribing-to-actions) API，
 
-对 action 的执行进行监听，当增、删、改的 action 执行成功后，将页面中分页相关的状态 `currentPage` 改为 `1`.[参考 Pinia 文档](https://pinia.vuejs.org/zh/core-concepts/actions.html#subscribing-to-actions)
+对 systemStore 中 action 的执行进行监听，当增、删、改的 action 执行成功后，将页面中分页相关的状态 `currentPage` 改为 `1`。
 
 src\components\page-content\PageContent.vue
 
 ```vue
 <script>
-// 增、删、改后，将页面充值到第一页
+// 增、删、改后，将页面重置到第一页
 const onSubscribe = systemStore.$onAction(({ name, after }) => {
 	after(() => {
 		if (['deletePageByIdAction', 'postNewPageRecordAction', 'pathEditPageRecordByIdAction'].includes(name)) {
@@ -276,7 +267,7 @@ onUnmounted(() => {
 
 头部数字展示区域搭建，使用 Element Plus Layout 布局中的 `<el-row>` 布局。
 
-src\views\main\analysis\dashboard\Dashboard.vue
+src\views\main\analysis\dashboard\DashboardPanel.vue
 
 ```vue
 <!-- 数字卡片 -->
@@ -291,7 +282,7 @@ src\views\main\analysis\dashboard\Dashboard.vue
 
 封装组件 `CountCard.vue` 组件。
 
-在其中使用 flex 布局，并使用 `<el-tooltip>` 组件。
+在其中使用 flex 布局，并使用 `<el-tooltip>` 组件，展示卡片的提示信息。
 
 src\views\main\analysis\dashboard\cpns\count-card\CountCard.vue
 
@@ -332,17 +323,17 @@ export const getGoodsAmountListData = () =>
 
 ## 3.数字卡片组件
 
-安装 *countup.js* 库，
+安装 _countup.js_ 库，
 
 ```shell
 npm install countup.js
 ```
 
-在 `CountCard.vue` 组件中使用。做数字滚动。
+在 `CountCard.vue` 组件中使用。做数字滚动动画效果。
 
 为数字添加前缀，两种思路：
 
-- 在 template 中添加；
+- 在 `<template>` 中添加；
 
 - 在 JS 代码中添加（项目中采用）。
 
@@ -350,7 +341,7 @@ src\views\main\analysis\dashboard\cpns\count-card\CountCard.vue
 
 ```typescript
 const countOption = {
-	prefix: props.amount === 'saleroom'? '￥': ''
+	prefix: props.amount === 'saleroom' ? '￥' : ''
 }
 
 onMounted(() => {
@@ -369,7 +360,7 @@ onMounted(() => {
 
 使用 `<el-card>` 布局。
 
-在其中预留插槽，让 `Dashboard.vue` 传入图表。
+在其中预留插槽，让 `DashboardPanel.vue` 传入图表。
 
 src\views\main\analysis\dashboard\cpns\chart-card\ChartCard.vue
 
@@ -398,7 +389,7 @@ withDefaults(
 
 ### 2.echarts 安装
 
-安装 *echarts*。
+安装 _echarts_。
 
 ```shell
 npm install echarts
@@ -406,33 +397,45 @@ npm install echarts
 
 ### 3.BaseEchart 组件
 
-创建 `BaseEchart.vue` 组件，在其中接收 echarts 的配置项 `option`，并对 *echarts* 的逻辑进行封装。
+创建 `BaseEchart.vue` 组件，在其中接收 echarts 的配置项 `option`，并对 _echarts_ 的逻辑进行封装。
 
 src\components\page-echarts\src\BaseEchart.vue
 
 ```vue
 <script setup lang="ts">
-import { onMounted, onUnmounted, ref, watchEffect } from 'vue';
+import { onMounted, onUnmounted, ref, watch } from 'vue'
 import * as echarts from 'echarts'
-import type { EChartsOption, EChartsType} from 'echarts';
+import type { EChartsOption, EChartsType } from 'echarts'
+import debounce from '@/utils/debounce'
 
 const props = defineProps<{
-	option: EChartsOption
+	options: EChartsOption
+	mapData?: {
+		mapName: string
+		geoJSON: any
+	}
 }>()
 
 const containerRef = ref<HTMLElement>()
-const echartInstance = ref<EChartsType>()
+let echartInstance: EChartsType
 
-const echartResize = () => {
-	echartInstance.value?.resize()
-}
+if (props.mapData) echarts.registerMap(props.mapData.mapName, props.mapData.geoJSON)
+
+const echartResize = debounce(() => {
+	echartInstance.resize()
+}, 300)
 
 onMounted(() => {
-	echartInstance.value = echarts.init(containerRef.value!, 'light', {
+	echartInstance = echarts.init(containerRef.value!, 'light', {
 		renderer: 'canvas'
 	})
 
-	watchEffect(() => echartInstance.value?.setOption(props.option))
+	watch(
+		() => props.options,
+		newVal => {
+			echartInstance.setOption(newVal)
+		}
+	)
 
 	window.addEventListener('resize', echartResize)
 })
@@ -440,7 +443,6 @@ onMounted(() => {
 onUnmounted(() => {
 	window.removeEventListener('resize', echartResize)
 })
-
 </script>
 
 <template>
@@ -456,11 +458,11 @@ onUnmounted(() => {
 </style>
 ```
 
-### 4.图表组件创建，获取数据
+### 4.图表组件创建，并获取数据
 
-封装网络请求，和 actions，在 `Dashboard.vue` 中获取商品数据。
+封装网络请求，和 actions，在 `DashboardPanel.vue` 中获取商品数据。
 
-src\views\main\analysis\dashboard\Dashboard.vue
+src\views\main\analysis\dashboard\DashboardPanel.vue
 
 ```typescript
 const { goodsAmountList, goodsCategoryCount, goodsCategorySale, goodsCategoryFavor, goodsCategoryAddressSale } =
@@ -469,7 +471,9 @@ const { goodsAmountList, goodsCategoryCount, goodsCategorySale, goodsCategoryFav
 
 5.图表组件
 
-封装图表组件 `PieEchart.vue`，`RoseEchart.vue`，`LineEchart.vue`，`MapEchart.vue`，`BarEchart.vue`；分别对应饼图，玫瑰图，折线图，地图。
+封装图表组件 `PieEchart.vue`，`RoseEchart.vue`，`LineEchart.vue`，`MapEchart.vue`，`BarEchart.vue`；
+
+分别对应饼图，玫瑰图，折线图，地图，柱状图。
 
 stc/components/page-echarts/src/PieEchart.vue
 
@@ -481,9 +485,9 @@ stc/components/page-echarts/src/MapEchart.vue
 
 stc/components/page-echarts/src/BarEchart.vue
 
-在 `Dashboard.vue` 中，对获取的数据进行转化，传递给图表。
+在 `DashboardPanel.vue` 中，对获取的数据进行转化，传递给图表。
 
-src\views\main\analysis\dashboard\Dashboard.vue
+src\views\main\analysis\dashboard\DashboardPanel.vue
 
 ```vue
 <script>
@@ -554,7 +558,7 @@ const showGoodsAddressSale = computed(() =>
 			</el-col>
 			<el-col :span="12">
 				<ChartCard header="柱状图">
-					<BarEchart v-bind="showgoodsCategoryFavor" ></BarEchart>
+					<BarEchart v-bind="showgoodsCategoryFavor"></BarEchart>
 				</ChartCard>
 			</el-col>
 		</el-row>
@@ -575,7 +579,7 @@ src\components\page-echarts\utils\cover-data.ts
 ```typescript
 import coordinate from '../data/coordinate-data'
 
-type AddressUnionType =  keyof typeof coordinate
+type AddressUnionType = keyof typeof coordinate
 
 export default (
 	data: {
@@ -584,12 +588,11 @@ export default (
 	}[]
 ) =>
 	data
-		.filter(item =>  item.name in coordinate && Array.isArray(coordinate[item.name as AddressUnionType]))
+		.filter(item => item.name in coordinate && Array.isArray(coordinate[item.name as AddressUnionType]))
 		.map(item => ({
 			name: item.name,
 			value: coordinate[item.name as AddressUnionType].concat(item.values)
 		}))
-
 ```
 
 在 `MapEchart.vue` 中，向 `BaseEchart.vue` 中传递 `mapData`。
@@ -600,7 +603,7 @@ src\components\page-echarts\src\BaseEchart.vue
 const props = defineProps<{
 	options: EChartsOption
 	mapData?: {
-		mapName: string,
+		mapName: string
 		geoJSON: any
 	}
 }>()
@@ -646,7 +649,6 @@ onMounted(() => {
 onUnmounted(() => {
 	window.removeEventListener('resize', echartResize)
 })
-
 </script>
 
 <template>
@@ -656,13 +658,13 @@ onUnmounted(() => {
 </template>
 ```
 
->echart 实例 `echartInstance` 不要用 `ref` 包裹变为响应式对象，否则调用 `resize` 方法时可能报错。
+> echart 实例 `echartInstance` 不要用 `ref` 包裹变为响应式对象，否则调用 `resize` 方法时可能报错。
 
 #### 2.卡片
 
-为上方卡片做响应式布局。
+为 `DashboardPanel.vue` 上方卡片做响应式布局。
 
-src\views\main\analysis\dashboard\Dashboard.vue
+src\views\main\analysis\dashboard\DashboardPanel.vue
 
 ```vue
 <el-col :span="6" :xs="24" :sm="12" :md="8" :lg="6">
@@ -673,4 +675,3 @@ src\views\main\analysis\dashboard\Dashboard.vue
 # 四、git Husky
 
 [git Husky 配置回顾](./02-项目配置-目录结构分析-环境搭建（一）.md/#二、项目 git 提交规范配置)
-

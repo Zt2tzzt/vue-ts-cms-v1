@@ -70,7 +70,7 @@ const onEditClick = (itemData: IDepartment) => {
 	emits('editClick', itemData)
 }
 
-// 增、删、改后，将页面充值到第一页
+// 增、删、改后，将页面重置到第一页
 const onSubscribe = systemStore.$onAction(({ name, after }) => {
 	after(() => {
 		if (['deletePageByIdAction', 'postNewPageRecordAction', 'pathEditPageRecordByIdAction'].includes(name)) {
