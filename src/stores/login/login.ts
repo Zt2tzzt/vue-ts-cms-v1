@@ -14,7 +14,7 @@ interface ILoginState {
 	permissions: string[]
 }
 
-function dynamicLoadingPermissionAndRoutes(this: ILoginState,userMenus: IMenuInRole[]) {
+function dynamicLoadingPermissionAndRoutes(this: ILoginState, userMenus: IMenuInRole[]) {
 	// 加载按钮的权限
 	const permissions = mapMenusToPermission(userMenus)
 	this.permissions = permissions

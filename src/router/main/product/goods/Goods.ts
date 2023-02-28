@@ -1,4 +1,4 @@
-const Goods = () => import('@/views/main/product/goods/Goods.vue')
+const Goods = () => import('@/views/main/product/goods/GoodsPanel.vue')
 export default {
 	path: '/main/product/goods',
 	name: 'Goods',

@@ -46,11 +46,7 @@ const onQueryClick = () => {
 				</el-col>
 				<el-col :span="8">
 					<el-form-item label="状态" prop="enable">
-						<el-select
-							v-model="searchForm.enable"
-							placeholder="请选择查询的状态"
-							style="width: 100%"
-						>
+						<el-select v-model="searchForm.enable" placeholder="请选择查询的状态" style="width: 100%">
 							<el-option label="启用" :value="1"></el-option>
 							<el-option label="禁用" :value="0"></el-option>
 						</el-select>

@@ -11,7 +11,7 @@ import {
 	getGoodsCategoryCount,
 	getGoodsCategorySale,
 	getGoodsCategoryFavor,
-	getGoodsCategoryAddressSale
+	getGoodsAddressSale
 } from '@/service/main/analysis/analysis'
 
 interface IAnalysisState {
@@ -19,7 +19,7 @@ interface IAnalysisState {
 	goodsCategoryCount: IGoodsCategoryCount[]
 	goodsCategorySale: IGoodsCategorySale[]
 	goodsCategoryFavor: IGoodsCategoryFavor[]
-	goodsCategoryAddressSale: IGoodsCategoryAddressSale[]
+	goodsAddressSale: IGoodsCategoryAddressSale[]
 }
 
 const useAnalysisStore = defineStore('analysis', {
@@ -28,7 +28,7 @@ const useAnalysisStore = defineStore('analysis', {
 		goodsCategoryCount: [],
 		goodsCategorySale: [],
 		goodsCategoryFavor: [],
-		goodsCategoryAddressSale: []
+		goodsAddressSale: []
 	}),
 	actions: {
 		fetchAnalysisDataAction() {
@@ -48,9 +48,9 @@ const useAnalysisStore = defineStore('analysis', {
 				console.log('goods category favor res:', res)
 				this.goodsCategoryFavor = res.data
 			})
-			getGoodsCategoryAddressSale().then(res => {
+			getGoodsAddressSale().then(res => {
 				console.log('goods address sale res:', res)
-				this.goodsCategoryAddressSale = res.data
+				this.goodsAddressSale = res.data
 			})
 		}
 	}

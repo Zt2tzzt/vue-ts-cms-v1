@@ -2,7 +2,7 @@
 import useLoginStore from '@/stores/login/login'
 import { useRoute, useRouter } from 'vue-router'
 import type { IMenuInRoleChild } from '@/types'
-import { computed, onMounted, ref } from 'vue'
+import { onMounted, ref } from 'vue'
 import { mapPathToMenu } from '@/utils/map-path'
 
 withDefaults(

@@ -1,4 +1,4 @@
-import useLoginStore from "@/stores/login/login"
+import useLoginStore from '@/stores/login/login'
 
 const usePermission = (permissionStr: string): boolean => {
 	const loginStore = useLoginStore()

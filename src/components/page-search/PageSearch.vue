@@ -2,7 +2,7 @@
 import type { ElForm } from 'element-plus'
 import { reactive, ref } from 'vue'
 import type { ISearchConfig, SearchFormDataType } from '@/types'
-import usePermission from '@/hooks/usePermissions';
+import usePermission from '@/hooks/usePermissions'
 
 const props = defineProps<{
 	searchConfig: ISearchConfig
@@ -43,10 +43,7 @@ const onQueryClick = () => {
 					<el-col :span="8">
 						<el-form-item :label="item.label" :prop="item.prop">
 							<template v-if="item.type === 'input'">
-								<el-input
-									v-model="searchForm[item.prop]"
-									:placeholder="item.placeholder"
-								></el-input>
+								<el-input v-model="searchForm[item.prop]" :placeholder="item.placeholder"></el-input>
 							</template>
 
 							<template v-if="item.type === 'date-picker'">

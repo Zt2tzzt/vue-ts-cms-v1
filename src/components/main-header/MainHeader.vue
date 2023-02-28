@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import Breadcrumb from './cpns/Breadcrumb.vue'
+import Breadcrumb from './cpns/BreadCrumb.vue'
 import UserState from './cpns/UserState.vue'
 
 const props = withDefaults(

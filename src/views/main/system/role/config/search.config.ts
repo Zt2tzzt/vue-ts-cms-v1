@@ -1,5 +1,5 @@
 import type { ISearchConfig } from '@/types'
-import { ROLE } from '@/global/constance';
+import { ROLE } from '@/global/constance'
 
 const searchConfig: ISearchConfig = {
 	pageName: ROLE,

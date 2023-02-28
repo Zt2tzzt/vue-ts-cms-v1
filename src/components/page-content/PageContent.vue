@@ -30,7 +30,8 @@ const currentPage = ref(1)
 const pageSize = ref(10)
 
 // 查询
-const fetchPageListData = <T>(formatData: T | object = {}) => {
+type FetchPageListDataType = <T>(formData?: T | object) => void
+const fetchPageListData: FetchPageListDataType = (formatData = {}) => {
 	if (!permission.isQuery) return
 
 	// 1.获取 offset 和 limit

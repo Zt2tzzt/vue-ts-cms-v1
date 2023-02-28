@@ -1,10 +1,4 @@
-import type {
-	IUserQueryParam,
-	IUser,
-	IUserCreateFormData,
-	IUserEditFormData,
-	IResponseListData
-} from '@/types'
+import type { IUserQueryParam, IUser, IUserCreateFormData, IUserEditFormData, IResponseListData } from '@/types'
 import {
 	postUsers,
 	deleteUserById,
@@ -16,8 +10,8 @@ import {
 	pathEditPageRecordById
 } from '@/service/main/system/system'
 import { defineStore } from 'pinia'
-import { DEPARTMENT, ROLE, MENU } from '@/global/constance';
-import useMainStore from '../main';
+import { DEPARTMENT, ROLE, MENU } from '@/global/constance'
+import useMainStore from '../main'
 
 const fetchEntireData = (pageName: string) => {
 	if ([DEPARTMENT, ROLE, MENU].includes(pageName)) {

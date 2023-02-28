@@ -1,4 +1,4 @@
-<script setup lang="ts">
+<script setup lang="ts" name="BreadCrumb">
 import useLoginStore from '@/stores/login/login'
 import { computed } from 'vue'
 import { useRoute } from 'vue-router'

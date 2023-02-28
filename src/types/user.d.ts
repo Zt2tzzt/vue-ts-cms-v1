@@ -12,7 +12,7 @@ interface IUserRoleAndDepartment {
 }
 
 export interface IUserCreateFormData extends IUserFormDataBasic, IUserRoleAndDepartment {
-	password: string
+	password?: string
 }
 
 export type IUserEditFormData = Partial<IUserFormDataBasic & IUserRoleAndDepartment>

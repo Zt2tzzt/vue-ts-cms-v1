@@ -272,73 +272,405 @@ onUnmounted(() => {
 
 # 三、Dashboard 页面
 
+## 1.页面布局
+
 头部数字展示区域搭建，使用 Element Plus Layout 布局中的 `<el-row>` 布局。
+
+src\views\main\analysis\dashboard\Dashboard.vue
+
+```vue
+<!-- 数字卡片 -->
+<el-row :gutter="10">
+  <template v-for="item of goodsAmountList" :key="item.amount">
+    <el-col :span="6" :xs="24" :sm="12" :md="8" :lg="6">
+      <CountCard v-bind="item"></CountCard>
+    </el-col>
+  </template>
+</el-row>
+```
 
 封装组件 `CountCard.vue` 组件。
 
 在其中使用 flex 布局，并使用 `<el-tooltip>` 组件。
 
-封装网络请求，获取商品数据统计的数量。
+src\views\main\analysis\dashboard\cpns\count-card\CountCard.vue
+
+```vue
+<template>
+	<div class="count-card">
+		<div class="header">
+			<span class="title">{{ title }}</span>
+			<el-tooltip :content="tips" placement="top" effect="dark">
+				<el-icon><Warning /></el-icon>
+			</el-tooltip>
+		</div>
+		<div class="content">
+			<span ref="count1Ref">{{ number1 }}</span>
+		</div>
+		<div class="footer">
+			<span>{{ subtitle }}</span>
+			<span ref="count2Ref">{{ number2 }}</span>
+		</div>
+	</div>
+</template>
+```
+
+## 2.封装网络请求
+
+获取商品数据统计的数量。
+
+src\service\main\analysis\analysis.ts
+
+```typescript
+export const getGoodsAmountListData = () =>
+	ztRequest.get<IResponse<IGoodsAmountData[]>>({
+		url: '/goods/amount/list'
+	})
+```
 
 > 软件架构中，没有什么问题是分层不能解决的，如果有，就再分一层。
 
+## 3.数字卡片组件
 
+安装 *countup.js* 库，
 
-商品统计页面
+```shell
+npm install countup.js
+```
 
-安装 countup.js 库，再 CountCard 组件中使用。
+在 `CountCard.vue` 组件中使用。做数字滚动。
 
-为数字添加前缀，两种思路：1.再 template 中添加；2.在 JS 代码中添加。
+为数字添加前缀，两种思路：
 
+- 在 template 中添加；
 
+- 在 JS 代码中添加（项目中采用）。
 
-在商品统计页面
+src\views\main\analysis\dashboard\cpns\count-card\CountCard.vue
 
-创建 ChartCard 页面。用于展示图表卡片。
+```typescript
+const countOption = {
+	prefix: props.amount === 'saleroom'? '￥': ''
+}
 
-使用 el-card 布局。
+onMounted(() => {
+	const countup1 = new CountUp(count1Ref.value!, props.number1, countOption)
+	const countup2 = new CountUp(count2Ref.value!, props.number2, countOption)
+	countup1.start()
+	countup2.start()
+})
+```
 
-在其中预留插槽，让 Dashboard 传入图表。
+## 4.图表区域
 
+### 1.ChartCard 组件
 
+创建 `ChartCard.vue` 页面。用于展示图表卡片。
 
-在商品统计页面
+使用 `<el-card>` 布局。
 
-安装 echarts。对 echarts 的逻辑进行封装。
+在其中预留插槽，让 `Dashboard.vue` 传入图表。
 
-在 xxxChart 中编写好配置文件，并传给 baseChart。
+src\views\main\analysis\dashboard\cpns\chart-card\ChartCard.vue
 
+```vue
+<script setup lang="ts">
+withDefaults(
+	defineProps<{
+		header?: string
+	}>(),
+	{
+		header: '卡片标题'
+	}
+)
+</script>
 
+<template>
+	<div class="chart-card">
+		<el-card :header="header">
+			<slot> 卡片内容</slot>
+		</el-card>
+	</div>
+</template>
 
-在商品统计页面。
+<style scoped lang="less"></style>
+```
 
-封装网络请求，获取商品数据。
+### 2.echarts 安装
 
-对获取的数据进行转化，传递给图表。
+安装 *echarts*。
 
+```shell
+npm install echarts
+```
 
+### 3.BaseEchart 组件
 
-在商品统计页面，注册地图。
+创建 `BaseEchart.vue` 组件，在其中接收 echarts 的配置项 `option`，并对 *echarts* 的逻辑进行封装。
 
-服务器返回的数据中，没有地区销量对应的经纬度。
+src\components\page-echarts\src\BaseEchart.vue
 
-引入一个城市对应经纬度的对象。封装工具函数，进行映射。
+```vue
+<script setup lang="ts">
+import { onMounted, onUnmounted, ref, watchEffect } from 'vue';
+import * as echarts from 'echarts'
+import type { EChartsOption, EChartsType} from 'echarts';
 
+const props = defineProps<{
+	option: EChartsOption
+}>()
 
+const containerRef = ref<HTMLElement>()
+const echartInstance = ref<EChartsType>()
 
-在商品统计页面，进行响应式布局。
+const echartResize = () => {
+	echartInstance.value?.resize()
+}
 
-监听 window 的缩放，重置 echart 实例大小。
+onMounted(() => {
+	echartInstance.value = echarts.init(containerRef.value!, 'light', {
+		renderer: 'canvas'
+	})
+
+	watchEffect(() => echartInstance.value?.setOption(props.option))
+
+	window.addEventListener('resize', echartResize)
+})
+
+onUnmounted(() => {
+	window.removeEventListener('resize', echartResize)
+})
+
+</script>
+
+<template>
+	<div class="base-echart">
+		<div class="container" ref="containerRef"></div>
+	</div>
+</template>
+
+<style scoped lang="less">
+.container {
+	height: 300px;
+}
+</style>
+```
+
+### 4.图表组件创建，获取数据
+
+封装网络请求，和 actions，在 `Dashboard.vue` 中获取商品数据。
+
+src\views\main\analysis\dashboard\Dashboard.vue
+
+```typescript
+const { goodsAmountList, goodsCategoryCount, goodsCategorySale, goodsCategoryFavor, goodsCategoryAddressSale } =
+	storeToRefs(analysisStore)
+```
+
+5.图表组件
+
+封装图表组件 `PieEchart.vue`，`RoseEchart.vue`，`LineEchart.vue`，`MapEchart.vue`，`BarEchart.vue`；分别对应饼图，玫瑰图，折线图，地图。
+
+stc/components/page-echarts/src/PieEchart.vue
+
+stc/components/page-echarts/src/RoseEchart.vue
+
+stc/components/page-echarts/src/LineEchart.vue
+
+stc/components/page-echarts/src/MapEchart.vue
+
+stc/components/page-echarts/src/BarEchart.vue
+
+在 `Dashboard.vue` 中，对获取的数据进行转化，传递给图表。
+
+src\views\main\analysis\dashboard\Dashboard.vue
+
+```vue
+<script>
+const analysisStore = useAnalysisStore()
+analysisStore.fetchAnalysisDataAction()
+
+const { goodsAmountList, goodsCategoryCount, goodsCategorySale, goodsCategoryFavor, goodsAddressSale } =
+	storeToRefs(analysisStore)
+
+const showGoodsCategoryCount = computed(() =>
+	goodsCategoryCount.value.map(itme => ({
+		name: itme.name,
+		value: itme.goodsCount
+	}))
+)
+
+const showgoodsCategorySale = computed(() => ({
+	labels: goodsCategorySale.value.map(item => item.name),
+	values: goodsCategorySale.value.map(item => item.goodsCount)
+}))
+
+const showgoodsCategoryFavor = computed(() => ({
+	labels: goodsCategoryFavor.value.map(item => item.name),
+	values: goodsCategoryFavor.value.map(item => item.goodsFavor)
+}))
+
+const showGoodsAddressSale = computed(() =>
+	goodsAddressSale.value.map(item => ({
+		name: item.address,
+		values: item.count
+	}))
+)
+</script>
+
+<template>
+	<div class="dashboard">
+		<!-- 数字卡片 -->
+		<el-row :gutter="10">
+			<template v-for="item of goodsAmountList" :key="item.amount">
+				<el-col :span="6" :xs="24" :sm="12" :md="8" :lg="6">
+					<CountCard v-bind="item"></CountCard>
+				</el-col>
+			</template>
+		</el-row>
+
+		<!-- 图表 -->
+		<el-row :gutter="10">
+			<el-col :span="7">
+				<ChartCard header="饼图">
+					<PieEchart :pie-data="showGoodsCategoryCount"></PieEchart>
+				</ChartCard>
+			</el-col>
+			<el-col :span="10">
+				<ChartCard header="地图">
+					<MapEchart :map-data="showGoodsAddressSale"></MapEchart>
+				</ChartCard>
+			</el-col>
+			<el-col :span="7">
+				<ChartCard header="玫瑰图">
+					<RoseEchart :rose-data="showGoodsCategoryCount"></RoseEchart>
+				</ChartCard>
+			</el-col>
+
+			<el-col :span="12">
+				<ChartCard header="折线图">
+					<LineEchart v-bind="showgoodsCategorySale"></LineEchart>
+				</ChartCard>
+			</el-col>
+			<el-col :span="12">
+				<ChartCard header="柱状图">
+					<BarEchart v-bind="showgoodsCategoryFavor" ></BarEchart>
+				</ChartCard>
+			</el-col>
+		</el-row>
+	</div>
+</template>
+```
+
+### 5.地图组件
+
+服务器返回的数据中，没有地区销量对应的经纬度。去网上找一个包含地名和经纬度的文件。
+
+src\components\page-echarts\data\coordinate-data.ts
+
+注册地图。地图中的数据，需要映射出符合的格式。封装工具函数。
+
+src\components\page-echarts\utils\cover-data.ts
+
+```typescript
+import coordinate from '../data/coordinate-data'
+
+type AddressUnionType =  keyof typeof coordinate
+
+export default (
+	data: {
+		name: string
+		values: number
+	}[]
+) =>
+	data
+		.filter(item =>  item.name in coordinate && Array.isArray(coordinate[item.name as AddressUnionType]))
+		.map(item => ({
+			name: item.name,
+			value: coordinate[item.name as AddressUnionType].concat(item.values)
+		}))
+
+```
+
+在 `MapEchart.vue` 中，向 `BaseEchart.vue` 中传递 `mapData`。
+
+src\components\page-echarts\src\BaseEchart.vue
+
+```typescript
+const props = defineProps<{
+	options: EChartsOption
+	mapData?: {
+		mapName: string,
+		geoJSON: any
+	}
+}>()
+
+if (props.mapData) echarts.registerMap(props.mapData.mapName, props.mapData.geoJSON)
+```
+
+### 6.响应式布局
+
+#### 1.图表
+
+监听 `window` 的缩放，重置 `echart` 实例大小。
 
 - 监听时，做防抖节流操作。
 
 - 组件卸载时，取消监听，销毁实例。
 
+src\components\page-echarts\src\BaseEchart.vue
+
+```vue
+<script>
+const containerRef = ref<HTMLElement>()
+let echartInstance: EChartsType
+
+if (props.mapData) echarts.registerMap(props.mapData.mapName, props.mapData.geoJSON)
+
+const echartResize = debounce(() => {
+	echartInstance.resize()
+}, 300)
+
+onMounted(() => {
+	echartInstance = echarts.init(containerRef.value!, 'light', {
+		renderer: 'canvas'
+	})
+
+	watch(() => props.options, newVal => {
+		echartInstance.setOption(newVal)
+	})
+
+	window.addEventListener('resize', echartResize)
+})
+
+onUnmounted(() => {
+	window.removeEventListener('resize', echartResize)
+})
+
+</script>
+
+<template>
+	<div class="base-echart">
+		<div class="container" ref="containerRef"></div>
+	</div>
+</template>
+```
+
+>echart 实例 `echartInstance` 不要用 `ref` 包裹变为响应式对象，否则调用 `resize` 方法时可能报错。
+
+#### 2.卡片
+
 为上方卡片做响应式布局。
 
+src\views\main\analysis\dashboard\Dashboard.vue
 
+```vue
+<el-col :span="6" :xs="24" :sm="12" :md="8" :lg="6">
+  <CountCard v-bind="item"></CountCard>
+</el-col>
+```
 
-git Husky 配置回顾
+# 四、git Husky
 
 [git Husky 配置回顾](./02-项目配置-目录结构分析-环境搭建（一）.md/#二、项目 git 提交规范配置)
 

@@ -1,5 +1,5 @@
 import { localCache } from '@/utils/cache'
-import { createRouter, createWebHashHistory, createWebHistory } from 'vue-router'
+import { createRouter, createWebHashHistory } from 'vue-router'
 import { LOGIN_TOKEN } from '@/global/constance'
 import { firstRoute } from '@/utils/map-menu'
 
@@ -12,12 +12,12 @@ const router = createRouter({
 		},
 		{
 			path: '/login',
-			component: () => import('../views/login/Login.vue')
+			component: () => import('../views/login/SignIn.vue')
 		},
 		{
 			path: '/main',
 			name: 'main',
-			component: () => import('../views/main/Main.vue')
+			component: () => import('../views/main/MainPanel.vue')
 		},
 		{
 			path: '/:pathMatch(.*)',

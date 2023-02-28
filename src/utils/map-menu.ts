@@ -31,6 +31,8 @@ export const mapMenusToRoutes = (userMenu: IMenuInRole[]): RouteRecordRaw[] => {
 	const routes: RouteRecordRaw[] = []
 
 	const _getRoute = (userMenu: IMenuInRole[] | IMenuInRoleChild[]) => {
+		let route: RouteRecordRaw | undefined
+
 		userMenu.forEach(item => {
 			switch (item.type) {
 				case 1:
@@ -38,7 +40,7 @@ export const mapMenusToRoutes = (userMenu: IMenuInRole[]): RouteRecordRaw[] => {
 					if (Array.isArray(item.children)) _getRoute(item.children)
 					break
 				case 2:
-					const route = localRoutes.find(lr => lr.path === item.url)
+					route = localRoutes.find(lr => lr.path === item.url)
 					if (route) {
 						// 点击一级面包屑，返回大类里的重定向路由。
 						const redirectRoute = routes.find(r => !r.redirect && item.url.includes(r.path))

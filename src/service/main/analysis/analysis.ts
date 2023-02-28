@@ -1,5 +1,12 @@
 import ztRequest from '@/service'
-import type { IGoodsAmountData, IGoodsCategoryCount, IGoodsCategorySale, IGoodsCategoryFavor, IGoodsCategoryAddressSale,IResponse } from '@/types'
+import type {
+	IGoodsAmountData,
+	IGoodsCategoryCount,
+	IGoodsCategorySale,
+	IGoodsCategoryFavor,
+	IGoodsCategoryAddressSale,
+	IResponse
+} from '@/types'
 
 export const getGoodsAmountListData = () =>
 	ztRequest.get<IResponse<IGoodsAmountData[]>>({
@@ -21,7 +28,7 @@ export const getGoodsCategoryFavor = () =>
 		url: '/goods/category/favor'
 	})
 
-export const getGoodsCategoryAddressSale = () =>
+export const getGoodsAddressSale = () =>
 	ztRequest.get<IResponse<IGoodsCategoryAddressSale[]>>({
 		url: '/goods/address/sale'
 	})

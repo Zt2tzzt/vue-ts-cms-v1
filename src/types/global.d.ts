@@ -2,16 +2,9 @@ import type {
 	IDepartment,
 	IDepartmentSearchFormData,
 	IDepartmentCreateFormData,
-	IDepartmentEditFormDataIRole,
 	IDepartmentSearchFormItem
 } from './department'
-import type {
-	IRole,
-	IRoleSearchFormData,
-	IRoleCreateFormData,
-	IRoleEditFormData,
-	IRoleSearchFormItem
-} from './role'
+import type { IRole, IRoleSearchFormData, IRoleCreateFormData, IRoleEditFormData, IRoleSearchFormItem } from './role'
 
 // 查询
 export interface ISearchParam {

@@ -12,10 +12,12 @@ export const mapPathToMenu = (
 	userMenus: IMenuInRole[] | IMenuInRoleChild[],
 	breadcrumb?: IBreadcrumb[]
 ): IMenuInRoleChild | undefined => {
+	let findMenu: IMenuInRoleChild | undefined
+
 	for (const item of userMenus) {
 		switch (item.type) {
 			case 1:
-				const findMenu = mapPathToMenu(path, item.children ?? [])
+				findMenu = mapPathToMenu(path, item.children ?? [])
 				if (findMenu) {
 					breadcrumb?.push({ name: item.name, path: item.url }) // 一层菜单
 					breadcrumb?.push({ name: findMenu.name, path: findMenu.url })
@@ -36,10 +38,7 @@ export const mapPathToMenu = (
  * @param {IMenuInRole[]} userMenus 用户菜单列表
  * @return {IBreadcrumb[]} 面包屑列表
  */
-export const mapPathToBreadcrumb = (
-	path: string,
-	userMenus: IMenuInRole[] | IMenuInRoleChild[]
-): IBreadcrumb[] => {
+export const mapPathToBreadcrumb = (path: string, userMenus: IMenuInRole[] | IMenuInRoleChild[]): IBreadcrumb[] => {
 	const breadcrumbs: IBreadcrumb[] = []
 	mapPathToMenu(path, userMenus, breadcrumbs)
 	return breadcrumbs
