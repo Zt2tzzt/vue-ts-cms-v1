@@ -14,10 +14,10 @@ interface ILoginState {
 	permissions: string[]
 }
 
-function dynamicLoadingPermissionAndRoutes(this: ILoginState, userMenus: IMenuInRole[]) {
+const dynamicLoadingPermissionAndRoutes = (state: ILoginState, userMenus: IMenuInRole[]) => {
 	// 加载按钮的权限
 	const permissions = mapMenusToPermission(userMenus)
-	this.permissions = permissions
+	state.permissions = permissions
 
 	// 动态添加路由
 	const routes = mapMenusToRoutes(userMenus)
@@ -54,7 +54,7 @@ const useLoginStore = defineStore('login', {
 					localCache.setCache(USER_MENU, userMenus)
 
 					// 路由映射
-					dynamicLoadingPermissionAndRoutes.call(this, userMenus)
+					dynamicLoadingPermissionAndRoutes(this, userMenus)
 
 					router.push('/main')
 				})
@@ -72,7 +72,7 @@ const useLoginStore = defineStore('login', {
 				const mainStore = useMainStore()
 				mainStore.fetchEntireDataAction()
 
-				dynamicLoadingPermissionAndRoutes.call(this, userMenus)
+				dynamicLoadingPermissionAndRoutes(this, userMenus)
 			}
 		}
 	}

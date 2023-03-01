@@ -172,6 +172,8 @@ const fetchEntireData = (pageName: string) => {
 	}
 }
 
+//...
+
 const actions = {
 	deletePageByIdAction(pageName: string, id: number) {
 		deletePageById(pageName, id).then(res => {
@@ -224,9 +226,9 @@ const nickname = computed(() => ('name' in loginStore.userInfo ? loginStore.user
 
 ## 2.增删改后页码重置
 
-在增、删、改发送网络请求后，将分页器页码重置为第一页。
+在“增“、“删“、“改“发送网络请求后，将分页器页码重置为第一页。
 
-增、改都涉及到跨组件操作，
+“增“、“改“都涉及到跨组件操作，
 
 `PageModal.vue` 中发送完网络请求，要将事件传给 `PageContent.vue`。
 
@@ -240,7 +242,7 @@ const nickname = computed(() => ('name' in loginStore.userInfo ? loginStore.user
 
 在 `PageContent.vue` 中使用 [store.$onAction](https://pinia.vuejs.org/zh/core-concepts/actions.html#subscribing-to-actions) API，
 
-对 systemStore 中 action 的执行进行监听，当增、删、改的 action 执行成功后，将页面中分页相关的状态 `currentPage` 改为 `1`。
+对 systemStore 中 action 的执行进行监听，当“增”、“删”、“改”的 action 执行成功后，将页面中分页相关的状态 `currentPage` 改为 `1`。
 
 src\components\page-content\PageContent.vue
 
@@ -356,7 +358,7 @@ onMounted(() => {
 
 ### 1.ChartCard 组件
 
-创建 `ChartCard.vue` 页面。用于展示图表卡片。
+创建 `ChartCard.vue` 组件。用于展示图表卡片。
 
 使用 `<el-card>` 布局。
 
@@ -460,7 +462,7 @@ onUnmounted(() => {
 
 ### 4.图表组件创建，并获取数据
 
-封装网络请求，和 actions，在 `DashboardPanel.vue` 中获取商品数据。
+封装网络请求和 actions，在 `DashboardPanel.vue` 中获取商品数据。
 
 src\views\main\analysis\dashboard\DashboardPanel.vue
 
@@ -658,7 +660,11 @@ onUnmounted(() => {
 </template>
 ```
 
-> echart 实例 `echartInstance` 不要用 `ref` 包裹变为响应式对象，否则调用 `resize` 方法时可能报错。
+> echart 实例 `echartInstance` 不要用 `ref` 包裹变为响应式对象，
+>
+> 否则调用 `resize` 方法时可能报错。
+>
+> 如果使用的还是 `watchEffect` API，那么还会造成频繁 setOption 造成页面卡顿。
 
 #### 2.卡片
 
