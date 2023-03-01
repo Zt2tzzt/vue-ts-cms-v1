@@ -57,7 +57,7 @@ function dynamicLoadingPermissionAndRoutes(this: ILoginState, userMenus: IMenuIn
 
 ### 1.PageContent 页面
 
-在进入某个页面，如角色（`Role.vue`）时，判断用户是否有增、删、改、查权限。
+在进入某个页面，如角色（`RolePanel.vue`）时，判断用户是否有增、删、改、查权限。
 
 由分析可知，增删改查实际上都可以在 `PageContent.vue` 中控制。
 

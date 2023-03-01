@@ -38,15 +38,15 @@ npm install coderwhy -D
 npx coderwhy --version
 ```
 
-2.使用工具，比如要创建 `Department` 路由对象，以及 `Department.vue` 组件，可以执行以下命令。
+2.使用工具，比如要创建 `DepartmentPanel` 路由对象，以及 `DepartmentPanel.vue` 组件，可以执行以下命令。
 
 ```shell
-npx coderwhy add3page_setup Department -d src/views/main/system/department
+npx coderwhy add3page_setup DepartmentPanel -d src/views/main/system/department
 ```
 
 - `add3page_setup` 表示创建的是 Vue3 setup 语法的 Vue 组件。
-- `Department` 表示创建 `Department.vue` 组件和 `Department.ts` 路由对象文件。
-- `-d` 表示创建 `Department.vue` 组件所在的路径，同时会映射到 router 目录下。
+- `DepartmentPanel` 表示创建 `DepartmentPanel.vue` 组件和 `DepartmentPanel.ts` 路由对象文件。
+- `-d` 表示创建 `DepartmentPanel.vue` 组件所在的路径，同时会映射到 router 目录下。
 
 > 采用方案三（后端返回菜单）时，一般参考后端返回的路径，来创建相应路径下的组件。
 >
@@ -111,17 +111,19 @@ src\utils\map-menu.ts
 import type { IMenuInRole, IMenuInRoleChild } from '@/types'
 
 /**
- * @description: 此函数用于：根据用户拥有的菜单，筛选出对应的本地路由（用于 loginStore 中，获取 userMenus 后，进行动态添加路由）。
+ * @description: 此函数用于：根据用户拥有的菜单，筛选出对应的本地路由（用于 loginStore 中，获取 userMenus 后，进行路由映射）。
  * @Author: ZeT1an
  * @param {IMenuInRole[]} userMenu 用户菜单列表
  * @return {RouteRecordRaw[]} 菜单映射后的路由列表
  */
-export const mapMenusToRoutes = (userMenu: IMenuInRole[])： RouteRecordRaw[] => {
+export const mapMenusToRoutes = (userMenu: IMenuInRole[]): RouteRecordRaw[] => {
 	const localRoutes = loadLocalRoutes()
 
 	const routes: RouteRecordRaw[] = []
 
 	const _getRoute = (userMenu: IMenuInRole[] | IMenuInRoleChild[]) => {
+		let route: RouteRecordRaw | undefined
+
 		userMenu.forEach(item => {
 			switch (item.type) {
 				case 1:
@@ -129,11 +131,13 @@ export const mapMenusToRoutes = (userMenu: IMenuInRole[])： RouteRecordRaw[] =>
 					if (Array.isArray(item.children)) _getRoute(item.children)
 					break
 				case 2:
-					const route = localRoutes.find(lr => lr.path === item.url)
+					route = localRoutes.find(lr => lr.path === item.url)
 					if (route) {
 						// 点击一级面包屑，返回大类里的重定向路由。
 						const redirectRoute = routes.find(r => !r.redirect && item.url.includes(r.path))
 						if (redirectRoute) redirectRoute.redirect = route.path
+
+						if (!firstRoute) firstRoute = route
 						routes.push(route)
 					}
 					break
@@ -170,12 +174,14 @@ export let firstRoute: RouteRecordRaw // 用于保存第一个路由。
  * @param {IMenuInRole[]} userMenu 用户菜单列表
  * @return {RouteRecordRaw[]} 菜单映射后的路由列表
  */
-export const mapMenusToRoutes = (userMenu: IMenuInRole[]) => {
+export const mapMenusToRoutes = (userMenu: IMenuInRole[]): RouteRecordRaw[] => {
 	const localRoutes = loadLocalRoutes()
 
 	const routes: RouteRecordRaw[] = []
 
 	const _getRoute = (userMenu: IMenuInRole[] | IMenuInRoleChild[]) => {
+		let route: RouteRecordRaw | undefined
+
 		userMenu.forEach(item => {
 			switch (item.type) {
 				case 1:
@@ -183,7 +189,7 @@ export const mapMenusToRoutes = (userMenu: IMenuInRole[]) => {
 					if (Array.isArray(item.children)) _getRoute(item.children)
 					break
 				case 2:
-					const route = localRoutes.find(lr => lr.path === item.url)
+					route = localRoutes.find(lr => lr.path === item.url)
 					if (route) {
 						// 点击一级面包屑，返回大类里的重定向路由。
 						const redirectRoute = routes.find(r => !r.redirect && item.url.includes(r.path))
@@ -260,7 +266,7 @@ const actions = {
 
 在 `main.ts` 中，`use(pinia)` 后，就去读取本地缓存，并动态添加路由。
 
-将该操作封装成一个插件。
+将该操作封装成一个 vue 插件。
 
 src\stores\index.ts
 
@@ -317,13 +323,18 @@ import type { IMenuInRole, IMenuInRoleChild, IBreadcrumb } from '@/types'
  */
 export const mapPathToMenu = (
 	path: string,
-	userMenus: IMenuInRole[] | IMenuInRoleChild[]
+	userMenus: IMenuInRole[] | IMenuInRoleChild[],
+	breadcrumb?: IBreadcrumb[]
 ): IMenuInRoleChild | undefined => {
+	let findMenu: IMenuInRoleChild | undefined
+
 	for (const item of userMenus) {
 		switch (item.type) {
 			case 1:
-				const findMenu = mapPathToMenu(path, item.children ?? [])
+				findMenu = mapPathToMenu(path, item.children ?? [])
 				if (findMenu) {
+					breadcrumb?.push({ name: item.name, path: item.url }) // 一层菜单
+					breadcrumb?.push({ name: findMenu.name, path: findMenu.url })
 					return findMenu
 				}
 				break
@@ -367,10 +378,12 @@ export const mapPathToMenu = (
 	userMenus: IMenuInRole[] | IMenuInRoleChild[],
 	breadcrumb?: IBreadcrumb[]
 ): IMenuInRoleChild | undefined => {
+	let findMenu: IMenuInRoleChild | undefined
+
 	for (const item of userMenus) {
 		switch (item.type) {
 			case 1:
-				const findMenu = mapPathToMenu(path, item.children ?? [])
+				findMenu = mapPathToMenu(path, item.children ?? [])
 				if (findMenu) {
 					breadcrumb?.push({ name: item.name, path: item.url }) // 一层菜单
 					breadcrumb?.push({ name: findMenu.name, path: findMenu.url })
@@ -391,17 +404,14 @@ export const mapPathToMenu = (
  * @param {IMenuInRole[]} userMenus 用户菜单列表
  * @return {IBreadcrumb[]} 面包屑列表
  */
-export const mapPathToBreadcrumb = (
-	path: string,
-	userMenus: IMenuInRole[] | IMenuInRoleChild[]
-): IBreadcrumb[] => {
+export const mapPathToBreadcrumb = (path: string, userMenus: IMenuInRole[] | IMenuInRoleChild[]): IBreadcrumb[] => {
 	const breadcrumbs: IBreadcrumb[] = []
 	mapPathToMenu(path, userMenus, breadcrumbs)
 	return breadcrumbs
 }
 ```
 
-> 当要从循环中直接返回结果时，`for...of` 比 `forEach` 更合适。
+> 当要从循环遍历中直接返回结果时，`for...of` 比 `forEach` 更合适。
 
 使用计算属性，获取响应式的面包屑。
 
@@ -411,7 +421,7 @@ src\components\main-header\cpns\Breadcrumb.vue
 const breadcrumbs = computed(() => mapPathToBreadcrumb(route.path, loginStore.userMenus))
 ```
 
-# 三、User.vue 页面
+# 三、UserPanel.vue 页面
 
 ## 1.搜索页面
 
@@ -421,13 +431,13 @@ const breadcrumbs = computed(() => mapPathToBreadcrumb(route.path, loginStore.us
 
 使用 `<el-form>` 布局搜索区域。
 
-每行暂定放三个 input 框。使用 UI 框架的 Layout 布局。
+每行暂定放三个 input 框。使用 Element Plus 的 Layout 布局。
 
 - `<el-raw>` 和 `<el-col>`
 
 改变 `<el-form>` 中 `<el-form-item>` 的高度。
 
-- 修改 `<el-form-item>` padding，调整间距。
+- 修改 `<el-form-item>` padding 调整间距。
 
 > 为了方便扩展，一个 `<el-raw>` 中允许放多个 `<el-col>`，
 >
@@ -562,7 +572,7 @@ export default useSystemStore
 
 - 最后一列操作列，使用 `<el-table-column>` 的插槽插入按钮。
 
-- 设置每列宽度  `width="xxx"`，没有设置的列，自动平分剩余的宽度。。
+- 设置每列宽度 `width="xxx"`，没有设置的列，自动平分剩余的宽度。。
 
 - 每列居中显示 `align="center"`。
 
@@ -572,7 +582,7 @@ src\views\main\system\user\cpns\UserContent.vue
 
 ```css
 .table {
-  /* 选到的是 el-table-column */
+	/* 选到的是 el-table-column */
 	:deep(.el-table__cell) {
 		padding: 12px 0;
 	}

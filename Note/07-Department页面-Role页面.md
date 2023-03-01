@@ -1,6 +1,6 @@
 # 一、高阶组件封装（一）
 
-以 `Department.vue` 页面为例，封装和完善高阶组件 `PageContent.vue` 和 `PageModal.vue`.
+以 `DepartmentPanel.vue` 页面为例，封装和完善高阶组件 `PageContent.vue` 和 `PageModal.vue`.
 
 ## 1.PageContent 组件
 
@@ -41,7 +41,7 @@ src\views\main\system\department\cpns\PageContent.vue
 
 #### 1.通用列抽取
 
-在 `PageContent.vue` 中，抽取”选择列“、”序号“、”部门名称“、”部门编号“和”上级部门“等比较通用的列。
+在 `PageContent.vue` 中，抽取”选择列“、”序号“、”部门名称“、”部门编号“，”上级部门“等比较通用的列。
 
 使用 `v-bind` 的绑定对象的写法。
 
@@ -73,7 +73,7 @@ src\views\main\system\department\cpns\PageContent.vue
 在 `PageContent.vue` 中处理配置文件时，有两种思路：
 
 - 遍历配置文件时，使用 `v-if` 处理每种情况。
-- 遍历配置文件时，使用插槽将特殊的列交给 `Department.vue` 处理，使用动态插槽名。
+- 遍历配置文件时，使用插槽将特殊的列交给 `DepartmentPanel.vue` 处理，使用动态插槽名。
   - 配置文件中 item 的 `gener` 为 `custom`，表示需要使用插槽处理。
 
 项目中，两种思路都有采用。
@@ -108,12 +108,8 @@ src\views\main\system\department\cpns\PageContent.vue
 
 	<template v-else-if="item.gener === 'handler'">
 		<el-table-column align="center" v-bind="item" #default="scope">
-			<el-button size="small" icon="Edit" type="primary" text @click="onEditClick(scope.row)"
-				>编辑</el-button
-			>
-			<el-button size="small" icon="Delete" type="danger" text @click="onDeleteClick(scope.row.id)"
-				>删除</el-button
-			>
+			<el-button size="small" icon="Edit" type="primary" text @click="onEditClick(scope.row)">编辑</el-button>
+			<el-button size="small" icon="Delete" type="danger" text @click="onDeleteClick(scope.row.id)">删除</el-button>
 		</el-table-column>
 	</template>
 
@@ -155,7 +151,7 @@ systemStore.deletePageByIdAction(pageName.value, id)
 
 ### 1.头部、表单抽取
 
-抽取 header 的配置，和 formItems 的配置。
+抽取 `header` 的配置，和 `formItems` 的配置。
 
 src\views\main\system\department\config\modal.config.ts
 
@@ -208,7 +204,7 @@ src\components\page-modal\PageModal.vue\
 
 ### 2.动态注入配置项
 
-在 modalConfig 配置文件中，某些 type 为 `select` 的 formItem 的 `options` 数据来自服务器。
+在 modalConfig 配置文件中，某些 `type` 为 `select` 的 `formItem` 的 `options` 数据来自服务器。
 
 src\views\main\system\department\config\modal.config.ts
 
@@ -226,9 +222,9 @@ const formItems: IModalFormItem[] = [
 ]
 ```
 
-在 `Department.vue` 中，为 modalConfig 配置文件中 `type` 为 `select` 类型的 formItem，动态添加 options，使用 `computed`
+在 `DepartmentPanel.vue` 中，为 modalConfig 配置文件中 `type` 为 `select` 类型的 `formItem`，动态添加 `options`，使用 `computed`
 
-src\views\main\system\department\Department.vue
+src\views\main\system\department\DepartmentPanel.vue
 
 ```vue
 <template>
@@ -238,9 +234,7 @@ src\views\main\system\department\Department.vue
 <script>
 const modalConfigREf = computed(() => {
 	const mainStore = useMainStore()
-	const selectFormItem = modalConfig.formItems.find(item => {
-		item.type === 'select' && item.prop === 'parentId'
-	})
+	const selectFormItem = modalConfig.formItems.find(item => item.type === 'select' && item.prop === 'parentId')
 
 	if (selectFormItem && 'options' in selectFormItem) {
 		selectFormItem.options = mainStore.entireDepartments.map(item => ({
@@ -268,10 +262,7 @@ interface OpenDialogParamType<T> {
 	itemData?: T
 }
 // 设置 dialog 是否显示
-const setModalVisible = <T extends { id: number }, F>({
-	isNew = true,
-	itemData
-}: OpenDialogParamType<T>) => {
+const setModalVisible = <T extends { id: number }, F>({ isNew = true, itemData }: OpenDialogParamType<T>) => {
 	showdialog.value = true
 	isAdd.value = isNew
 	if (!isNew && itemData) {
@@ -302,7 +293,7 @@ const setModalVisible = <T extends { id: number }, F>({
 
 ## 3.Hooks 封装
 
-在 `Department.vue` 中，对相同的逻辑进行抽取，使用 hooks。
+在 `DepartmentPanel.vue` 中，对相同的逻辑进行抽取，使用 hooks。
 
 src\hooks\usePageSearch.ts
 
@@ -352,7 +343,7 @@ const usePageContent = () => {
 export default usePageContent
 ```
 
-src\views\main\system\department\Department.vue
+src\views\main\system\department\DepartmentPanel.vue
 
 ```typescript
 const [contentRef, handleQueryClick, handleResetClick] = usePageSearch()
@@ -362,11 +353,11 @@ const [modalRef, handleNewClick, handleEditClick] = usePageContent()
 
 # 二、高阶组件封装（二）
 
-以 `Role.vue` 页面为例，封装和完善高阶组件 `PageContent.vue` 和 `PageModal.vue`.
+以 `RolePanel.vue` 页面为例，封装和完善高阶组件 `PageContent.vue` 和 `PageModal.vue`.
 
 ## 1.Role 配置文件
 
-在 `Role.vue` 中，应用封装好的组件。编写配置文件。
+在 `RolePanel.vue` 中，应用封装好的组件。编写配置文件。
 
 src\views\main\system\role\config\search.config.ts
 
@@ -378,9 +369,9 @@ src\views\main\system\role\config\modal.config.ts
 
 ### 1.table 树形数据
 
-为 `<el-table>` 添加树形数据和懒加载的效果，在 `Menu.vue` 中展示菜单列表和它的子列表。
+为 `<el-table>` 添加树形数据和懒加载的效果，在 `MenuPanel.vue` 中展示菜单列表和它的子列表。
 
-在 `<el-table>` 上传入 `row-key` 属性和 `tree-props` 属性。[参考文档](https://element-plus.org/zh-CN/component/table.html#%E6%A0%91%E5%BD%A2%E6%95%B0%E6%8D%AE%E4%B8%8E%E6%87%92%E5%8A%A0%E8%BD%BD)
+在 `<el-table>` 上，传入 `row-key` 属性和 `tree-props` 属性。[参考文档](https://element-plus.org/zh-CN/component/table.html#%E6%A0%91%E5%BD%A2%E6%95%B0%E6%8D%AE%E4%B8%8E%E6%87%92%E5%8A%A0%E8%BD%BD)
 
 - 如果子树对应的属性是 `children` 则可以不传 `tree-props` 属性
 
@@ -422,13 +413,7 @@ export default contentConfig
 src\components\page-content\PageContent.vue
 
 ```vue
-<el-table
-	:data="pageList"
-	stripe
-	border
-	style="width: 100%"
-	v-bind="contentConfig?.childrenTree"
-></el-table>
+<el-table :data="pageList" stripe border style="width: 100%" v-bind="contentConfig?.childrenTree"></el-table>
 ```
 
 > 最好不要给 `PageContent.vue` 的 config 配置文件中的 formIten 加属性 `type`（项目中已用 `gener` 代替），
@@ -437,19 +422,19 @@ src\components\page-content\PageContent.vue
 
 ## 3.PageModal 组件
 
-### 1.插件展示角色的菜单
+### 1.插槽展示角色的菜单
 
-再 `Role.vue` 中，新建角色时，需要在 `PageModal.vue` 中展示菜单树。
+再 `RolePanel.vue` 中，新建角色时，需要在 `PageModal.vue` 中展示菜单树。
 
 使用插槽。和 `<el-tree>` 树形控件。
 
-先在 mainStore 中，获取完整的菜单数据 `entireMenus`。
+先在 `mainStore` 中，获取完整的菜单数据 `entireMenus`。
 
 再在 `PageModal.vue` 中，传入的 `props` 中，新增 `otherInfo` 属性，将选中的菜单信息传入进去。
 
 并在创建和修改角色时携带 `otherInfo` 参数，发送给服务器。
 
-src\views\main\system\role\Role.vue
+src\views\main\system\role\RolePanel.vue
 
 ```vue
 <template>
@@ -489,17 +474,17 @@ src\components\page-modal\PageModal.vue
 ```vue
 <!-- 插槽列 -->
 <template v-if="item.type === 'custom'">
-  <el-form-item>
-    <slot :name="(item as IModalFormItemCustom).slotname"></slot>
-  </el-form-item>
+	<el-form-item>
+		<slot :name="(item as IModalFormItemCustom).slotname"></slot>
+	</el-form-item>
 </template>
 ```
 
 > Vue 中 slotname 最好不要使用大写字母。
 
-在 `Role.vue` 中，点击“编辑：角色时，发现菜单树是上次打开 Modal 时选择的菜单（因为 `Pagemodal.vue` 组件没有被销毁）。
+在 `RolePanel.vue` 中，点击“编辑：角色时，发现菜单树是上次打开 Modal 时选择的菜单（因为 `Pagemodal.vue` 组件没有被销毁）。
 
-需要针对角色对应的菜单树进行回显：
+需要针对角色的菜单树进行回显：
 
 给 hook `usePageContent` 中传入一个回调函数 `editCallback`，将全部的菜单树 `menuList` 传入其中。
 
@@ -513,7 +498,6 @@ import type { ItemType, CreateFormDataType, EditFormDataType, IRole } from '@/ty
 type EditCallbackType = (data: IRole) => void
 
 const usePageContent = (editCallback?: EditCallbackType) => {
-  
 	const modalRef = ref<InstanceType<typeof PageModal>>()
 
 	const handleNewClick = () => {
@@ -564,7 +548,7 @@ export const mapMenusToIds = (menuList: IMenuInRole[]): number[] => {
 
 `nextTick` 传入的回调函数，会在 DOM 更新后执行。
 
-src\views\main\system\role\Role.vue
+src\views\main\system\role\RolePanel.vue
 
 ```typescript
 // 编辑时，携带编辑角色的菜单
@@ -587,8 +571,6 @@ const editCallback = (itemData: IRole) => {
 >
 > - 在 Vue2 中进行了多次调整。
 > - 在 Vue3 中，是一个微任务。
-
-
 
 # 三、富文本编辑器（了解）
 

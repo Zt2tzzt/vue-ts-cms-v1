@@ -60,7 +60,7 @@ src\views\main\system\user\cpns\UserContent.vue
 
 使用 `<el-pagination>` 组件。
 
-定义两个变量 `currentPage` 和 `pageSize`，并绑定到 `<el-pagination>` 组件上。
+定义两个变量 `currentPage` 和 `pageSize`，并绑双向绑定到 `<el-pagination>` 组件上。
 
 修改发布的网络请求逻辑，传入 `size` 和 `offset`；
 
@@ -125,7 +125,7 @@ const handleCurrentChange = () => {
 
 在 `UserContent.vue` 中进行条件查询。
 
-将条件查询的方法 `fetchUserListData` 暴露给 `User.vue`
+将条件查询的方法 `fetchUserListData` 暴露给 `UserPanel.vue`
 
 > 事件总线，通常用于跨度比较大的组件。存在不可控的缺陷。
 >
@@ -139,7 +139,7 @@ defineExpose({
 })
 ```
 
-在 `UserSerach.vue` 中，点击查询时，将查询条件，发送给 `User.vue`。
+在 `UserSerach.vue` 中，点击查询时，将查询条件，发送给 `UserPanel.vue`。
 
 - 注意：“创建时间”的初始值，不能使用空数组，后端接口无法处理。
 
@@ -170,9 +170,9 @@ const onQueryClick = () => {
 }
 ```
 
-再在 `User.vue` 中调用 `UserContent.vue` 中暴露的方法 `fetchUserListData`。
+再在 `UserPanel.vue` 中调用 `UserContent.vue` 中暴露的方法 `fetchUserListData`。
 
-src\views\main\system\user\User.vue
+src\views\main\system\user\UserPanel.vue
 
 ```typescript
 const contentRef = ref<InstanceType<typeof UserContent>>()
@@ -207,9 +207,7 @@ const onDeleteClick = (id: number) => {
 	<!--...-->
 	<el-table-column align="center" label="操作" width="250" #default="scope">
 		<el-button size="small" icon="Edit" type="primary" text>编辑</el-button>
-		<el-button size="small" icon="Delete" type="danger" text @click="onDeleteClick(scope.row.id)"
-			>删除</el-button
-		>
+		<el-button size="small" icon="Delete" type="danger" text @click="onDeleteClick(scope.row.id)">删除</el-button>
 	</el-table-column>
 </template>
 ```
@@ -218,12 +216,12 @@ src\stores\main\system\system.ts
 
 ```typescript
 const actions = {
-  deleteUserByIdAction(id: number) {
-    deleteUserById(id).then(res => {
-      console.log('detete res:', res)
-      this.postUsersAction({ offset: 0, size: 10 })
-    })
-  }
+	deleteUserByIdAction(id: number) {
+		deleteUserById(id).then(res => {
+			console.log('detete res:', res)
+			this.postUsersAction({ offset: 0, size: 10 })
+		})
+	}
 }
 ```
 
@@ -240,7 +238,7 @@ const actions = {
 
 在 `UserContent.vue` 中发送事件，传递 `UserModal.vue` 的“隐藏/显示”状态。
 
-在 `User.vue` 中拿到该状态，去调用 `UserModal.vue` 中暴露的方法 `setModalVisible`，改变其中的状态，
+在 `UserPanel.vue` 中拿到该状态，去调用 `UserModal.vue` 中暴露的方法 `setModalVisible`，改变其中的状态，
 
 > 在组件中一般暴露方法，而不是直接暴露属性；
 >
@@ -260,7 +258,7 @@ const onNewclick = () => {
 </template>
 ```
 
-src\views\main\system\user\User.vue
+src\views\main\system\user\UserPanel.vue
 
 ```vue
 <script>
@@ -292,13 +290,7 @@ defineExpose({
 </script>
 
 <template>
-	<el-dialog
-		v-model="showdialog"
-		:title="isAdd ? '新建用户' : '修改用户'"
-		width="30%"
-		destroy-on-close
-		center
-	>
+	<el-dialog v-model="showdialog" :title="isAdd ? '新建用户' : '修改用户'" width="30%" destroy-on-close center>
 		<!--...-->
 	</el-dialog>
 </template>
@@ -326,22 +318,22 @@ export const getEntireDepartment = () =>
 
 这种数据需要在多个页面中使用。
 
-所以创建 mainStore，将数据保存到其中。
+所以创建 `mainStore`，将数据保存到其中。
 
 src\stores\main\main.ts
 
 ```typescript
-actions: {
-  fetchEntireDataAction() {
-    getEntireRoles().then(res => {
-      console.log('role res:', res)
-      this.entireRoles = res.data.list
-    })
-    getEntireDepartment().then(res => {
-      console.log('department res:', res)
-      this.entireDepartments = res.data.list
-    })
-  }
+const actions = {
+	fetchEntireDataAction() {
+		getEntireRoles().then(res => {
+			console.log('role res:', res)
+			this.entireRoles = res.data.list
+		})
+		getEntireDepartment().then(res => {
+			console.log('department res:', res)
+			this.entireDepartments = res.data.list
+		})
+	}
 }
 ```
 
@@ -350,21 +342,23 @@ actions: {
 src\stores\login\login.ts
 
 ```typescript
-loadLocalCacheAction() {
-  // 页面载入、刷新，从缓存中加载数据
-  const token = localCache.getCache(LOGIN_TOKEN)
-  const userInfo = localCache.getCache(USER_INFO)
-  const userMenus = localCache.getCache(USER_MENU)
-  if (token && userInfo && userMenus) {
-    this.token = token
-    this.userInfo = userInfo
-    this.userMenus = userMenus
+const action = {
+	loadLocalCacheAction() {
+		// 页面载入、刷新，从缓存中加载数据
+		const token = localCache.getCache(LOGIN_TOKEN)
+		const userInfo = localCache.getCache(USER_INFO)
+		const userMenus = localCache.getCache(USER_MENU)
+		if (token && userInfo && userMenus) {
+			this.token = token
+			this.userInfo = userInfo
+			this.userMenus = userMenus
 
-    const mainStore = useMainStore()
-    mainStore.fetchEntireDataAction()
+			const mainStore = useMainStore()
+			mainStore.fetchEntireDataAction()
 
-    dynamicLoadingRoutes(userMenus)
-  }
+			dynamicLoadingRoutes(userMenus)
+		}
+	}
 }
 ```
 
@@ -393,7 +387,7 @@ const onConfigClick = () => {
 </template>
 ```
 
-封装创建用户的网络请求，在 systenStore 中创建 action。在 `UserModal.vue` 中调用。
+封装创建用户的网络请求，在 `systenStore` 中创建 action。在 `UserModal.vue` 中调用。
 
 新建成功后，发送网络请求，进行数据重载。
 
@@ -401,12 +395,13 @@ src\stores\main\system\system.ts
 
 ```typescript
 const actions = {
-  postNewUserAction(addParam: IUserCreateFormData) {
-    postNewUserData(addParam).then(res => {
-      console.log('add user res:', res)
-      this.postUsersAction({ offset: 0, size: 10  })
-    })
-  }  
+	postNewUserAction(addParam: IUserCreateFormData) {
+		postNewUserData(addParam).then(res => {
+			console.log('add user res:', res)
+			// 重载（回显）
+			this.postUsersAction({ offset: 0, size: 10 })
+		})
+	}
 }
 ```
 
@@ -420,9 +415,7 @@ src\views\main\system\user\cpns\UserContent.vue
 
 ```vue
 <template>
-	<el-button size="small" icon="Edit" type="primary" text @click="onEditClick(scope.row)"
-		>编辑</el-button
-	>
+	<el-button size="small" icon="Edit" type="primary" text @click="onEditClick(scope.row)">编辑</el-button>
 </template>
 
 <script>
@@ -432,16 +425,12 @@ const onEditClick = (itemData: IUser) => {
 </script>
 ```
 
-src\views\main\system\user\User.vue
+src\views\main\system\user\UserPanel.vue
 
 ```vue
 <template>
 	<!--...--->
-	<UserContent
-		ref="contentRef"
-		@new-click="handleNewClick"
-		@edit-click="handleEditClick"
-	></UserContent>
+	<UserContent ref="contentRef" @new-click="handleNewClick" @edit-click="handleEditClick"></UserContent>
 	<UserModal ref="modalRef"></UserModal>
 </template>
 
@@ -519,7 +508,7 @@ for...in
 function print(obj: Person) {
 	let key: keyof Person
 	for (key in obj) {
-		// ✅
+		// ...
 		console.log(key, obj[key].toUpperCase())
 	}
 }
@@ -550,19 +539,19 @@ export const getKeysFronObj = <T>(obj: T) => Object.keys(obj) as Array<keyof T>
 
 ## 1.快速搭建
 
-根据 `User.vue` 和其中的组件。
+根据 `UserPanel.vue` 和其中的组件。
 
-在 `Department.vue` 中，快速搭建搜索区域。创建 `PageSearch.vue` 组件。
+在 `DepartmentPanel.vue` 中，快速搭建搜索区域。创建 `PageSearch.vue` 组件。
 
 src\views\main\system\department\cpns\Pagesearch.vue
 
-在 `Department.vue` 中，快速搭建内容区域。创建 `PageContent.vue` 组件。
+在 `DepartmentPanel.vue` 中，快速搭建内容区域。创建 `PageContent.vue` 组件。
 
 src\views\main\system\department\cpns\PageContent.vue
 
 ## 2.封装网络请求
 
-在 systemStore 中，针对 `Department.vue` 的内容，封装动态的网络请求。
+在 systemStore 中，针对 `DepartmentPanel.vue` 的内容，封装动态的网络请求。
 
 src\service\main\system\system.ts
 
@@ -628,7 +617,7 @@ const actions = {
 
 ## 3.实现查询、重置、删除
 
-在 `PageSearch.vue` 中，实现 Department 的查询，重置
+在 `PageSearch.vue` 中，实现 `Department.vue` 中的“查询”，“重置”。
 
 发送查询的事件
 
@@ -644,7 +633,7 @@ const onQueryClick = () => {
 }
 ```
 
-在 `PageSearch.vue` 中，实现 Department 的查询，
+在 `PageSearch.vue` 中，实现 Department 的“查询”，
 
 调用查询的接口。
 
@@ -678,7 +667,7 @@ defineExpose({
 })
 ```
 
-在 `PageContent.vue` 中，实现 Department 的删除功能
+在 `PageContent.vue` 中，实现 `Department.vue` 中的“删除”功能
 
 src\views\main\system\department\cpns\PageContent.vue
 
@@ -690,7 +679,7 @@ const onDeleteClick = (id: number) => {
 
 ## 4.实现新增、编辑
 
-创建 `PageModal.vue` 组件，实现新增，修改等功能。
+创建 `PageModal.vue` 组件，实现“新增”，“修改”等功能。
 
 src\views\main\system\department\cpns\PageModal.vue
 
@@ -702,11 +691,7 @@ const onConfigClick = () => {
 	if (!isAdd.value && editId.value !== -1) {
 		// 编辑
 		const { ...editFormData } = formData
-		systemStore.pathEditPageRecordByIdAction<IDepartmentEditFormData>(
-			DEPARTMENT,
-			editId.value,
-			editFormData
-		)
+		systemStore.pathEditPageRecordByIdAction<IDepartmentEditFormData>(DEPARTMENT, editId.value, editFormData)
 	} else {
 		// 新增
 		systemStore.postNewPageRecordAction<IDepartmentCreateFormData>(DEPARTMENT, { ...formData })
@@ -810,10 +795,7 @@ const onQueryClick = () => {
 					<el-col :span="8">
 						<el-form-item :label="item.label" :prop="item.prop">
 							<template v-if="item.type === 'input'">
-								<el-input
-									v-model="searchForm[item.prop]"
-									:placeholder="item.placeholder"
-								></el-input>
+								<el-input v-model="searchForm[item.prop]" :placeholder="item.placeholder"></el-input>
 							</template>
 
 							<template v-if="item.type === 'date-picker'">
@@ -827,11 +809,7 @@ const onQueryClick = () => {
 							</template>
 
 							<template v-if="item.type === 'select'">
-								<el-select
-									v-model="searchForm[item.prop]"
-									:placeholder="item.placeholder"
-									style="width: ;100%"
-								>
+								<el-select v-model="searchForm[item.prop]" :placeholder="item.placeholder" style="width: ;100%">
 									<template v-for="option in item.options" :key="option.value">
 										<el-option :label="option.label" :value="option.value"></el-option>
 									</template>
@@ -866,7 +844,7 @@ type propTypes = Student[keyof Student]
 
 # 三、Role 页面（简单搭建）
 
-快速搭建 Role.vue 页面
+快速搭建 `RolePanel.vue` 页面
 
 src\views\main\system\role\config\search.config.ts
 
@@ -897,7 +875,7 @@ const searchConfig = {
 export default searchConfig
 ```
 
-src\views\main\system\role\role.vue
+src\views\main\system\role\RolePanel.vue
 
 ```vue
 <template>
