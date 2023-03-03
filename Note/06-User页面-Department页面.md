@@ -60,7 +60,7 @@ src\views\main\system\user\cpns\UserContent.vue
 
 使用 `<el-pagination>` 组件。
 
-定义两个变量 `currentPage` 和 `pageSize`，并绑双向绑定到 `<el-pagination>` 组件上。
+定义两个变量 `currentPage` 和 `pageSize`，并双向绑定到 `<el-pagination>` 组件上。
 
 修改发布的网络请求逻辑，传入 `size` 和 `offset`；
 
@@ -619,7 +619,7 @@ const actions = {
 
 在 `PageSearch.vue` 中，实现 `Department.vue` 中的“查询”，“重置”。
 
-发送查询的事件
+发送事件
 
 src\views\main\system\department\cpns\PageSearch.vue
 

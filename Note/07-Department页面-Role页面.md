@@ -70,13 +70,11 @@ src\views\main\system\department\cpns\PageContent.vue
 
 抽取”创建时间“、”更新时间“和”操作“等三个使用了插槽的列，
 
-在 `PageContent.vue` 中处理配置文件时，有两种思路：
+在 `PageContent.vue` 中遍历处理配置文件时，有两种思路（项目中都有采用）：
 
-- 遍历配置文件时，使用 `v-if` 处理每种情况。
-- 遍历配置文件时，使用插槽将特殊的列交给 `DepartmentPanel.vue` 处理，使用动态插槽名。
+- 使用 `v-if` 处理每种情况。
+- 使用插槽将特殊的列交给 `DepartmentPanel.vue` 处理，使用动态插槽名。
   - 配置文件中 item 的 `gener` 为 `custom`，表示需要使用插槽处理。
-
-项目中，两种思路都有采用。
 
 src\views\main\system\department\config\content.config.ts
 
@@ -137,11 +135,13 @@ src\views\main\system\department\cpns\PageContent.vue
 ```typescript
 const pageName = computed(() => props.contentConfig.pageName)
 
+//...
 systemStore.postPageListAction<IDepartmentQueryParam>(pageName.value, {
 	...queryParam,
 	...formatData
 })
 
+//...
 systemStore.deletePageByIdAction(pageName.value, id)
 ```
 
@@ -234,6 +234,7 @@ src\views\main\system\department\DepartmentPanel.vue
 <script>
 const modalConfigREf = computed(() => {
 	const mainStore = useMainStore()
+  // 这种写法，如果导致一行过长，如果 prettier 格式化后，要注意给回调函数加上 return。
 	const selectFormItem = modalConfig.formItems.find(item => item.type === 'select' && item.prop === 'parentId')
 
 	if (selectFormItem && 'options' in selectFormItem) {
@@ -252,7 +253,7 @@ const modalConfigREf = computed(() => {
 
 > 因为 `PageModal.vue` 默认是不显示的，而是点击“新建”或“修改”时显示；
 >
-> 所以设置初始化值无效，需要在显示的时候，再设置初始化值。
+> 所以需要在显示的时候，再设置初始化值。
 
 src\components\page-modal\PageModal.vue
 
@@ -285,7 +286,7 @@ const setModalVisible = <T extends { id: number }, F>({ isNew = true, itemData }
 
 在 `PageModal.vue` 中设置传入的 Props 的类型时，要注意：
 
-> 组件 Props 的类型，`defineProps<T>` 泛型中的类型，不能定义在文件外面，否则无法编译。
+> 组件 Props 的类型 `defineProps<T>` 泛型中的类型 `T` 不能定义在文件外面，否则无法编译。
 >
 > 不要在 .vue 文件中导出类型或其它内容。
 >
@@ -369,11 +370,11 @@ src\views\main\system\role\config\modal.config.ts
 
 ### 1.table 树形数据
 
-为 `<el-table>` 添加树形数据和懒加载的效果，在 `MenuPanel.vue` 中展示菜单列表和它的子列表。
+为 `<el-table>` 添加树形数据的效果，在 `MenuPanel.vue` 中展示菜单列表和它的子列表。
 
 在 `<el-table>` 上，传入 `row-key` 属性和 `tree-props` 属性。[参考文档](https://element-plus.org/zh-CN/component/table.html#%E6%A0%91%E5%BD%A2%E6%95%B0%E6%8D%AE%E4%B8%8E%E6%87%92%E5%8A%A0%E8%BD%BD)
 
-- 如果子树对应的属性是 `children` 则可以不传 `tree-props` 属性
+- 如果子树对应的属性是 `children` 则可以不传 `tree-props` 属性。
 
 src\views\main\system\menu\config\content.config.ts
 
@@ -424,7 +425,7 @@ src\components\page-content\PageContent.vue
 
 ### 1.插槽展示角色的菜单
 
-再 `RolePanel.vue` 中，新建角色时，需要在 `PageModal.vue` 中展示菜单树。
+在 `RolePanel.vue` 中，新建角色时，需要在 `PageModal.vue` 中展示菜单树。
 
 使用插槽。和 `<el-tree>` 树形控件。
 
@@ -480,9 +481,9 @@ src\components\page-modal\PageModal.vue
 </template>
 ```
 
-> Vue 中 slotname 最好不要使用大写字母。
+> Vue 中 slot name 最好不要使用大写字母。
 
-在 `RolePanel.vue` 中，点击“编辑：角色时，发现菜单树是上次打开 Modal 时选择的菜单（因为 `Pagemodal.vue` 组件没有被销毁）。
+在 `RolePanel.vue` 中，点击“编辑：角色时，发现菜单树是上次打开 Modal 时选择的菜单（因为 `PageModal.vue` 组件没有被销毁）。
 
 需要针对角色的菜单树进行回显：
 

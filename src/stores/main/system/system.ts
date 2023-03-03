@@ -1,4 +1,11 @@
-import type { IUserQueryParam, IUser, IUserCreateFormData, IUserEditFormData, IResponseListData } from '@/types'
+import type {
+	IUserQueryParam,
+	IUser,
+	IUserCreateFormData,
+	IUserEditFormData,
+	IResponseListData,
+	ItemType
+} from '@/types'
 import {
 	postUsers,
 	deleteUserById,
@@ -24,7 +31,7 @@ interface ISystemStore {
 	users: IUser[]
 	usersTotalCount: number
 
-	pageList: any[]
+	pageList: ItemType[]
 	pageTotalCount: number
 }
 
