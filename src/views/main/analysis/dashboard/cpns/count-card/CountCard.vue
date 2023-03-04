@@ -44,9 +44,11 @@ onMounted(() => {
 				<el-icon><Warning /></el-icon>
 			</el-tooltip>
 		</div>
+
 		<div class="content">
 			<span ref="count1Ref">{{ number1 }}</span>
 		</div>
+
 		<div class="footer">
 			<span>{{ subtitle }}</span>
 			<span ref="count2Ref">{{ number2 }}</span>

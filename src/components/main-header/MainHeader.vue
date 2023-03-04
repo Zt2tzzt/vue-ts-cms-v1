@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import Breadcrumb from './cpns/BreadCrumb.vue'
+import BreadCrumb from './cpns/BreadCrumb.vue'
 import UserState from './cpns/UserState.vue'
 
 const props = withDefaults(
@@ -28,7 +28,7 @@ const handleMenuIconClick = () => {
 		</div>
 
 		<div class="content">
-			<Breadcrumb></Breadcrumb>
+			<BreadCrumb></BreadCrumb>
 			<UserState></UserState>
 		</div>
 	</div>

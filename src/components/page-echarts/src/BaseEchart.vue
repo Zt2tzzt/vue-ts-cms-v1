@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { onMounted, onUnmounted, ref, watchEffect } from 'vue'
+import { onMounted, onUnmounted, ref, watchEffect, type WatchStopHandle } from 'vue'
 import * as echarts from 'echarts'
 import type { EChartsOption, EChartsType } from 'echarts'
 import debounce from '@/utils/debounce'
@@ -21,6 +21,8 @@ const echartResize = debounce(() => {
 	echartInstance.resize()
 }, 300)
 
+let stopWatchEffect: WatchStopHandle
+
 onMounted(() => {
 	echartInstance = echarts.init(containerRef.value!, 'light', {
 		renderer: 'canvas'
@@ -33,12 +35,13 @@ onMounted(() => {
 		}
 	) */
 
-	watchEffect(() => echartInstance.setOption(props.options))
+	stopWatchEffect = watchEffect(() => echartInstance.setOption(props.options))
 
 	window.addEventListener('resize', echartResize)
 })
 
 onUnmounted(() => {
+	stopWatchEffect?.()
 	window.removeEventListener('resize', echartResize)
 })
 </script>

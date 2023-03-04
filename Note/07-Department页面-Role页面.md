@@ -234,7 +234,7 @@ src\views\main\system\department\DepartmentPanel.vue
 <script>
 const modalConfigREf = computed(() => {
 	const mainStore = useMainStore()
-  // 这种写法，如果导致一行过长，如果 prettier 格式化后，要注意给回调函数加上 return。
+	// 这种写法，如果导致一行过长，如果 prettier 格式化后，要注意给回调函数加上 return。
 	const selectFormItem = modalConfig.formItems.find(item => item.type === 'select' && item.prop === 'parentId')
 
 	if (selectFormItem && 'options' in selectFormItem) {
