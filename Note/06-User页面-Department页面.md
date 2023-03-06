@@ -229,7 +229,7 @@ const actions = {
 
 ### 1.弹出新增对话框
 
-在 `UserContent.vue` 中编写用户新建的功能。
+在 `UserContent.vue` 中发送用户新建的事件。
 
 将该功能封装在 `UserModal.vue` 组件中。
 
@@ -445,7 +445,7 @@ const handleEditClick = (itemData: IUser) => {
 
 在 `UserModal.vue` 中，使用一个标识符 `isAdd` 来区分打开 modal 是为了新建还是编辑。
 
-编辑完成后，进行数据重载。
+编辑完成后，在 action 中进行数据重载。
 
 src\views\main\system\user\cpns\UserModal.vue
 
@@ -502,7 +502,7 @@ defineExpose({
 
 所以无法分配给对象类型中 keys 具体的字面量类型，需要使用类型断言。
 
-for...in
+`for...in`
 
 ```typescript
 function print(obj: Person) {
@@ -514,7 +514,7 @@ function print(obj: Person) {
 }
 ```
 
-Object.keys
+`Object.keys`
 
 ```typescript
 function print(obj: Person) {
@@ -703,7 +703,7 @@ const onConfigClick = () => {
 
 将 `PageSearch.vue` 移动到 Component 目录下。在其中进行抽取和封装。
 
-> 动态组件对一些需要精准控制的组件，不太合适。
+> 动态组件 `<Component>` 对一些需要精准控制的组件，不太合适。
 
 src\views\main\system\department\config\search-config.ts
 

@@ -8,7 +8,7 @@
 
 在 `PageContent.vue` 中，进行抽取和封装。
 
-抽取头部的 title 和新建按钮的 label 到配置文件中。
+抽取头部的 title 和“新建按钮”的 label 到配置文件中。
 
 src\views\main\system\department\cpns\PageContent.vue
 
@@ -72,8 +72,8 @@ src\views\main\system\department\cpns\PageContent.vue
 
 在 `PageContent.vue` 中遍历处理配置文件时，有两种思路（项目中都有采用）：
 
-- 使用 `v-if` 处理每种情况。
-- 使用插槽将特殊的列交给 `DepartmentPanel.vue` 处理，使用动态插槽名。
+- 思路一：使用 `v-if` 处理每种情况。
+- 思路二：使用插槽将特殊的列交给 `DepartmentPanel.vue` 处理，使用动态插槽名。
   - 配置文件中 item 的 `gener` 为 `custom`，表示需要使用插槽处理。
 
 src\views\main\system\department\config\content.config.ts
@@ -417,7 +417,7 @@ src\components\page-content\PageContent.vue
 <el-table :data="pageList" stripe border style="width: 100%" v-bind="contentConfig?.childrenTree"></el-table>
 ```
 
-> 最好不要给 `PageContent.vue` 的 config 配置文件中的 formIten 加属性 `type`（项目中已用 `gener` 代替），
+> 最好不要给 `PageContent.vue` 的 config 配置文件中的 `formIten` 加属性 `type`（项目中已用 `gener` 代替），
 >
 > 因为在 `<el-table-column>` 上使用 `v-bind` 绑定属性对象时，会覆盖原组件上的属性 `type`。
 
@@ -516,7 +516,7 @@ const usePageContent = (editCallback?: EditCallbackType) => {
 export default usePageContent
 ```
 
-封装一个工具函数，将编辑角色的菜单（子菜单）映射出来，形参一个 Id 列表，使用递归。
+封装一个工具函数，将编辑角色的菜单（子菜单）映射出来，返回一个 Id 列表，使用递归。
 
 src\utils\map-menu.ts
 
