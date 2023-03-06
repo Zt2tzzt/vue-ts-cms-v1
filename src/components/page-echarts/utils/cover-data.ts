@@ -3,10 +3,10 @@ import coordinate from '../data/coordinate-data'
 type AddressUnionType = keyof typeof coordinate
 
 export default (
-	data: {
+	data: Array<{
 		name: string
 		values: number
-	}[]
+	}>
 ) =>
 	data
 		.filter(item => item.name in coordinate && Array.isArray(coordinate[item.name as AddressUnionType]))

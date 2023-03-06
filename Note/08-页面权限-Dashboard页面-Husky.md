@@ -6,7 +6,7 @@
 
 通过返回的菜单数据中，第三级菜单中的 `permission` 字段进行判断。
 
-在 loginStore 中，根据菜单映射路由前，去映射权限。
+在 loginStore 中，菜单映射路由前，去映射权限。
 
 封装一个工具函数 `mapMenusToPermission`，使用递归。
 
@@ -104,7 +104,7 @@ const fetchPageListData = <T>(formatData: T | object = {}) => {
 }
 ```
 
-新增、删除，修改：在页面上的按钮控制.
+增、删，改：在页面上的按钮控制.
 
 src\components\page-content\PageContent.vue
 
@@ -165,8 +165,8 @@ const permission = {
 
 解决方案：
 
-- 在创建、修改、删除角色的 action 执行完成后，重新获取角色列表，并缓存。
-- 以此类推，创建、修改、删除“部门”、“菜单“后，也要进行类似的操作。
+- 在增、删、改角色的 action 执行完成后，重新获取角色列表，并缓存。
+- 以此类推，增、删、改“部门”、“菜单“后，也要进行类似的操作。
 
 src\stores\main\system\system.ts
 
@@ -368,7 +368,7 @@ onMounted(() => {
 
 使用 `<el-card>` 布局。
 
-在其中预留插槽，让 `DashboardPanel.vue` 传入图表。
+在其中预留插槽，让 `DashboardPanel.vue` 传入图表组件。
 
 src\views\main\analysis\dashboard\cpns\chart-card\ChartCard.vue
 
@@ -397,7 +397,7 @@ withDefaults(
 
 ### 2.echarts 安装
 
-安装 _echarts_。
+安装 _echarts_
 
 ```shell
 npm install echarts
@@ -651,11 +651,14 @@ onMounted(() => {
 	})
 
   //...
+  stopWatchEffect = watchEffect(() => echartInstance.setOption(props.options))
 	window.addEventListener('resize', echartResize)
 })
 
 onUnmounted(() => {
 	window.removeEventListener('resize', echartResize)
+	stopWatchEffect?.()
+
 })
 </script>
 
@@ -689,3 +692,4 @@ src\views\main\analysis\dashboard\DashboardPanel.vue
 # 四、git Husky
 
 [git Husky 配置回顾](./02-项目配置-目录结构分析-环境搭建（一）.md/#二、项目 git 提交规范配置)
+
