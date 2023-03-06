@@ -4,7 +4,7 @@
 
 按钮的权限管理
 
-通过返回的菜单数据中，第三级菜单中的 permission 字段进行判断。
+通过返回的菜单数据中，第三级菜单中的 `permission` 字段进行判断。
 
 在 loginStore 中，根据菜单映射路由前，去映射权限。
 
@@ -63,7 +63,7 @@ function dynamicLoadingPermissionAndRoutes(this: ILoginState, userMenus: IMenuIn
 
 在其中增加四个布尔类型的 flags，`isCreate`、`isDelete`、`isUpdate`、`isQuery`，分别表示增、删、改、查权限。
 
-获取到 loginstore 中的 `permissions` 后，进行判断，为 flags 赋值。
+获取到 `loginstore` 中的 `permissions` 后，进行判断，为 flags 赋值。
 
 将上述逻辑抽取到 hook 中。
 
@@ -158,9 +158,15 @@ const permission = {
 
 - 当创建新的角色后，没法在新建用户时，选择该角色。
 
+原因：
+
+- 创建用户时，能够选择的角色，是在页面刷新或用户登录时，加载到内存（`mainStore`）中的。
+- 创建角色后，没有对内存中的角色，进行重载。
+
 解决方案：
 
-- 在创建角色的 action 执行完成后，重新获取角色列表，并缓存。
+- 在创建、修改、删除角色的 action 执行完成后，重新获取角色列表，并缓存。
+- 以此类推，创建、修改、删除“部门”、“菜单“后，也要进行类似的操作。
 
 src\stores\main\system\system.ts
 
@@ -228,21 +234,21 @@ const nickname = computed(() => ('name' in loginStore.userInfo ? loginStore.user
 
 在“增“、“删“、“改“发送网络请求后，将分页器页码重置为第一页。
 
-“增“、“改“都涉及到跨组件操作，
+“增“、“改“都涉及到跨组件操作，它们都在 `PageModal.vue` 中触发，意味着：
 
 `PageModal.vue` 中发送完网络请求，要将事件传给 `PageContent.vue`。
 
 ### 1.常用两种方案
 
-父子组件通信（推荐）。
+方案一：父子组件通信（推荐）。
 
-事件总线（少用，不可控）。
+方案二：事件总线（少用，不可控）。
 
 ### 2.store.$onAction 方案
 
 在 `PageContent.vue` 中使用 [store.$onAction](https://pinia.vuejs.org/zh/core-concepts/actions.html#subscribing-to-actions) API，
 
-对 systemStore 中 action 的执行进行监听，当“增”、“删”、“改”的 action 执行成功后，将页面中分页相关的状态 `currentPage` 改为 `1`。
+对 `systemStore` 中 action 的执行进行监听，当“增”、“删”、“改”的 action 执行成功后，将页面中分页相关的状态 `currentPage` 改为 `1`。
 
 src\components\page-content\PageContent.vue
 
@@ -331,7 +337,7 @@ export const getGoodsAmountListData = () =>
 npm install countup.js
 ```
 
-在 `CountCard.vue` 组件中使用。做数字滚动动画效果。
+将这个库，在 `CountCard.vue` 组件中使用。做数字滚动动画效果。
 
 为数字添加前缀，两种思路：
 
@@ -405,7 +411,7 @@ src\components\page-echarts\src\BaseEchart.vue
 
 ```vue
 <script setup lang="ts">
-import { onMounted, onUnmounted, ref, watch } from 'vue'
+import { onMounted, onUnmounted, ref, watch, type WatchStopHandle } from 'vue'
 import * as echarts from 'echarts'
 import type { EChartsOption, EChartsType } from 'echarts'
 import debounce from '@/utils/debounce'
@@ -427,22 +433,27 @@ const echartResize = debounce(() => {
 	echartInstance.resize()
 }, 300)
 
+let stopWatchEffect: WatchStopHandle
+
 onMounted(() => {
 	echartInstance = echarts.init(containerRef.value!, 'light', {
 		renderer: 'canvas'
 	})
 
-	watch(
+	/* watch(
 		() => props.options,
 		newVal => {
 			echartInstance.setOption(newVal)
 		}
-	)
+	) */
+	stopWatchEffect = watchEffect(() => echartInstance.setOption(props.options))
 
 	window.addEventListener('resize', echartResize)
 })
 
 onUnmounted(() => {
+	stopWatchEffect?.()
+
 	window.removeEventListener('resize', echartResize)
 })
 </script>
@@ -570,7 +581,7 @@ const showGoodsAddressSale = computed(() =>
 
 ### 5.地图组件
 
-服务器返回的数据中，没有地区销量对应的经纬度。去网上找一个包含地名和经纬度的文件。
+服务器返回的数据中，没有地区销量对应的经纬度。需要去网上找一个包含地名和经纬度的文件。
 
 src\components\page-echarts\data\coordinate-data.ts
 
@@ -615,7 +626,7 @@ if (props.mapData) echarts.registerMap(props.mapData.mapName, props.mapData.geoJ
 
 ### 6.响应式布局
 
-#### 1.图表
+#### 1.图表 resize
 
 监听 `window` 的缩放，重置 `echart` 实例大小。
 
@@ -627,24 +638,19 @@ src\components\page-echarts\src\BaseEchart.vue
 
 ```vue
 <script>
-const containerRef = ref<HTMLElement>()
+//...
 let echartInstance: EChartsType
-
-if (props.mapData) echarts.registerMap(props.mapData.mapName, props.mapData.geoJSON)
 
 const echartResize = debounce(() => {
 	echartInstance.resize()
 }, 300)
 
 onMounted(() => {
-	echartInstance = echarts.init(containerRef.value!, 'light', {
+  echartInstance = echarts.init(containerRef.value!, 'light', {
 		renderer: 'canvas'
 	})
 
-	watch(() => props.options, newVal => {
-		echartInstance.setOption(newVal)
-	})
-
+  //...
 	window.addEventListener('resize', echartResize)
 })
 
@@ -660,11 +666,13 @@ onUnmounted(() => {
 </template>
 ```
 
-> echart 实例 `echartInstance` 不要用 `ref` 包裹变为响应式对象，
+> echart 实例 `echartInstance` 如果用 `ref` 包裹变为响应式对象，
 >
-> 否则调用 `resize` 方法时可能报错。
+> - 调用 `resize` 方法时可能报错。
 >
-> 如果使用的还是 `watchEffect` API，那么还会造成频繁 setOption 造成页面卡顿。
+> - 使用 `watchEffect` API，会造成频繁 setOption 使得页面卡顿。
+>
+> `echartInstance` 不是响应式数据，不要用 `ref` 包裹。
 
 #### 2.卡片
 

@@ -106,7 +106,7 @@ export default defineConfig({
 - [全局注册](https://element-plus.org/zh-CN/component/icon.html#%E6%B3%A8%E5%86%8C%E6%89%80%E6%9C%89%E5%9B%BE%E6%A0%87)，项目中采用。
 - [自动导入](https://element-plus.org/zh-CN/component/icon.html#%E8%87%AA%E5%8A%A8%E5%AF%BC%E5%85%A5)（配置起来较麻烦）
 
-1.编写一个注册图标的插件。
+  1.编写一个注册图标的插件。
 
 src\global\register-icons.ts
 
@@ -432,9 +432,7 @@ src\views\login\cpns\LoginPanel.vue
 	<!-- .. -->
 	<PanelAccount ref="accountRef"></PanelAccount>
 	<!-- ... -->
-	<el-button class="login-btn" type="primary" size="large" @click="handleLoginBtnClick">
-		立即登录
-	</el-button>
+	<el-button class="login-btn" type="primary" size="large" @click="handleLoginBtnClick"> 立即登录 </el-button>
 </template>
 
 <script>
