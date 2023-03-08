@@ -268,7 +268,7 @@ const handleNewClick = () => {
 </script>
 
 <template>
-  <UserContent ref="contentRef" @new-click="handleNewClick" @edit-click="handleEditClick"></UserContent>
+	<UserContent ref="contentRef" @new-click="handleNewClick" @edit-click="handleEditClick"></UserContent>
 	<UserModal ref="modalRef"></UserModal>
 </template>
 ```
