@@ -231,7 +231,7 @@ const actions = {
 
 在 `UserContent.vue` 中发送用户新建的事件。
 
-将该功能封装在 `UserModal.vue` 组件中。
+创建 `UserModal.vue` 组件，作为新建用户的弹出框。
 
 - 使用 `<el-dialog>` 组件进行布局。
 - 在其中使用 `<el-form>` 进行布局。
@@ -268,6 +268,7 @@ const handleNewClick = () => {
 </script>
 
 <template>
+  <UserContent ref="contentRef" @new-click="handleNewClick" @edit-click="handleEditClick"></UserContent>
 	<UserModal ref="modalRef"></UserModal>
 </template>
 ```
@@ -498,7 +499,7 @@ defineExpose({
 
 [参考资料](https://juejin.cn/post/7079687437445922853)
 
-在对象中，所有 key 的类型，都是 `string` 类型。
+在使用如下两种方式遍历对象时，所有 key 的类型，都是 `string` 类型。
 
 所以无法分配给对象类型中 keys 具体的字面量类型，需要使用类型断言。
 

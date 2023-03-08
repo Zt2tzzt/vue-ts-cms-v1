@@ -36,6 +36,7 @@ export interface ISearchFormItem<T> {
 	label: string
 	placeholder?: string
 	initialvalue: T[keyof T]
+	options?: any[]
 }
 
 export interface ISearchConfig {

@@ -10,8 +10,8 @@ const emits = defineEmits(['newClick', 'editClick'])
 const systemStore = useSystemStore()
 const { users, usersTotalCount } = storeToRefs(systemStore)
 
-const currentPage = ref(1)
 const pageSize = ref(10)
+const currentPage = ref(1)
 
 const fetchUserListData = (formatData: IUserSearchFormData | object = {}) => {
 	// 1.获取 offset 和 limit

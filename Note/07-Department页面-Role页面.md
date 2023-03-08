@@ -26,7 +26,7 @@ src\views\main\system\department\cpns\PageContent.vue
   defineProps<IProps>()
 </template>
 
-<script>
+<script setup lang="ts">
   <!--  头部  -->
   <div class="header">
     <h3 class="title">{{ contentConfig?.header?.title ?? `数据列表` }}</h3>
@@ -120,7 +120,7 @@ src\views\main\system\department\cpns\PageContent.vue
 
 ### 3.网络请求重构
 
-在 `PageContent.vue` 中。传入 `pageName` 属性，用来决定 `PageContent.vue` 组件用于哪个页面。也可用于发送网络请求。
+在 `PageContent.vue` 中。传入 `pageName` 属性，用来决定 `PageContent.vue` 组件用于哪个页面。并用于发送网络请求。
 
 src\views\main\system\department\config\content.config.ts
 
@@ -254,6 +254,8 @@ const modalConfigREf = computed(() => {
 > 因为 `PageModal.vue` 默认是不显示的，而是点击“新建”或“修改”时显示；
 >
 > 所以需要在显示的时候，再设置初始化值。
+>
+> 除非在 `<el-dialog>` 上，使用了 `destroy-on-close` 属性。
 
 src\components\page-modal\PageModal.vue
 
