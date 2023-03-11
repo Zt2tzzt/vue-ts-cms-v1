@@ -2,7 +2,7 @@
 
 ## 1.思路整理
 
-[回顾 RBAC 设计的三种方案](./04-登录退出-用户权限-菜单树-头部区域-注册路由.md/#5RBAC 设计思想理解)，这里我们讨论方案二、三的具体实现步骤。
+> 【回顾】：[RBAC 设计的三种方案](./04-登录退出-用户权限-菜单树-头部区域-注册路由.md/#5RBAC 设计思想理解)，这里我们讨论方案二、三的具体实现步骤。
 
 方案二：基于角色添加路由，步骤：
 
@@ -28,7 +28,12 @@
 
 在每个文件中导出对应的路由对象。
 
-这个过程，使用一个自动化工具 _coderwhy_，自动生成 view 目录下的 vue 组件，和 router 目录下的路由对象。
+这个过程，使用一个自动化工具 _coderwhy_，自动生成 
+
+- view 目录下的 vue 组件，
+- router 目录下的路由对象。
+
+> 【补充】：自动化工具的使用，用于创建组件和该组件用于动态添加路由的路由对象。
 
 1.安装 _coderwhy_ 工具
 
@@ -44,13 +49,13 @@ npx coderwhy --version
 npx coderwhy add3page_setup DepartmentPanel -d src/views/main/system/department
 ```
 
-- `add3page_setup` 表示创建的是 Vue3 setup 语法的 Vue 组件。
-- `DepartmentPanel` 表示创建 `DepartmentPanel.vue` 组件和 `DepartmentPanel.ts` 路由对象文件。
-- `-d` 表示创建 `DepartmentPanel.vue` 组件所在的路径，同时会映射到 router 目录下。
+- ”`add3page_setup`“ 表示创建的是 Vue3 setup 语法的 Vue 组件。
+- ”`DepartmentPanel`“ 表示创建 `DepartmentPanel.vue` 组件和 `DepartmentPanel.ts` 路由对象文件。
+- “`-d`” 表示创建 `DepartmentPanel.vue` 组件所在的路径，同时会映射到 router 目录下。
 
-> 采用方案三（后端返回菜单）时，一般参考后端返回的路径，来创建相应路径下的组件。
->
-> 比如返回的这样的路径：`/main/analysis/overview`
+一般参考后端返回的菜单路径，来创建相应路径下的组件，
+
+- 比如后端返回的这样的路径：`/main/analysis/overview`
 
 ## 3.从本地文件中读取路由
 
@@ -64,8 +69,7 @@ npx coderwhy add3page_setup DepartmentPanel -d src/views/main/system/department
 使用 `import.meta.glob()`，默认取到的是一个对象，
 
 - 其中 key 是文件的路径文本，value 是对应加载文件的 get 函数。
-
-这种方式通常用于懒加载。
+- 这种方式通常用于懒加载。
 
 ```typescript
 import.meta.glob('../../router/main/**/*.ts')
@@ -222,6 +226,7 @@ router.beforeEach(to => {
 	const token = localCache.getCache(LOGIN_TOKEN)
 
 	if (to.path.startsWith('/main')) {
+    
 		if (!token) return '/login'
 
 		if (to.path === '/main') return firstRoute?.path
@@ -301,11 +306,11 @@ app.use(router)
 
 ## 7.登陆/刷新匹配菜单索引
 
-上述操作，使得登陆后匹配到了第一个路由，刷新页面后，动态添加的路由，仍然存在；
+上述操作，使得登陆后匹配到了第一个路由，刷新页面后，动态添加的路由，也仍然存在；
 
-但菜单索引又回到了第一个。这是不对的。
+但是，菜单索引又回到了第一个。这是不对的。
 
-刷新页面时，还需要再匹配当前页对应的菜单索引，并进行设置。
+刷新页面时，还需要再匹配当前页对应的菜单索引，并在 `MainMenu.vue` 中进行设置。
 
 封装一个工具函数 `mapPathToMenu`，返回当前页 url（`route.path`）匹配到的菜单对象。
 
@@ -346,9 +351,9 @@ export const mapPathToMenu = (
 }
 ```
 
-在 `MainMenu.vue` 中使用该工具，获取菜单对象，取出其中的索引。
+在 `MainMenu.vue` 中使用该工具，获取菜单对象，取出其中的索引，有两种方案：
 
-使用 `computed` 是因为第一次获取到的是空值，需要响应式的获取。
+方案一：使用 `computed` 是因为第一次获取到的是空值，需要响应式的获取。
 
 src\components\main-menu\MainMenu.vue
 
@@ -358,6 +363,19 @@ const defaultActive = computed(() => {
 	return menu ? menu.id + '' : '-1'
 })
 ```
+
+方案二：使用 `onMounted`，当组件挂载时，意味着所有数据都准备就绪，所以可以匹配到默认索引值。
+
+src\components\main-menu\MainMenu.vue
+
+```typescript
+onMounted(() => {
+	const menu = mapPathToMenu(route.path, userMenu)
+	defaultActive.value = menu ? menu.id + '' : '-1'
+})
+```
+
+
 
 # 二、MainHeader 里的面包屑
 
@@ -411,9 +429,9 @@ export const mapPathToBreadcrumb = (path: string, userMenus: IMenuInRole[] | IMe
 }
 ```
 
-> 当要从循环遍历中直接返回结果时，`for...of` 比 `forEach` 更合适。
+> 【注意】：如上方案例，当要从循环遍历中直接返回结果时，`for...of` 比 `forEach` 更合适。
 
-使用计算属性，获取响应式的面包屑。
+在 `Breadcrumb.vue` 中，使用计算属性，获取响应式的面包屑。
 
 src\components\main-header\cpns\Breadcrumb.vue
 
@@ -431,19 +449,16 @@ const breadcrumbs = computed(() => mapPathToBreadcrumb(route.path, loginStore.us
 
 使用 `<el-form>` 布局搜索区域。
 
-每行暂定放三个 input 框。使用 Element Plus 的 Layout 布局。
-
-- `<el-raw>` 和 `<el-col>`
+每行暂定放三个 input 框。使用 Element Plus 的 Layout 布局，即`<el-raw>` 和 `<el-col>`。
 
 改变 `<el-form>` 中 `<el-form-item>` 的高度。
 
 - 修改 `<el-form-item>` padding 调整间距。
 
-> 为了方便扩展，一个 `<el-raw>` 中允许放多个 `<el-col>`，
+> 【注意】：为了方便扩展，一个 `<el-raw>` 中允许放多个 `<el-col>`，
 >
-> 根据其上的 `span` 属性数值，控制是否进行换行显示。
->
-> 一个 `<el-raw>` 的宽度是 `24`
+> - 根据其上的 `span` 属性数值，控制是否进行换行显示。
+>- 一个 `<el-raw>` 的宽度是 `24`
 
 src\views\main\system\user\cpns\UserSearch.vue
 
@@ -578,11 +593,13 @@ export default useSystemStore
 
 调整每一行的内间距。
 
+> 【注意】：vue 中选中深层元素的写法。
+
 src\views\main\system\user\cpns\UserContent.vue
 
 ```css
 .table {
-	/* 选到的是 el-table-column */
+	/* 选中 el-table 中的深层子元素 */
 	:deep(.el-table__cell) {
 		padding: 12px 0;
 	}

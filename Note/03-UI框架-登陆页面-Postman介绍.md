@@ -224,13 +224,13 @@ src\App.vue
 }
 ```
 
-2.`Login.vue` 样式处理；
+2.`LogIn.vue` 样式处理；
 
 让整个组件占满屏幕，login 的内容居中，使用 flex 布局；
 
 添加一个背景
 
-src\views\login\Login.vue
+src\views\login\LogIn.vue
 
 ```css
 .login {
@@ -249,9 +249,9 @@ src\views\login\Login.vue
 
 src\views\login\cpns\LoginPanel.vue
 
-2.在 `Login.vue` 中引入。
+2.在 `LogIn.vue` 中引入。
 
-src\views\login\Login.vue
+src\views\login\LogIn.vue
 
 ```vue
 <script setup lang="ts">
