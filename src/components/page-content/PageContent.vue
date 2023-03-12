@@ -73,7 +73,11 @@ const onEditClick = (itemData: IDepartment) => {
 // 增、删、改后，将页面重置到第一页
 const onSubscribe = systemStore.$onAction(({ name, after }) => {
 	after(() => {
-		if (['deletePageByIdAction', 'postNewPageRecordAction', 'pathEditPageRecordByIdAction'].includes(name)) {
+		if (
+			['deletePageByIdAction', 'postNewPageRecordAction', 'pathEditPageRecordByIdAction'].includes(
+				name
+			)
+		) {
 			currentPage.value = 1
 		}
 	})
@@ -100,7 +104,13 @@ defineExpose({
 
 		<!-- 列表 -->
 		<div class="table">
-			<el-table :data="pageList" stripe border style="width: 100%" v-bind="contentConfig?.childrenTree">
+			<el-table
+				:data="pageList"
+				stripe
+				border
+				style="width: 100%"
+				v-bind="contentConfig?.childrenTree"
+			>
 				<template v-for="item of contentConfig.propList" :key="item.prop">
 					<!-- 处理 timer、handler 列 -->
 					<template v-if="item.gener === 'timer'">

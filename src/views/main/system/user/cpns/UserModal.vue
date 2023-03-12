@@ -71,7 +71,13 @@ defineExpose({
 
 <template>
 	<div class="user-modal">
-		<el-dialog v-model="showdialog" :title="isAdd ? '新建用户' : '修改用户'" width="30%" destroy-on-close center>
+		<el-dialog
+			v-model="showdialog"
+			:title="isAdd ? '新建用户' : '修改用户'"
+			width="30%"
+			destroy-on-close
+			center
+		>
 			<div class="form">
 				<el-form :model="formData" label-width="80px" size="large">
 					<el-form-item label="用户名" prop="name">

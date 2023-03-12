@@ -14,7 +14,9 @@ import type { HookFnType } from '@/types'
 // 获取 roles / departments 数据
 const mainStore = useMainStore()
 const modalConfigRef = computed(() => {
-	const selectFormItem = modalConfig.formItems.find(item => item.type === 'select' && item.prop === 'parentId')
+	const selectFormItem = modalConfig.formItems.find(
+		item => item.type === 'select' && item.prop === 'parentId' && 'options' in item
+	)
 
 	if (selectFormItem && 'options' in selectFormItem) {
 		selectFormItem.options = mainStore.entireDepartments.map(item => ({

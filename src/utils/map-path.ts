@@ -38,7 +38,10 @@ export const mapPathToMenu = (
  * @param {IMenuInRole[]} userMenus 用户菜单列表
  * @return {IBreadcrumb[]} 面包屑列表
  */
-export const mapPathToBreadcrumb = (path: string, userMenus: IMenuInRole[] | IMenuInRoleChild[]): IBreadcrumb[] => {
+export const mapPathToBreadcrumb = (
+	path: string,
+	userMenus: IMenuInRole[] | IMenuInRoleChild[]
+): IBreadcrumb[] => {
 	const breadcrumbs: IBreadcrumb[] = []
 	mapPathToMenu(path, userMenus, breadcrumbs)
 	return breadcrumbs

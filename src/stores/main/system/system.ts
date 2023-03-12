@@ -17,13 +17,23 @@ import {
 	pathEditPageRecordById
 } from '@/service/main/system/system'
 import { defineStore } from 'pinia'
-import { DEPARTMENT, ROLE, MENU } from '@/global/constance'
+import { DEPARTMENT, ROLE, MENU, USER_ID, USER } from '@/global/constance'
 import useMainStore from '../main'
+import useLoginStore from '@/stores/login/login'
+import { localCache } from '@/utils/cache'
 
 const fetchEntireData = (pageName: string) => {
 	if ([DEPARTMENT, ROLE, MENU].includes(pageName)) {
 		const mainStore = useMainStore()
 		mainStore.fetchEntireDataAction()
+	}
+}
+
+const fetchUsersAndMenusData = (pageName: string, userId: number) => {
+	const id = localCache.getCache(USER_ID)
+	if (userId === id && ![USER, MENU].includes(pageName)) {
+		const loginStore = useLoginStore()
+		loginStore.getUserInfoAndMenus(userId)
 	}
 }
 
@@ -57,6 +67,7 @@ const useSystemStore = defineStore('system', {
 			deleteUserById(id).then(res => {
 				console.log('user detete res:', res)
 				this.postUsersAction({ offset: 0, size: 10 })
+				fetchUsersAndMenusData(USER, id)
 			})
 		},
 		postNewUserAction(addParam: IUserCreateFormData) {
@@ -71,6 +82,7 @@ const useSystemStore = defineStore('system', {
 			pathEditUserById(id, editParam).then(res => {
 				console.log('user edit res:', res)
 				this.postUsersAction({ offset: 0, size: 10 })
+				fetchUsersAndMenusData(USER, id)
 			})
 		},
 
@@ -90,6 +102,7 @@ const useSystemStore = defineStore('system', {
 
 				// 如果是部门，角色，菜单等基础数据发生增、删、改操作，要重显加载到缓存中。
 				fetchEntireData(pageName)
+				fetchUsersAndMenusData(pageName, id)
 			})
 		},
 		postNewPageRecordAction<T>(pageName: string, record: T) {
@@ -108,6 +121,7 @@ const useSystemStore = defineStore('system', {
 
 				// 如果是部门，角色，菜单等基础数据发生增、删、改操作，要重显加载到缓存中。
 				fetchEntireData(pageName)
+				fetchUsersAndMenusData(pageName, id)
 			})
 		}
 	}

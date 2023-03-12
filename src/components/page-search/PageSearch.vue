@@ -43,7 +43,10 @@ const onQueryClick = () => {
 					<el-col :span="8">
 						<el-form-item :label="item.label" :prop="item.prop">
 							<template v-if="item.type === 'input'">
-								<el-input v-model="searchForm[item.prop]" :placeholder="item.placeholder"></el-input>
+								<el-input
+									v-model="searchForm[item.prop]"
+									:placeholder="item.placeholder"
+								></el-input>
 							</template>
 
 							<template v-if="item.type === 'date-picker'">
@@ -57,7 +60,11 @@ const onQueryClick = () => {
 							</template>
 
 							<template v-if="item.type === 'select'">
-								<el-select v-model="searchForm[item.prop]" :placeholder="item.placeholder" style="width: ;100%">
+								<el-select
+									v-model="searchForm[item.prop]"
+									:placeholder="item.placeholder"
+									style="width: ;100%"
+								>
 									<template v-for="option in item.options" :key="option.value">
 										<el-option :label="option.label" :value="option.value"></el-option>
 									</template>

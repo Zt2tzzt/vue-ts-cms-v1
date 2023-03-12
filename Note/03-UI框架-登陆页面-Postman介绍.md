@@ -432,7 +432,9 @@ src\views\login\cpns\LoginPanel.vue
 	<!-- .. -->
 	<PanelAccount ref="accountRef"></PanelAccount>
 	<!-- ... -->
-	<el-button class="login-btn" type="primary" size="large" @click="handleLoginBtnClick"> 立即登录 </el-button>
+	<el-button class="login-btn" type="primary" size="large" @click="handleLoginBtnClick">
+		立即登录
+	</el-button>
 </template>
 
 <script>

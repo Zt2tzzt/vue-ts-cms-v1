@@ -2,13 +2,14 @@ import { accountLoginRequest, getUserInfoById, getUserMenusByRoleId } from '@/se
 import type { IAccount, IUserInfoResData, IMenuInRole } from '@/types'
 import { localCache } from '@/utils/cache'
 import { defineStore } from 'pinia'
-import { LOGIN_TOKEN, USER_INFO, USER_MENU } from '@/global/constance'
+import { LOGIN_TOKEN, USER_ID, USER_INFO, USER_MENU } from '@/global/constance'
 import router from '@/router'
 import { mapMenusToRoutes, mapMenusToPermission } from '@/utils/map-menu'
 import useMainStore from '../main/main'
 
 interface ILoginState {
 	token: string
+	userId: number
 	userInfo: IUserInfoResData | object
 	userMenus: IMenuInRole[]
 	permissions: string[]
@@ -27,19 +28,25 @@ const dynamicLoadingPermissionAndRoutes = (state: ILoginState, userMenus: IMenuI
 const useLoginStore = defineStore('login', {
 	state: (): ILoginState => ({
 		token: '',
+		userId: -1,
 		userInfo: {},
 		userMenus: [],
 		permissions: []
 	}),
 	actions: {
 		loginAccountAction(account: IAccount) {
-			return accountLoginRequest(account)
-				.then(res => {
-					console.log('login res:', res)
-					this.token = res.data.token
-					localCache.setCache(LOGIN_TOKEN, this.token)
-					return getUserInfoById(res.data.id)
-				})
+			return accountLoginRequest(account).then(res => {
+				console.log('login res:', res)
+				this.token = res.data.token
+				this.userId = res.data.id
+				localCache.setCache(LOGIN_TOKEN, this.token)
+				localCache.setCache(USER_ID, this.userId)
+				// return getUserInfoById(res.data.id)
+				this.getUserInfoAndMenus(res.data.id)
+			})
+		},
+		getUserInfoAndMenus(userId: number) {
+			getUserInfoById(userId)
 				.then(res => {
 					console.log('user info res:', res)
 					const userInfo = res.data

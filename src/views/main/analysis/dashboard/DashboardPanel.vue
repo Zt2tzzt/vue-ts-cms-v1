@@ -9,8 +9,13 @@ import CountCard from './cpns/count-card/CountCard.vue'
 const analysisStore = useAnalysisStore()
 analysisStore.fetchAnalysisDataAction()
 
-const { goodsAmountList, goodsCategoryCount, goodsCategorySale, goodsCategoryFavor, goodsAddressSale } =
-	storeToRefs(analysisStore)
+const {
+	goodsAmountList,
+	goodsCategoryCount,
+	goodsCategorySale,
+	goodsCategoryFavor,
+	goodsAddressSale
+} = storeToRefs(analysisStore)
 
 const showGoodsCategoryCount = computed(() =>
 	goodsCategoryCount.value.map(itme => ({

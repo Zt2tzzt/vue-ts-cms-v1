@@ -63,8 +63,18 @@ defineExpose({
 				<el-table-column align="center" type="selection" width="50px"></el-table-column>
 				<el-table-column align="center" type="index" label="序号" width="60"></el-table-column>
 				<el-table-column align="center" label="用户名" prop="name" width="200"></el-table-column>
-				<el-table-column align="center" label="真是姓名" prop="realname" width="200"></el-table-column>
-				<el-table-column align="center" label="手机号码" prop="cellphone" width="250"></el-table-column>
+				<el-table-column
+					align="center"
+					label="真是姓名"
+					prop="realname"
+					width="200"
+				></el-table-column>
+				<el-table-column
+					align="center"
+					label="手机号码"
+					prop="cellphone"
+					width="250"
+				></el-table-column>
 				<el-table-column align="center" label="状态" prop="enable" width="100" #default="scope">
 					<el-button size="small" :type="scope.row.enable ? 'primary' : 'danger'">
 						{{ scope.row.enable ? '启用' : '禁用' }}
@@ -79,8 +89,17 @@ defineExpose({
 					</template>
 				</el-table-column>
 				<el-table-column align="center" label="操作" width="250" #default="scope">
-					<el-button size="small" icon="Edit" type="primary" text @click="onEditClick(scope.row)">编辑</el-button>
-					<el-button size="small" icon="Delete" type="danger" text @click="onDeleteClick(scope.row.id)">删除</el-button>
+					<el-button size="small" icon="Edit" type="primary" text @click="onEditClick(scope.row)"
+						>编辑</el-button
+					>
+					<el-button
+						size="small"
+						icon="Delete"
+						type="danger"
+						text
+						@click="onDeleteClick(scope.row.id)"
+						>删除</el-button
+					>
 				</el-table-column>
 			</el-table>
 		</div>

@@ -2,7 +2,7 @@
 
 ## 1.状态格式化
 
-在 `UserContent.vue` 中，格式化“状态”。
+在 `UserContent.vue` 中，格式化“状态”列。
 
 使用 `<el-table-column>` 的作用域插槽。
 
@@ -127,9 +127,7 @@ const handleCurrentChange = () => {
 
 将条件查询的方法 `fetchUserListData` 暴露给 `UserPanel.vue`
 
-> 事件总线，通常用于跨度比较大的组件。存在不可控的缺陷。
->
-> 这里使用父子组件通信的方式。
+> 【注意】：事件总线，通常用于跨度比较大的组件。存在不可控的缺陷；这里使用父子组件通信的方式。
 
 src\views\main\system\user\cpns\UserContent.vue
 
@@ -207,7 +205,9 @@ const onDeleteClick = (id: number) => {
 	<!--...-->
 	<el-table-column align="center" label="操作" width="250" #default="scope">
 		<el-button size="small" icon="Edit" type="primary" text>编辑</el-button>
-		<el-button size="small" icon="Delete" type="danger" text @click="onDeleteClick(scope.row.id)">删除</el-button>
+		<el-button size="small" icon="Delete" type="danger" text @click="onDeleteClick(scope.row.id)"
+			>删除</el-button
+		>
 	</el-table-column>
 </template>
 ```
@@ -240,9 +240,7 @@ const actions = {
 
 在 `UserPanel.vue` 中拿到该状态，去调用 `UserModal.vue` 中暴露的方法 `setModalVisible`，改变其中的状态，
 
-> 在组件中一般暴露方法，而不是直接暴露属性；
->
-> 因为方法中可以进行拦截，更加可控。
+> 【注意】：在组件中一般暴露方法，而不是直接暴露属性；因为方法中可以进行拦截，更加可控。
 
 src\views\main\system\user\cpns\UserContent.vue
 
@@ -268,7 +266,11 @@ const handleNewClick = () => {
 </script>
 
 <template>
-	<UserContent ref="contentRef" @new-click="handleNewClick" @edit-click="handleEditClick"></UserContent>
+	<UserContent
+		ref="contentRef"
+		@new-click="handleNewClick"
+		@edit-click="handleEditClick"
+	></UserContent>
 	<UserModal ref="modalRef"></UserModal>
 </template>
 ```
@@ -291,7 +293,13 @@ defineExpose({
 </script>
 
 <template>
-	<el-dialog v-model="showdialog" :title="isAdd ? '新建用户' : '修改用户'" width="30%" destroy-on-close center>
+	<el-dialog
+		v-model="showdialog"
+		:title="isAdd ? '新建用户' : '修改用户'"
+		width="30%"
+		destroy-on-close
+		center
+	>
 		<!--...-->
 	</el-dialog>
 </template>
@@ -416,7 +424,9 @@ src\views\main\system\user\cpns\UserContent.vue
 
 ```vue
 <template>
-	<el-button size="small" icon="Edit" type="primary" text @click="onEditClick(scope.row)">编辑</el-button>
+	<el-button size="small" icon="Edit" type="primary" text @click="onEditClick(scope.row)"
+		>编辑</el-button
+	>
 </template>
 
 <script>
@@ -431,7 +441,11 @@ src\views\main\system\user\UserPanel.vue
 ```vue
 <template>
 	<!--...--->
-	<UserContent ref="contentRef" @new-click="handleNewClick" @edit-click="handleEditClick"></UserContent>
+	<UserContent
+		ref="contentRef"
+		@new-click="handleNewClick"
+		@edit-click="handleEditClick"
+	></UserContent>
 	<UserModal ref="modalRef"></UserModal>
 </template>
 
@@ -495,7 +509,7 @@ defineExpose({
 })
 ```
 
-#### 1.遍历对象时，key 的类型写法
+#### 1.遍历对象时，key 的类型写法【补充】
 
 [参考资料](https://juejin.cn/post/7079687437445922853)
 
@@ -503,7 +517,7 @@ defineExpose({
 
 所以无法分配给对象类型中 keys 具体的字面量类型，需要使用类型断言。
 
-`for...in`
+方式一：`for...in`
 
 ```typescript
 function print(obj: Person) {
@@ -515,7 +529,7 @@ function print(obj: Person) {
 }
 ```
 
-`Object.keys`
+方式二：`Object.keys`
 
 ```typescript
 function print(obj: Person) {
@@ -529,10 +543,10 @@ function print(obj: Person) {
 封装一个函数，用于在 ts 中遍历对象类型，返回有类型的 key。
 
 ```typescript
-export const getKeysFronObj = <T>(obj: T) => Object.keys(obj) as Array<keyof T>
+export const getKeysFronObj = <T extends object>(obj: T) => Object.keys(obj) as Array<keyof T>
 ```
 
-#### 1.箭头函数的泛型（补充）
+#### 1.箭头函数的泛型【补充】
 
 写在函数参数的前面，见上面的例子。
 
@@ -634,7 +648,7 @@ const onQueryClick = () => {
 }
 ```
 
-在 `PageSearch.vue` 中，实现 Department 的“查询”，
+在 `PageSearch.vue` 中，实现 Department 的“查询”功能，
 
 调用查询的接口。
 
@@ -692,7 +706,11 @@ const onConfigClick = () => {
 	if (!isAdd.value && editId.value !== -1) {
 		// 编辑
 		const { ...editFormData } = formData
-		systemStore.pathEditPageRecordByIdAction<IDepartmentEditFormData>(DEPARTMENT, editId.value, editFormData)
+		systemStore.pathEditPageRecordByIdAction<IDepartmentEditFormData>(
+			DEPARTMENT,
+			editId.value,
+			editFormData
+		)
 	} else {
 		// 新增
 		systemStore.postNewPageRecordAction<IDepartmentCreateFormData>(DEPARTMENT, { ...formData })
@@ -704,7 +722,9 @@ const onConfigClick = () => {
 
 将 `PageSearch.vue` 移动到 Component 目录下。在其中进行抽取和封装。
 
-> 动态组件 `<Component>` 对一些需要精准控制的组件，不太合适。
+> 【注意】：动态组件 `<Component>` 可以用来展示 UI 组件库中的图标；
+>
+> 但对一些需要精准控制的组件，不太合适。
 
 src\views\main\system\department\config\search-config.ts
 
@@ -796,7 +816,10 @@ const onQueryClick = () => {
 					<el-col :span="8">
 						<el-form-item :label="item.label" :prop="item.prop">
 							<template v-if="item.type === 'input'">
-								<el-input v-model="searchForm[item.prop]" :placeholder="item.placeholder"></el-input>
+								<el-input
+									v-model="searchForm[item.prop]"
+									:placeholder="item.placeholder"
+								></el-input>
 							</template>
 
 							<template v-if="item.type === 'date-picker'">
@@ -810,7 +833,11 @@ const onQueryClick = () => {
 							</template>
 
 							<template v-if="item.type === 'select'">
-								<el-select v-model="searchForm[item.prop]" :placeholder="item.placeholder" style="width: ;100%">
+								<el-select
+									v-model="searchForm[item.prop]"
+									:placeholder="item.placeholder"
+									style="width: ;100%"
+								>
 									<template v-for="option in item.options" :key="option.value">
 										<el-option :label="option.label" :value="option.value"></el-option>
 									</template>
@@ -833,7 +860,7 @@ const onQueryClick = () => {
 
 #### 1.将对象属性值字面量类型作为联合类型
 
-【补充】：[TypeScript 如何将对象属性值的字面量作为联合类型](https://zhuanlan.zhihu.com/p/406211160)。
+> 【补充】：[TypeScript 如何将对象属性值的字面量作为联合类型](https://zhuanlan.zhihu.com/p/406211160)。
 
 ```typescript
 interface Student {

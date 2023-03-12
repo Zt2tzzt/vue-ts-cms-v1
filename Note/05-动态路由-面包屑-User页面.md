@@ -28,7 +28,7 @@
 
 在每个文件中导出对应的路由对象。
 
-这个过程，使用一个自动化工具 _coderwhy_，自动生成 
+这个过程，使用一个自动化工具 _coderwhy_，自动生成
 
 - view 目录下的 vue 组件，
 - router 目录下的路由对象。
@@ -226,7 +226,6 @@ router.beforeEach(to => {
 	const token = localCache.getCache(LOGIN_TOKEN)
 
 	if (to.path.startsWith('/main')) {
-    
 		if (!token) return '/login'
 
 		if (to.path === '/main') return firstRoute?.path
@@ -375,8 +374,6 @@ onMounted(() => {
 })
 ```
 
-
-
 # 二、MainHeader 里的面包屑
 
 封装一个工具 `mapPathToBreadcrumb`，用来将当前路由匹配面包屑。
@@ -422,7 +419,10 @@ export const mapPathToMenu = (
  * @param {IMenuInRole[]} userMenus 用户菜单列表
  * @return {IBreadcrumb[]} 面包屑列表
  */
-export const mapPathToBreadcrumb = (path: string, userMenus: IMenuInRole[] | IMenuInRoleChild[]): IBreadcrumb[] => {
+export const mapPathToBreadcrumb = (
+	path: string,
+	userMenus: IMenuInRole[] | IMenuInRoleChild[]
+): IBreadcrumb[] => {
 	const breadcrumbs: IBreadcrumb[] = []
 	mapPathToMenu(path, userMenus, breadcrumbs)
 	return breadcrumbs
@@ -458,7 +458,7 @@ const breadcrumbs = computed(() => mapPathToBreadcrumb(route.path, loginStore.us
 > 【注意】：为了方便扩展，一个 `<el-raw>` 中允许放多个 `<el-col>`，
 >
 > - 根据其上的 `span` 属性数值，控制是否进行换行显示。
->- 一个 `<el-raw>` 的宽度是 `24`
+> - 一个 `<el-raw>` 的宽度是 `24`
 
 src\views\main\system\user\cpns\UserSearch.vue
 

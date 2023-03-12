@@ -2,7 +2,12 @@
 import { computed, reactive, ref } from 'vue'
 import type { IModalConfig } from '@/types'
 import useSystemStore from '@/stores/main/system/system'
-import type { CreateFormDataType, EditFormDataType, IModalFormItemGeneral, IModalFormItemCustom } from '@/types'
+import type {
+	CreateFormDataType,
+	EditFormDataType,
+	IModalFormItemGeneral,
+	IModalFormItemCustom
+} from '@/types'
 
 const props = defineProps<{
 	modalConfig: IModalConfig
@@ -25,8 +30,11 @@ interface OpenDialogParamType<T> {
 	isNew?: boolean
 	itemData?: T
 }
-// 设置 dialog 是否显示
-const setModalVisible = <T extends { id: number }, F>({ isNew = true, itemData }: OpenDialogParamType<T>) => {
+// 设置 dialog 是否显示，并初始化数据。
+const setModalVisible = <T extends { id: number }, F>({
+	isNew = true,
+	itemData
+}: OpenDialogParamType<T>) => {
 	showdialog.value = true
 	isAdd.value = isNew
 	if (!isNew && itemData) {
@@ -59,7 +67,11 @@ const onConfigClick = () => {
 
 	if (!isAdd.value && editId.value !== -1) {
 		// 编辑
-		systemStore.pathEditPageRecordByIdAction<EditFormDataType>(pageName.value, editId.value, editFormData)
+		systemStore.pathEditPageRecordByIdAction<EditFormDataType>(
+			pageName.value,
+			editId.value,
+			editFormData
+		)
 	} else {
 		// 新增
 		systemStore.postNewPageRecordAction<CreateFormDataType>(pageName.value, editFormData)
@@ -98,11 +110,19 @@ defineExpose({
 							>
 								<!-- 输入框 -->
 								<template v-if="item.type === 'input'">
-									<el-input v-model="formData[item.prop]" :placeholder="item.placeholder"></el-input>
+									<el-input
+										v-model="formData[item.prop]"
+										:placeholder="item.placeholder"
+									></el-input>
 								</template>
+
 								<!-- 选项列表 -->
 								<template v-else-if="item.type === 'select'">
-									<el-select v-model="formData[item.prop]" :placeholder="item.placeholder" style="width: 100%">
+									<el-select
+										v-model="formData[item.prop]"
+										:placeholder="item.placeholder"
+										style="width: 100%"
+									>
 										<template v-for="option of item.options" :key="option.value">
 											<el-option :label="option.label" :value="option.value"></el-option>
 										</template>
