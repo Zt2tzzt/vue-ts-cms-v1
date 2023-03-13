@@ -13,10 +13,10 @@ const TIME_OUT = 25000
 
 switch (import.meta.env.PROD) {
 	case true:
-		BASE_URL = 'http://152.136.185.210:4000'
+		BASE_URL = 'http://codercba.com:5000'
 		break
 	case false:
-		BASE_URL = 'http://152.136.185.210:5000'
+		BASE_URL = 'http://codercba.com:5000'
 		break
 }
 
