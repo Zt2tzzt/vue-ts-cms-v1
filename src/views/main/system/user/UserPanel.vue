@@ -25,7 +25,11 @@ const handleEditClick = (itemData: IUser) => {
 <template>
 	<div class="user">
 		<UserSearch @query-click="handleQueryClick" @reset-click="handleResetClick"></UserSearch>
-		<UserContent ref="contentRef" @new-click="handleNewClick" @edit-click="handleEditClick"></UserContent>
+		<UserContent
+			ref="contentRef"
+			@new-click="handleNewClick"
+			@edit-click="handleEditClick"
+		></UserContent>
 		<UserModal ref="modalRef"></UserModal>
 	</div>
 </template>

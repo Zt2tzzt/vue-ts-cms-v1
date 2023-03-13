@@ -116,7 +116,13 @@ src\components\page-content\PageContent.vue
 
 	<!--,,,--->
 
-	<el-button v-if="permission.isUpdate" size="small" icon="Edit" type="primary" text @click="onEditClick(scope.row)"
+	<el-button
+		v-if="permission.isUpdate"
+		size="small"
+		icon="Edit"
+		type="primary"
+		text
+		@click="onEditClick(scope.row)"
 		>编辑</el-button
 	>
 	<el-button
@@ -222,7 +228,9 @@ src\components\main-header\cpns\UserState.vue
 ```vue
 <script>
 const loginStore = useLoginStore()
-const nickname = computed(() => ('name' in loginStore.userInfo ? loginStore.userInfo.name : '用户名'))
+const nickname = computed(() =>
+	'name' in loginStore.userInfo ? loginStore.userInfo.name : '用户名'
+)
 </script>
 
 <template>
@@ -257,7 +265,11 @@ src\components\page-content\PageContent.vue
 // 增、删、改后，将页面重置到第一页
 const onSubscribe = systemStore.$onAction(({ name, after }) => {
 	after(() => {
-		if (['deletePageByIdAction', 'postNewPageRecordAction', 'pathEditPageRecordByIdAction'].includes(name)) {
+		if (
+			['deletePageByIdAction', 'postNewPageRecordAction', 'pathEditPageRecordByIdAction'].includes(
+				name
+			)
+		) {
 			currentPage.value = 1
 		}
 	})
@@ -364,7 +376,7 @@ onMounted(() => {
 
 ### 1.ChartCard 组件
 
-创建 `ChartCard.vue` 组件。用于展示图表卡片。
+在 `DashboardPanel.vue` 中，创建 `ChartCard.vue` 组件。用于展示图表卡片。
 
 使用 `<el-card>` 布局。
 
@@ -478,8 +490,13 @@ onUnmounted(() => {
 src\views\main\analysis\dashboard\DashboardPanel.vue
 
 ```typescript
-const { goodsAmountList, goodsCategoryCount, goodsCategorySale, goodsCategoryFavor, goodsCategoryAddressSale } =
-	storeToRefs(analysisStore)
+const {
+	goodsAmountList,
+	goodsCategoryCount,
+	goodsCategorySale,
+	goodsCategoryFavor,
+	goodsCategoryAddressSale
+} = storeToRefs(analysisStore)
 ```
 
 5.图表组件
@@ -507,8 +524,13 @@ src\views\main\analysis\dashboard\DashboardPanel.vue
 const analysisStore = useAnalysisStore()
 analysisStore.fetchAnalysisDataAction()
 
-const { goodsAmountList, goodsCategoryCount, goodsCategorySale, goodsCategoryFavor, goodsAddressSale } =
-	storeToRefs(analysisStore)
+const {
+	goodsAmountList,
+	goodsCategoryCount,
+	goodsCategorySale,
+	goodsCategoryFavor,
+	goodsAddressSale
+} = storeToRefs(analysisStore)
 
 const showGoodsCategoryCount = computed(() =>
 	goodsCategoryCount.value.map(itme => ({
@@ -601,7 +623,9 @@ export default (
 	}[]
 ) =>
 	data
-		.filter(item => item.name in coordinate && Array.isArray(coordinate[item.name as AddressUnionType]))
+		.filter(
+			item => item.name in coordinate && Array.isArray(coordinate[item.name as AddressUnionType])
+		)
 		.map(item => ({
 			name: item.name,
 			value: coordinate[item.name as AddressUnionType].concat(item.values)
@@ -669,7 +693,7 @@ onUnmounted(() => {
 </template>
 ```
 
-> echart 实例 `echartInstance` 如果用 `ref` 包裹变为响应式对象，
+> 【注意】：echart 实例 `echartInstance` 如果用 `ref` 包裹变为响应式对象，会有两个问题：
 >
 > - 调用 `resize` 方法时可能报错。
 >

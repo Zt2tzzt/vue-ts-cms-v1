@@ -6,7 +6,9 @@ import { computed } from 'vue'
 import { useRouter } from 'vue-router'
 
 const loginStore = useLoginStore()
-const nickname = computed(() => ('name' in loginStore.userInfo ? loginStore.userInfo.name : '用户名'))
+const nickname = computed(() =>
+	'name' in loginStore.userInfo ? loginStore.userInfo.name : '用户名'
+)
 
 const router = useRouter()
 const handleExitClick = () => {

@@ -9,7 +9,9 @@ export default (
 	}>
 ) =>
 	data
-		.filter(item => item.name in coordinate && Array.isArray(coordinate[item.name as AddressUnionType]))
+		.filter(
+			item => item.name in coordinate && Array.isArray(coordinate[item.name as AddressUnionType])
+		)
 		.map(item => ({
 			name: item.name,
 			value: coordinate[item.name as AddressUnionType].concat(item.values)
