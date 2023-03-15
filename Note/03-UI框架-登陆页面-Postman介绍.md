@@ -88,10 +88,12 @@ export default defineConfig({
 ./tsconfig.json
 
 ```json
-"include": ["env.d.ts", "src/**/*", "src/**/*.vue", "auto-imports.d.ts", "components.d.ts"],
+{
+ "include": ["env.d.ts", "src/**/*", "src/**/*.vue", "auto-imports.d.ts", "components.d.ts"], 
+}
 ```
 
-> 像 `ELMessage`、`ELLoading` 这样的”反馈组件“，没有在 `<template>` 中使用；
+> 【注意】：像 `ELMessage`、`ELLoading` 这样的”反馈组件“，没有在 `<template>` 中使用；
 >
 > 按需引入不会自动导入，需要手动导入，或者另外配置它们的自动导入，[详细配置方式见下方](#6.反馈组件引入)。
 
@@ -106,7 +108,7 @@ export default defineConfig({
 - [全局注册](https://element-plus.org/zh-CN/component/icon.html#%E6%B3%A8%E5%86%8C%E6%89%80%E6%9C%89%E5%9B%BE%E6%A0%87)，项目中采用。
 - [自动导入](https://element-plus.org/zh-CN/component/icon.html#%E8%87%AA%E5%8A%A8%E5%AF%BC%E5%85%A5)（配置起来较麻烦）
 
-  1.编写一个注册图标的插件。
+1.编写一个注册图标的 vue 插件。
 
 src\global\register-icons.ts
 
@@ -182,16 +184,8 @@ import { createStyleImportPlugin, ElementPlusResolve } from 'vite-plugin-style-i
 
 export default (): UserConfigExport => {
 	return {
-		// 1. If you are using the ant-design series, you need to configure this
-		// 2. Make sure less is installed in the dependency `yarn add less -D`
-		css: {
-			preprocessorOptions: {
-				less: {
-					javascriptEnabled: true
-				}
-			}
-		},
 		plugins: [
+      //...
 			createStyleImportPlugin({
 				resolves: [ElementPlusResolve()],
 				libs: [
@@ -226,7 +220,7 @@ src\App.vue
 
 2.`LogIn.vue` 样式处理；
 
-让整个组件占满屏幕，login 的内容居中，使用 flex 布局；
+让整个组件占满屏幕，`.login` 的内容居中，使用 flex 布局；
 
 添加一个背景
 
@@ -317,7 +311,7 @@ src\views\login\cpns\LoginPanel.vue
 </script>
 ```
 
-> vue 中 使用 `ref` 没有初始化值时，可以传泛型来规范类型，如 `ref<boolean>()`
+> 【注意】：vue 中 使用 `ref` 没有初始化值时，可以传泛型来规范类型，如 `ref<boolean>()`
 
 4.立即登录按钮（组件）
 
@@ -358,7 +352,15 @@ src\views\login\cpns\LoginPanel.vue
 </el-tab-pane>
 ```
 
-> 第三方 UI 框架，使用 CSS 变量名设值样式，已成为趋势，方便用户进行样式覆盖。
+> 【注意】：第三方 UI 框架，使用 CSS 变量名设值样式，已成为趋势，方便用户进行样式覆盖。
+>
+> ```css
+> :root {
+>   /* 定义了一个变量(CSS属性) */
+>   /* 只有后代元素可以使用 */
+>   --main-color: #f00;
+> }
+> ```
 
 ### 3.帐号登录 form
 
@@ -380,19 +382,15 @@ src\views\login\cpns\PanelAccount.vue
 //...
 
 // 1.定义 account 数据
-const account =
-	reactive <
-	IAccount >
-	{
-		name: '',
-		password: ''
-	}
+const account =	reactive<IAccount>{
+  name: '',
+  password: ''
+}
 </script>
 ```
 
-> 词语“账号”，一般出现在银行系统中，与钱有关；
+> 【注意】：词语“账号”，一般出现在银行系统中，与钱有关；词语”帐号“，一般用于普通系统。
 >
-> 词语”帐号“，一般用于普通系统。
 
 ### 4.form 验证规则
 
@@ -451,11 +449,13 @@ const handleLoginBtnClick = () => {
 </script>
 ```
 
-> 在 TS 编写的父组件中，使用 `ref` 引用子组件实例时，不能使用子组件名称作为类型。而是这么写 `ref<InstanceType<typeof [组件名称]>>`，
+> 【注意】：在 TS 编写的父组件中，使用 `ref` 引用子组件实例时，不能使用子组件名称作为类型；
+>
+> 而是这么写 `ref<InstanceType<typeof [组件名称]>>`，
 >
 > .vue 文件中导出的是组件对象，在 Vue 框架中是当作构造器来使用的。
 >
-> 引入的 El 组件，可以加 `class` 属性。
+> 引入的 Element 组件，可以加 `class` 属性。
 
 src\views\login\cpns\PanelAccount.vue
 
@@ -579,7 +579,7 @@ export interface IAccount {
 }
 ```
 
-> 在 src 下创建 types 目录，用来声明多处都要用到的类型。
+> 【注意】：在 src 下创建 types 目录，用来声明多处都要用到的类型。
 
 # 四、postman 使用
 
