@@ -89,7 +89,7 @@ export default defineConfig({
 
 ```json
 {
- "include": ["env.d.ts", "src/**/*", "src/**/*.vue", "auto-imports.d.ts", "components.d.ts"], 
+	"include": ["env.d.ts", "src/**/*", "src/**/*.vue", "auto-imports.d.ts", "components.d.ts"]
 }
 ```
 
@@ -108,7 +108,7 @@ export default defineConfig({
 - [全局注册](https://element-plus.org/zh-CN/component/icon.html#%E6%B3%A8%E5%86%8C%E6%89%80%E6%9C%89%E5%9B%BE%E6%A0%87)，项目中采用。
 - [自动导入](https://element-plus.org/zh-CN/component/icon.html#%E8%87%AA%E5%8A%A8%E5%AF%BC%E5%85%A5)（配置起来较麻烦）
 
-1.编写一个注册图标的 vue 插件。
+  1.编写一个注册图标的 vue 插件。
 
 src\global\register-icons.ts
 
@@ -185,7 +185,7 @@ import { createStyleImportPlugin, ElementPlusResolve } from 'vite-plugin-style-i
 export default (): UserConfigExport => {
 	return {
 		plugins: [
-      //...
+			//...
 			createStyleImportPlugin({
 				resolves: [ElementPlusResolve()],
 				libs: [
@@ -356,9 +356,9 @@ src\views\login\cpns\LoginPanel.vue
 >
 > ```css
 > :root {
->   /* 定义了一个变量(CSS属性) */
->   /* 只有后代元素可以使用 */
->   --main-color: #f00;
+> 	/* 定义了一个变量(CSS属性) */
+> 	/* 只有后代元素可以使用 */
+> 	--main-color: #f00;
 > }
 > ```
 
@@ -382,15 +382,17 @@ src\views\login\cpns\PanelAccount.vue
 //...
 
 // 1.定义 account 数据
-const account =	reactive<IAccount>{
-  name: '',
-  password: ''
-}
+const account =
+	reactive <
+	IAccount >
+	{
+		name: '',
+		password: ''
+	}
 </script>
 ```
 
 > 【注意】：词语“账号”，一般出现在银行系统中，与钱有关；词语”帐号“，一般用于普通系统。
->
 
 ### 4.form 验证规则
 
