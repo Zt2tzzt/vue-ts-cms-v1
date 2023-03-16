@@ -228,7 +228,7 @@ const formItems: IModalFormItem[] = [
 ]
 ```
 
-在 `DepartmentPanel.vue` 中，为 modalConfig 配置文件中 `type` 为 `select` 类型的 `formItem`，动态添加 `options`，使用 `computed`
+在 `DepartmentPanel.vue` 中，为 modalConfig 配置文件中 `type` 为 `select` 类型的 formItem，动态添加 `options`，使用 `computed`
 
 src\views\main\system\department\DepartmentPanel.vue
 
@@ -454,7 +454,7 @@ src\components\page-content\PageContent.vue
 
 再在 `PageModal.vue` 中，传入的 `props` 中，新增 `otherInfo` 属性，将选中的菜单信息传入进去。
 
-并在创建和修改角色所派发的 action 中，时携带 `otherInfo` 参数，发送给服务器。
+并在创建和修改角色所派发的 action 中，携带 `otherInfo` 参数，发送给服务器。
 
 src\views\main\system\role\RolePanel.vue
 
