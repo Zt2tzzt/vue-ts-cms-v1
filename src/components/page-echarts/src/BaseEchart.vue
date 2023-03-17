@@ -21,7 +21,7 @@ const echartResize = debounce(() => {
 	echartInstance.resize()
 }, 300)
 
-let stopWatchEffect: WatchStopHandle
+let stop: WatchStopHandle
 
 onMounted(() => {
 	echartInstance = echarts.init(containerRef.value!, 'light', {
@@ -35,13 +35,13 @@ onMounted(() => {
 		}
 	) */
 
-	stopWatchEffect = watchEffect(() => echartInstance.setOption(props.options))
+	stop = watchEffect(() => echartInstance.setOption(props.options))
 
 	window.addEventListener('resize', echartResize)
 })
 
 onUnmounted(() => {
-	stopWatchEffect?.()
+	stop?.()
 	window.removeEventListener('resize', echartResize)
 })
 </script>
