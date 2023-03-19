@@ -53,9 +53,8 @@ const loginAction = (isRemPwd: boolean) => {
 						localCache.removeCache(CACHE_PASSWORD)
 					}
 				})
-				.catch(err => {
+				.catch(() => {
 					ElMessage.error('Oops, 帐号或密码错误~~.')
-					throw new Error(err)
 				})
 		} else {
 			ElMessage.error('Oops, 请您输入正确的格式后再操作~~.')
