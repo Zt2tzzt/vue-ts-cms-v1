@@ -62,7 +62,7 @@ src\views\main\system\user\cpns\UserContent.vue
 
 定义两个变量 `currentPage` 和 `pageSize`，并双向绑定到 `<el-pagination>` 组件上。
 
-修改发布的网络请求逻辑，传入 `size` 和 `offset`；
+修改获取用户列表的网络请求逻辑，传入 `size` 和 `offset`；
 
 src\service\main\system\system.ts
 
@@ -107,7 +107,7 @@ const handleCurrentChange = () => {
 </script>
 
 <template>
-	<!--...--->
+	<!--...-->
 	<el-pagination
 		v-model:current-page="currentPage"
 		v-model:page-size="pageSize"
@@ -117,7 +117,7 @@ const handleCurrentChange = () => {
 		@size-change="handleSizeChange"
 		@current-change="handleCurrentChange"
 	></el-pagination>
-	<!--...--->
+	<!--...-->
 </template>
 ```
 
@@ -139,7 +139,7 @@ defineExpose({
 
 在 `UserSerach.vue` 中，点击查询时，将查询条件，发送给 `UserPanel.vue`。
 
-- 注意：“创建时间”的初始值，不能使用空数组，后端接口无法处理。
+- 注意：“创建时间”的初始值 `searchForm.createAt`，不能使用空数组，后端接口无法处理。
 
 将 `UserSerach.vue` 中，点击重置按钮时，也要发送网络请求，请求所有数据。
 
@@ -229,14 +229,14 @@ const actions = {
 
 ### 1.弹出新增对话框
 
-在 `UserContent.vue` 中发送用户新建的事件。
+在 `UserContent.vue` 中发送用户“新建”的事件。
 
 创建 `UserModal.vue` 组件，作为新建用户的弹出框。
 
 - 使用 `<el-dialog>` 组件进行布局。
 - 在其中使用 `<el-form>` 进行布局。
 
-在 `UserContent.vue` 中发送事件，传递 `UserModal.vue` 的“隐藏/显示”状态。
+在 `UserContent.vue` 中发送 `newClick` 事件，传递 `UserModal.vue` 的“隐藏/显示”状态。
 
 在 `UserPanel.vue` 中拿到该状态，去调用 `UserModal.vue` 中暴露的方法 `setModalVisible`，改变其中的状态，
 
@@ -285,6 +285,7 @@ const isAdd = ref(true) // 新建：true；修改：false
 // 设置 dialog 是否显示
 const setModalVisible = (isNew = true) => {
 	showdialog.value = true
+  isAdd.value = isNew
 }
 
 defineExpose({
@@ -396,7 +397,7 @@ const onConfigClick = () => {
 </template>
 ```
 
-封装创建用户的网络请求，在 `systenStore` 中创建 action。在 `UserModal.vue` 中调用。
+封装创建用户的网络请求，在 `systenStore` 中创建 action `postNewUserAction`。在 `UserModal.vue` 中派发。
 
 新建成功后，发送网络请求，进行数据重载。
 
@@ -418,7 +419,9 @@ const actions = {
 
 在 `UserContent.vue` 中，编写用户修改功能。
 
-点击表格中每条记录后的“编辑”按钮，弹出 `UserModal.vue`，并将用户数据传给 `UserModal.vue`。
+点击表格中每条记录后的“编辑”按钮，弹出 `UserModal.vue`；
+
+并将用户数据通过父组件 `UserPanel.vue` 传给 `UserModal.vue`。
 
 src\views\main\system\user\cpns\UserContent.vue
 
@@ -440,7 +443,7 @@ src\views\main\system\user\UserPanel.vue
 
 ```vue
 <template>
-	<!--...--->
+	<!--...-->
 	<UserContent
 		ref="contentRef"
 		@new-click="handleNewClick"
@@ -509,7 +512,7 @@ defineExpose({
 })
 ```
 
-#### 1.遍历对象时，key 的类型写法【补充】
+> 【补充】：遍历对象时，key 的类型写法
 
 [参考资料](https://juejin.cn/post/7079687437445922853)
 
@@ -540,13 +543,13 @@ function print(obj: Person) {
 }
 ```
 
-封装一个函数，用于在 ts 中遍历对象类型，返回有类型的 key。
+封装一个函数，用于在 ts 中遍历对象类型，返回指定类型的 key。
 
 ```typescript
 export const getKeysFronObj = <T extends object>(obj: T) => Object.keys(obj) as Array<keyof T>
 ```
 
-#### 1.箭头函数的泛型【补充】
+> 【补充】：箭头函数的泛型。
 
 写在函数参数的前面，见上面的例子。
 
@@ -566,7 +569,9 @@ src\views\main\system\department\cpns\PageContent.vue
 
 ## 2.封装网络请求
 
-在 systemStore 中，针对 `DepartmentPanel.vue` 的内容，封装动态的网络请求。
+在 systemStore 中，针对 `DepartmentPanel.vue` 的内容，封装”增删改查“对应的”动态“的网络请求。
+
+其中增加了 `pageName` 参数，用于表示发送请求的页面名称。
 
 src\service\main\system\system.ts
 
@@ -595,6 +600,8 @@ export const pathEditPageRecordById = <T>(pageName: string, id: number, record: 
 		data: record
 	})
 ```
+
+在 actions 中，发送网络请求，将数据保存到 store。
 
 src\stores\main\system\system.ts
 
@@ -632,7 +639,7 @@ const actions = {
 
 ## 3.实现查询、重置、删除
 
-在 `PageSearch.vue` 中，实现 `Department.vue` 中的“查询”，“重置”。
+在 `PageSearch.vue` 中，发送 `Department.vue` 中的“查询”，“重置”的事件。
 
 发送事件
 
@@ -648,7 +655,7 @@ const onQueryClick = () => {
 }
 ```
 
-在 `PageSearch.vue` 中，实现 Department 的“查询”功能，
+在 `PageContent.vue` 中，实现 Department 的“查询”功能，
 
 调用查询的接口。
 
@@ -858,9 +865,9 @@ const onQueryClick = () => {
 </template>
 ```
 
-#### 1.将对象属性值字面量类型作为联合类型
 
-> 【补充】：[TypeScript 如何将对象属性值的字面量作为联合类型](https://zhuanlan.zhihu.com/p/406211160)。
+
+> 【补充】：[TypeScript 如何将对象属性值的字面量作为联合类型](https://zhuanlan.zhihu.com/p/406211160)。将对象属性值字面量类型作为联合类型
 
 ```typescript
 interface Student {
