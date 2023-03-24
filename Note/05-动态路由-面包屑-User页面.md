@@ -28,12 +28,12 @@
 
 在每个文件中导出对应的路由对象。
 
-这个过程，使用一个自动化工具 _coderwhy_，自动生成
+这个过程，使用一个自动化工具 _coderwhy_，自动生成如下文件：
 
 - view 目录下的 vue 组件，
 - router 目录下的路由对象。
 
-> 【补充】：自动化工具的使用，用于创建组件和该组件用于动态添加路由的路由对象。
+> 【补充】：自动化工具的使用，用于创建组件和该组件对应的用于动态添加路由的路由对象。
 
 1.安装 _coderwhy_ 工具
 
@@ -61,7 +61,7 @@ npx coderwhy add3page_setup DepartmentPanel -d src/views/main/system/department
 
 1.封装一个工具函数，在其中返回一个保存路由对象的数组。
 
-2.使用打包工具提供的 API，读取文件。
+2.使用打包工具（webpack / vite）提供的 API，读取文件。
 
 - webpack：`require.context`
 - vite：`import.meta.glob()`
@@ -72,7 +72,7 @@ npx coderwhy add3page_setup DepartmentPanel -d src/views/main/system/department
 - 这种方式通常用于懒加载。
 
 ```typescript
-import.meta.glob('../../router/main/**/*.ts')
+const obj = import.meta.glob('../../router/main/**/*.ts')
 ```
 
 添加一个参数 `{eager: true}`。取到的是一个对象。
@@ -80,7 +80,7 @@ import.meta.glob('../../router/main/**/*.ts')
 - 其中 key 是文件路径文本，value 是对应的文件模块。
 
 ```typescript
-import.meta.glob('../../router/main/**/*.ts', { eager: true })
+const obj = import.meta.glob('../../router/main/**/*.ts', { eager: true })
 ```
 
 src\utils\map-menu.ts
@@ -141,7 +141,6 @@ export const mapMenusToRoutes = (userMenu: IMenuInRole[]): RouteRecordRaw[] => {
 						const redirectRoute = routes.find(r => !r.redirect && item.url.includes(r.path))
 						if (redirectRoute) redirectRoute.redirect = route.path
 
-						if (!firstRoute) firstRoute = route
 						routes.push(route)
 					}
 					break
@@ -429,7 +428,7 @@ export const mapPathToBreadcrumb = (
 }
 ```
 
-> 【注意】：如上方案例，当要从循环遍历中直接返回结果时，`for...of` 比 `forEach` 更合适。
+> 【注意】：如上方案例，当要从循环遍历中直接返回（return）结果时，`for...of` 比 `forEach` 更合适，或者使用 `find`。
 
 在 `Breadcrumb.vue` 中，使用计算属性，获取响应式的面包屑。
 
@@ -458,7 +457,7 @@ const breadcrumbs = computed(() => mapPathToBreadcrumb(route.path, loginStore.us
 > 【注意】：为了方便扩展，一个 `<el-raw>` 中允许放多个 `<el-col>`，
 >
 > - 根据其上的 `span` 属性数值，控制是否进行换行显示。
-> - 一个 `<el-raw>` 的宽度是 `24`
+> - 一个 `<el-raw>` 的宽度是 `24`。
 
 src\views\main\system\user\cpns\UserSearch.vue
 
@@ -593,7 +592,7 @@ export default useSystemStore
 
 调整每一行的内间距。
 
-> 【注意】：vue 中选中深层元素的写法。
+> 【注意】：vue 中选中深层元素的写法 `:deep`。
 
 src\views\main\system\user\cpns\UserContent.vue
 
