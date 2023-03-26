@@ -14,6 +14,16 @@ src\views\main\system\department\cpns\PageContent.vue
 
 ```vue
 <template>
+  <!--  头部  -->
+  <div class="header">
+    <h3 class="title">{{ contentConfig?.header?.title ?? `数据列表` }}</h3>
+    <el-button type="primary" @click="onNewclick">{{
+      contentConfig?.header?.btnLabel ?? `新建数据`
+    }}</el-button>
+  </div>
+</template>
+
+<script setup lang="ts">
   interface IProps {
     contentConfig: {
       pageName: string
@@ -23,17 +33,9 @@ src\views\main\system\department\cpns\PageContent.vue
       }
     }
   }
+  
+  //...
   defineProps<IProps>()
-</template>
-
-<script setup lang="ts">
-  <!--  头部  -->
-  <div class="header">
-    <h3 class="title">{{ contentConfig?.header?.title ?? `数据列表` }}</h3>
-    <el-button type="primary" @click="onNewclick">{{
-      contentConfig?.header?.btnLabel ?? `新建数据`
-    }}</el-button>
-  </div>
 </script>
 ```
 
@@ -43,7 +45,7 @@ src\views\main\system\department\cpns\PageContent.vue
 
 在 `PageContent.vue` 中，抽取”选择列“、”序号“、”部门名称“、”部门编号“，”上级部门“等比较通用的列。
 
-使用 `v-bind` 的绑定对象的写法。
+使用 `v-bind` 绑定对象的写法。
 
 src\views\main\system\department\config\content.config.ts
 
@@ -68,13 +70,13 @@ src\views\main\system\department\cpns\PageContent.vue
 
 #### 2.时间、操作列抽取
 
-抽取”创建时间“、”更新时间“和”操作“等三个使用了插槽的列，
+抽取”创建时间“、”更新时间“、”操作“等三个使用了插槽的列，
 
 > 【注意】：在 `PageContent.vue` 中遍历处理配置文件时，有两种思路（项目中都有采用）：
 >
 > - 思路一：使用 `v-if` 处理每种情况。
-> - 思路二：使用插槽将特殊的列交给父组件（如 `DepartmentPanel.vue`）处理，使用动态插槽名。
->   - 配置文件中 item 的 `gener` 为 `custom`，表示需要使用插槽处理。
+> - 思路二：使用插槽，将特殊的列交给父组件（如 `DepartmentPanel.vue`）处理，使用动态插槽名。
+>   - 配置文件中 item 的 `gener` 为 `custom`，表示需要使用插槽处理（项目中还没有）。
 
 src\views\main\system\department\config\content.config.ts
 
@@ -210,7 +212,7 @@ src\components\page-modal\PageModal.vue\
 
 ### 2.动态注入配置项
 
-在 modalConfig 配置文件中，`formItem` 里，某些 `type` 为 `select` 元素，`options` 属性值来自服务器。
+在 modalConfig 配置文件中，`formItem` 里，某些 `type` 为 `select` 的元素，`options` 属性值来自服务器。
 
 src\views\main\system\department\config\modal.config.ts
 
@@ -228,7 +230,9 @@ const formItems: IModalFormItem[] = [
 ]
 ```
 
-在 `DepartmentPanel.vue` 中，为 modalConfig 配置文件中 `type` 为 `select` 类型的 formItem，动态添加 `options`，使用 `computed`
+在 `DepartmentPanel.vue` 中：
+
+使用 `computed`，为 `modalConfig.ts` 配置文件中的 `type` 为 `select` 类型的 formItem，动态添加 `options`，
 
 src\views\main\system\department\DepartmentPanel.vue
 
@@ -240,7 +244,8 @@ src\views\main\system\department\DepartmentPanel.vue
 <script>
 const modalConfigREf = computed(() => {
 	const mainStore = useMainStore()
-	// 这种写法，如果导致一行过长，如果 prettier 格式化后，要注意给回调函数加上 return。
+  
+	// 这种写法，如果导致一行过长，prettier 格式化后，要注意给回调函数加上 return。
 	const selectFormItem = modalConfig.formItems.find(
 		item => item.type === 'select' && item.prop === 'parentId'
 	)
@@ -259,7 +264,9 @@ const modalConfigREf = computed(() => {
 
 在 `PageModal.vue` 中展示。
 
-> 【注意】：因为 `PageModal.vue` 默认是不显示的，而是点击“新建”或“修改”时显示；
+> 【注意】：
+>
+> 因为 `PageModal.vue` 默认是不显示的，而是点击“新建”或“修改”时显示；
 >
 > 所以需要在显示的时候，再设置初始化值。
 >
@@ -369,7 +376,7 @@ const [modalRef, handleNewClick, handleEditClick] = usePageContent()
 
 以 `RolePanel.vue` 页面为例，封装和完善高阶组件 `PageContent.vue` 和 `PageModal.vue`.
 
-## 1.Role 配置文件
+## 1.Role 和 Menu 配置文件
 
 在 `RolePanel.vue` 中，应用封装好的组件。编写配置文件。
 
@@ -379,7 +386,15 @@ src\views\main\system\role\config\contnt.config.ts
 
 src\views\main\system\role\config\modal.config.ts
 
+在 `MenuPanel.vue` 中，应用封装好的组件。编写配置文件。仅做查询功能。
+
+src\views\main\system\menu\config\content.config.ts
+
 ## 2.PageContent 组件
+
+在 `MenuPanel.vue` 中，要对菜单做分级展示；
+
+对 `PageContent.vue` 中的 `<el-table>` 做优化。
 
 ### 1.table 树形数据
 
@@ -436,13 +451,15 @@ src\components\page-content\PageContent.vue
 ></el-table>
 ```
 
-> 【注意】：最好不要给 `PageContent.vue` 的 config 配置文件中的 `formIten` 加属性 `type`；
->
-> - 项目中已用 `gener` 代替；
+> 【注意】：不要给 `PageContent.vue` 的 config 配置文件中的 `formIten` 加属性 `type`；项目中已用 `gener` 代替；
 >
 > 因为在 `<el-table-column>` 上使用 `v-bind` 绑定属性对象时，会覆盖原组件上的属性 `type`。
 
 ## 3.PageModal 组件
+
+在 `RolePanel.vue` 中，新建角色时，要分级展示菜单；
+
+在 `PageModal.vue` 中，进行优化。
 
 ### 1.插槽展示角色的菜单
 
@@ -454,7 +471,7 @@ src\components\page-content\PageContent.vue
 
 再在 `PageModal.vue` 中，传入的 `props` 中，新增 `otherInfo` 属性，将选中的菜单信息传入进去。
 
-并在创建和修改角色所派发的 action 中，携带 `otherInfo` 参数，发送给服务器。
+- `otherInfo` 初始值为空，当选中 `<el-tree>` 中元素时，改变 `otherInfo`，并传给 `PageModal.vue`.
 
 src\views\main\system\role\RolePanel.vue
 
@@ -491,6 +508,8 @@ const [modalRef, handleNewClick, handleEditClick] = usePageContent()
 </script>
 ```
 
+并在创建和修改角色所派发的 action 中，携带 `otherInfo` 参数，发送给服务器。
+
 src\components\page-modal\PageModal.vue
 
 ```vue
@@ -500,6 +519,34 @@ src\components\page-modal\PageModal.vue
 		<slot :name="(item as IModalFormItemCustom).slotname"></slot>
 	</el-form-item>
 </template>
+
+<script>
+//...
+  
+// 点击“确认”
+const systemStore = useSystemStore()
+const onConfigClick = () => {
+	showdialog.value = false
+
+	let editFormData = { ...formData }
+
+	if (props.otherInfo) {
+		editFormData = { ...formData, ...props.otherInfo }
+	}
+
+	if (!isAdd.value && editId.value !== -1) {
+		// 编辑
+		systemStore.pathEditPageRecordByIdAction<EditFormDataType>(
+			pageName.value,
+			editId.value,
+			editFormData
+		)
+	} else {
+		// 新增
+		systemStore.postNewPageRecordAction<CreateFormDataType>(pageName.value, editFormData)
+	}
+}
+</script>
 ```
 
 > 【注意】：Vue 中 slot name 最好不要使用大写字母。
@@ -508,7 +555,7 @@ src\components\page-modal\PageModal.vue
 
 因为 `PageModal.vue` 组件没有被销毁。
 
-需要针对当前点击的角色记录，在 `PageModal.vue` 中，对菜单树进行重载：
+需要针对当前在 `PageContetn.vue` 中点击的角色记录，在 `PageModal.vue` 中，对菜单树进行重载：
 
 给 hook `usePageContent` 中传入一个回调函数 `editCallback`，将全部的菜单树 `menuList` 传入其中。
 

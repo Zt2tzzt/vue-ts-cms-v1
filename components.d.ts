@@ -37,6 +37,7 @@ declare module '@vue/runtime-core' {
     ElSubMenu: typeof import('element-plus/es')['ElSubMenu']
     ElTable: typeof import('element-plus/es')['ElTable']
     ElTableColumn: typeof import('element-plus/es')['ElTableColumn']
+    ElTree: typeof import('element-plus/es')['ElTree']
     LineEchart: typeof import('./src/components/page-echarts/src/LineEchart.vue')['default']
     MainHeader: typeof import('./src/components/main-header/MainHeader.vue')['default']
     MainMenu: typeof import('./src/components/main-menu/MainMenu.vue')['default']

@@ -95,7 +95,7 @@ defineExpose({
 			<div class="form">
 				<el-form :model="formData" label-width="80px" size="large">
 					<template v-for="item of modalConfig.formItems" :key="item">
-						<!-- 插槽列 -->
+						<!-- 插槽列 （RolePanel.vue 使用了）-->
 						<template v-if="item.type === 'custom'">
 							<el-form-item>
 								<slot :name="(item as IModalFormItemCustom).slotname"></slot>

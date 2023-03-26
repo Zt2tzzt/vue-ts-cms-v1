@@ -13,6 +13,8 @@ import type { HookFnType } from '@/types'
 
 // 获取 roles / departments 数据
 const mainStore = useMainStore()
+
+// 动态添加 options
 const modalConfigRef = computed(() => {
 	const selectFormItem = modalConfig.formItems.find(
 		item => item.type === 'select' && item.prop === 'parentId' && 'options' in item

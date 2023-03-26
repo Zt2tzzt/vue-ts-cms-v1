@@ -7,3 +7,6 @@
 **/*.sh
 
 /public/*
+
+components.d.ts
+auto-imports.d.ts
