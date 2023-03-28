@@ -59,13 +59,14 @@ function dynamicLoadingPermissionAndRoutes(this: ILoginState, userMenus: IMenuIn
 
 在进入某个页面，如角色（`RolePanel.vue`）时，判断用户是否有增、删、改、查权限。
 
-由分析可知，增删改查实际上都可以在 `PageContent.vue` 中控制。
+由分析可知，”增删改查“实际上都要通过 `PageContent.vue` 来完成，所以在其中进行控制。
 
-在其中增加四个布尔类型的 flags，`isCreate`、`isDelete`、`isUpdate`、`isQuery`，分别表示增、删、改、查权限。
+在其中增加四个布尔类型的 flags，`isCreate`、`isDelete`、`isUpdate`、`isQuery`，分别表示”增“、”删“、”改“、”查“
+权限。
 
 获取到 `loginstore` 中的 `permissions` 后，进行判断，为 flags 赋值。
 
-将上述逻辑抽取到 hook 中。
+将上述逻辑抽取到 hook `usePermissions` 中。
 
 src\hooks\usePermissions.ts
 
@@ -92,7 +93,7 @@ const permission = {
 }
 ```
 
-查询，在网络请求中控制。
+”查“，在网络请求中控制。
 
 src\components\page-content\PageContent.vue
 
@@ -104,7 +105,7 @@ const fetchPageListData = <T>(formatData: T | object = {}) => {
 }
 ```
 
-增、删，改：在页面上的按钮控制.
+”增“、”删“，”改“：在页面上的按钮控制.
 
 src\components\page-content\PageContent.vue
 
@@ -166,13 +167,13 @@ const permission = {
 
 原因：
 
-- 创建用户时，能够选择的角色，是在页面刷新或用户登录时，加载到内存（`mainStore`）中的。
+- 创建用户时，能够选择的角色，是在用户登录或页面刷新时，加载到内存（`mainStore`）中的。
 - 创建角色后，没有对内存中的角色，进行重载。
 
 解决方案：
 
-- 在增、删、改角色的 action 执行完成后，重新获取角色列表，并缓存。
-- 以此类推，增、删、改“部门”、“菜单“后，也要进行类似的操作。
+- 在”增“、”删“、”改“角色的 action 执行完成后，重新获取角色列表，并缓存。
+- 以此类推，”增“、”删“、”改“【部门】、【菜单】后，也要进行类似的操作。
 
 src\stores\main\system\system.ts
 
@@ -229,7 +230,7 @@ src\components\main-header\cpns\UserState.vue
 <script>
 const loginStore = useLoginStore()
 const nickname = computed(() =>
-	'name' in loginStore.userInfo ? loginStore.userInfo.name : '用户名'
+	'name' in loginStore.userInfo ? loginStore.userInfo.name : '用户名' // 类型缩小
 )
 </script>
 
@@ -285,7 +286,7 @@ onUnmounted(() => {
 
 ## 1.页面布局
 
-头部数字展示区域搭建，使用 Element Plus Layout 布局中的 `<el-row>` 布局。
+上方数字卡片展示区域搭建，使用 Element Plus Layout 布局中的 `<el-row>` 布局。
 
 src\views\main\analysis\dashboard\DashboardPanel.vue
 
@@ -298,32 +299,6 @@ src\views\main\analysis\dashboard\DashboardPanel.vue
     </el-col>
   </template>
 </el-row>
-```
-
-封装组件 `CountCard.vue` 组件。
-
-在其中使用 flex 布局，并使用 `<el-tooltip>` 组件，展示卡片的提示信息。
-
-src\views\main\analysis\dashboard\cpns\count-card\CountCard.vue
-
-```vue
-<template>
-	<div class="count-card">
-		<div class="header">
-			<span class="title">{{ title }}</span>
-			<el-tooltip :content="tips" placement="top" effect="dark">
-				<el-icon><Warning /></el-icon>
-			</el-tooltip>
-		</div>
-		<div class="content">
-			<span ref="count1Ref">{{ number1 }}</span>
-		</div>
-		<div class="footer">
-			<span>{{ subtitle }}</span>
-			<span ref="count2Ref">{{ number2 }}</span>
-		</div>
-	</div>
-</template>
 ```
 
 ## 2.封装网络请求
@@ -342,6 +317,35 @@ export const getGoodsAmountListData = () =>
 > 软件架构中，没有什么问题是分层不能解决的，如果有，就再分一层。
 
 ## 3.数字卡片组件
+
+封装组件 `CountCard.vue` 组件。
+
+在其中使用 flex 布局，并使用 `<el-tooltip>` 组件，展示卡片的提示信息。
+
+src\views\main\analysis\dashboard\cpns\count-card\CountCard.vue
+
+```vue
+<template>
+	<div class="count-card">
+    <!-- 头部标题 -->
+		<div class="header">
+			<span class="title">{{ title }}</span>
+			<el-tooltip :content="tips" placement="top" effect="dark">
+				<el-icon><Warning /></el-icon>
+			</el-tooltip>
+		</div>
+		<!-- 数字 -->
+		<div class="content">
+			<span ref="count1Ref">{{ number1 }}</span>
+		</div>
+		<!-- 底部副标题和数字 -->
+		<div class="footer">
+			<span>{{ subtitle }}</span>
+			<span ref="count2Ref">{{ number2 }}</span>
+		</div>
+	</div>
+</template>
+```
 
 安装 _countup.js_ 库，
 
@@ -417,7 +421,9 @@ npm install echarts
 
 ### 3.BaseEchart 组件
 
-创建 `BaseEchart.vue` 组件，在其中接收 echarts 的配置项 `option`，并对 _echarts_ 的逻辑进行封装。
+创建 `BaseEchart.vue` 组件，在其中接收 echarts 的配置项 `option`；
+
+并对 _echarts_ 的逻辑进行封装。
 
 src\components\page-echarts\src\BaseEchart.vue
 
@@ -439,6 +445,7 @@ const props = defineProps<{
 const containerRef = ref<HTMLElement>()
 let echartInstance: EChartsType
 
+// 注册地图
 if (props.mapData) echarts.registerMap(props.mapData.mapName, props.mapData.geoJSON)
 
 const echartResize = debounce(() => {
@@ -452,12 +459,15 @@ onMounted(() => {
 		renderer: 'canvas'
 	})
 
+  // 方案一
 	/* watch(
 		() => props.options,
 		newVal => {
 			echartInstance.setOption(newVal)
 		}
 	) */
+  
+  // 方案二
 	stopWatchEffect = watchEffect(() => echartInstance.setOption(props.options))
 
 	window.addEventListener('resize', echartResize)
@@ -617,10 +627,10 @@ import coordinate from '../data/coordinate-data'
 type AddressUnionType = keyof typeof coordinate
 
 export default (
-	data: {
+	data: Array<{
 		name: string
 		values: number
-	}[]
+	}>
 ) =>
 	data
 		.filter(
@@ -654,7 +664,7 @@ if (props.mapData) echarts.registerMap(props.mapData.mapName, props.mapData.geoJ
 
 监听 `window` 的缩放，重置 `echart` 实例大小。
 
-- 监听时，做防抖节流操作。
+- 监听时，做防抖操作。
 
 - 组件卸载时，取消监听，销毁实例。
 

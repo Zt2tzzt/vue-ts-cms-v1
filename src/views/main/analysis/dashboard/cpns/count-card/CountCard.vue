@@ -38,6 +38,7 @@ onMounted(() => {
 
 <template>
 	<div class="count-card">
+		<!-- 头部标题 -->
 		<div class="header">
 			<span class="title">{{ title }}</span>
 			<el-tooltip :content="tips" placement="top" effect="dark">
@@ -45,10 +46,12 @@ onMounted(() => {
 			</el-tooltip>
 		</div>
 
+		<!-- 数字 -->
 		<div class="content">
 			<span ref="count1Ref">{{ number1 }}</span>
 		</div>
 
+		<!-- 底部副标题和数字 -->
 		<div class="footer">
 			<span>{{ subtitle }}</span>
 			<span ref="count2Ref">{{ number2 }}</span>

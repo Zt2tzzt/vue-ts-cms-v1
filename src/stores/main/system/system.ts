@@ -100,7 +100,7 @@ const useSystemStore = defineStore('system', {
 				console.log(pageName, 'delete res:', res)
 				this.postPageListAction(pageName, { offset: 0, size: 10 })
 
-				// 如果是部门，角色，菜单等基础数据发生增、删、改操作，要重显加载到缓存中。
+				// 如果是部门，角色，菜单等基础数据发生增、删、改操作，要重新加载到缓存中。
 				fetchEntireData(pageName)
 				fetchUsersAndMenusData(pageName, id)
 			})
@@ -110,7 +110,7 @@ const useSystemStore = defineStore('system', {
 				console.log(pageName, 'add res:', res)
 				this.postPageListAction(pageName, { offset: 0, size: 10 })
 
-				// 如果是部门，角色，菜单等基础数据发生增、删、改操作，要重显加载到缓存中。
+				// 如果是部门，角色，菜单等基础数据发生增、删、改操作，要重新加载到缓存中。
 				fetchEntireData(pageName)
 			})
 		},
@@ -119,7 +119,7 @@ const useSystemStore = defineStore('system', {
 				console.log(pageName, 'edit res:', res)
 				this.postPageListAction(pageName, { offset: 0, size: 10 })
 
-				// 如果是部门，角色，菜单等基础数据发生增、删、改操作，要重显加载到缓存中。
+				// 如果是部门，角色，菜单等基础数据发生增、删、改操作，要重新加载到缓存中。
 				fetchEntireData(pageName)
 				fetchUsersAndMenusData(pageName, id)
 			})

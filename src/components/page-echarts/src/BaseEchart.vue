@@ -15,6 +15,7 @@ const props = defineProps<{
 const containerRef = ref<HTMLElement>()
 let echartInstance: EChartsType
 
+// 注册地图
 if (props.mapData) echarts.registerMap(props.mapData.mapName, props.mapData.geoJSON)
 
 const echartResize = debounce(() => {
@@ -28,6 +29,7 @@ onMounted(() => {
 		renderer: 'canvas'
 	})
 
+	// 方案一
 	/* watch(
 		() => props.options,
 		newVal => {
@@ -35,6 +37,7 @@ onMounted(() => {
 		}
 	) */
 
+	// 方案二
 	stop = watchEffect(() => echartInstance.setOption(props.options))
 
 	window.addEventListener('resize', echartResize)
