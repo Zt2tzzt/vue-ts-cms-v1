@@ -16,18 +16,18 @@ const mainStore = useMainStore()
 
 // 动态添加 options
 const modalConfigRef = computed(() => {
-	const selectFormItem = modalConfig.formItems.find(
-		item => item.type === 'select' && item.prop === 'parentId' && 'options' in item
-	)
+  const selectFormItem = modalConfig.formItems.find(
+    item => item.type === 'select' && item.prop === 'parentId' && 'options' in item
+  )
 
-	if (selectFormItem && 'options' in selectFormItem) {
-		selectFormItem.options = mainStore.entireDepartments.map(item => ({
-			label: item.name,
-			value: item.id
-		}))
-	}
+  if (selectFormItem && 'options' in selectFormItem) {
+    selectFormItem.options = mainStore.entireDepartments.map(item => ({
+      label: item.name,
+      value: item.id
+    }))
+  }
 
-	return modalConfig
+  return modalConfig
 })
 
 const [contentRef, handleQueryClick, handleResetClick] = usePageSearch()
@@ -35,25 +35,25 @@ const [modalRef, handleNewClick, handleEditClick] = usePageContent()
 </script>
 
 <template>
-	<div class="department">
-		<PageSearch
-			:search-config="searchConfig"
-			@query-click="handleQueryClick as HookFnType"
-			@reset-click="handleResetClick as HookFnType"
-		></PageSearch>
-		<PageContent
-			ref="contentRef"
-			:content-config="contentConfig"
-			@new-click="handleNewClick as HookFnType"
-			@edit-click="handleEditClick as HookFnType"
-		></PageContent>
-		<PageModal :modal-config="modalConfigRef" ref="modalRef"></PageModal>
-	</div>
+  <div class="department">
+    <PageSearch
+      :search-config="searchConfig"
+      @query-click="handleQueryClick as HookFnType"
+      @reset-click="handleResetClick as HookFnType"
+    ></PageSearch>
+    <PageContent
+      ref="contentRef"
+      :content-config="contentConfig"
+      @new-click="handleNewClick as HookFnType"
+      @edit-click="handleEditClick as HookFnType"
+    ></PageContent>
+    <PageModal :modal-config="modalConfigRef" ref="modalRef"></PageModal>
+  </div>
 </template>
 
 <style scoped>
 .department {
-	border-radius: 8px;
-	overflow: hidden;
+  border-radius: 8px;
+  overflow: hidden;
 }
 </style>

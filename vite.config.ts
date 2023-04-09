@@ -9,30 +9,30 @@ import { createStyleImportPlugin, ElementPlusResolve } from 'vite-plugin-style-i
 
 // https://vitejs.dev/config/
 export default defineConfig({
-	plugins: [
-		vue(),
-		AutoImport({
-			resolvers: [ElementPlusResolver()]
-		}),
-		Components({
-			resolvers: [ElementPlusResolver()]
-		}),
-		createStyleImportPlugin({
-			resolves: [ElementPlusResolve()],
-			libs: [
-				{
-					libraryName: 'element-plus',
-					esModule: true,
-					resolveStyle: (name: string) => {
-						return `element-plus/theme-chalk/${name}.css`
-					}
-				}
-			]
-		})
-	],
-	resolve: {
-		alias: {
-			'@': fileURLToPath(new URL('./src', import.meta.url))
-		}
-	}
+  plugins: [
+    vue(),
+    AutoImport({
+      resolvers: [ElementPlusResolver()]
+    }),
+    Components({
+      resolvers: [ElementPlusResolver()]
+    }),
+    createStyleImportPlugin({
+      resolves: [ElementPlusResolve()],
+      libs: [
+        {
+          libraryName: 'element-plus',
+          esModule: true,
+          resolveStyle: (name: string) => {
+            return `element-plus/theme-chalk/${name}.css`
+          }
+        }
+      ]
+    })
+  ],
+  resolve: {
+    alias: {
+      '@': fileURLToPath(new URL('./src', import.meta.url))
+    }
+  }
 })

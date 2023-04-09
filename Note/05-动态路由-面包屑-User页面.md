@@ -94,14 +94,14 @@ import type { RouteRecordRaw } from 'vue-router'
  * @return {RouteRecordRaw[]} 本地的路由对象列表
  */
 const loadLocalRoutes = (): RouteRecordRaw[] => {
-	const files: Record<string, any> = import.meta.glob('../router/main/**/*.ts', {
-		eager: true
-	})
+  const files: Record<string, any> = import.meta.glob('../router/main/**/*.ts', {
+    eager: true
+  })
 
-	return Object.keys(files).map(key => {
-		const moudle = files[key]
-		return moudle.default
-	})
+  return Object.keys(files).map(key => {
+    const moudle = files[key]
+    return moudle.default
+  })
 }
 ```
 
@@ -121,35 +121,35 @@ import type { IMenuInRole, IMenuInRoleChild } from '@/types'
  * @return {RouteRecordRaw[]} 菜单映射后的路由列表
  */
 export const mapMenusToRoutes = (userMenu: IMenuInRole[]): RouteRecordRaw[] => {
-	const localRoutes = loadLocalRoutes()
+  const localRoutes = loadLocalRoutes()
 
-	const routes: RouteRecordRaw[] = []
+  const routes: RouteRecordRaw[] = []
 
-	const _getRoute = (userMenu: IMenuInRole[] | IMenuInRoleChild[]) => {
-		let route: RouteRecordRaw | undefined
+  const _getRoute = (userMenu: IMenuInRole[] | IMenuInRoleChild[]) => {
+    let route: RouteRecordRaw | undefined
 
-		userMenu.forEach(item => {
-			switch (item.type) {
-				case 1:
-					routes.push({ path: item.url, redirect: '' })
-					if (Array.isArray(item.children)) _getRoute(item.children)
-					break
-				case 2:
-					route = localRoutes.find(lr => lr.path === item.url)
-					if (route) {
-						// 点击一级面包屑，返回大类里的重定向路由。
-						const redirectRoute = routes.find(r => !r.redirect && item.url.includes(r.path))
-						if (redirectRoute) redirectRoute.redirect = route.path
+    userMenu.forEach(item => {
+      switch (item.type) {
+        case 1:
+          routes.push({ path: item.url, redirect: '' })
+          if (Array.isArray(item.children)) _getRoute(item.children)
+          break
+        case 2:
+          route = localRoutes.find(lr => lr.path === item.url)
+          if (route) {
+            // 点击一级面包屑，返回大类里的重定向路由。
+            const redirectRoute = routes.find(r => !r.redirect && item.url.includes(r.path))
+            if (redirectRoute) redirectRoute.redirect = route.path
 
-						routes.push(route)
-					}
-					break
-			}
-		})
-	}
-	_getRoute(userMenu)
+            routes.push(route)
+          }
+          break
+      }
+    })
+  }
+  _getRoute(userMenu)
 
-	return routes
+  return routes
 }
 ```
 
@@ -222,13 +222,13 @@ import { firstRoute } from '@/utils/map-menu'
 //...
 
 router.beforeEach(to => {
-	const token = localCache.getCache(LOGIN_TOKEN)
+  const token = localCache.getCache(LOGIN_TOKEN)
 
-	if (to.path.startsWith('/main')) {
-		if (!token) return '/login'
+  if (to.path.startsWith('/main')) {
+    if (!token) return '/login'
 
-		if (to.path === '/main') return firstRoute?.path
-	}
+    if (to.path === '/main') return firstRoute?.path
+  }
 })
 ```
 
@@ -245,25 +245,25 @@ src\stores\login\login.ts
 ```typescript
 //...
 const dynamicLoadingRoutes = (userMenus: IMenuInRole[]) => {
-	const routes = mapMenusToRoutes(userMenus)
-	routes.forEach(route => router.addRoute('main', route))
+  const routes = mapMenusToRoutes(userMenus)
+  routes.forEach(route => router.addRoute('main', route))
 }
 
 //...
 const actions = {
-	loadLocalCacheAction() {
-		// 页面载入、刷新，从缓存中加载数据
-		const token = localCache.getCache(LOGIN_TOKEN)
-		const userInfo = localCache.getCache(USER_INFO)
-		const userMenus = localCache.getCache(USER_MENU)
-		if (token && userInfo && userMenus) {
-			this.token = token
-			this.userInfo = userInfo
-			this.userMenus = userMenus
+  loadLocalCacheAction() {
+    // 页面载入、刷新，从缓存中加载数据
+    const token = localCache.getCache(LOGIN_TOKEN)
+    const userInfo = localCache.getCache(USER_INFO)
+    const userMenus = localCache.getCache(USER_MENU)
+    if (token && userInfo && userMenus) {
+      this.token = token
+      this.userInfo = userInfo
+      this.userMenus = userMenus
 
-			dynamicLoadingRoutes(userMenus)
-		}
-	}
+      dynamicLoadingRoutes(userMenus)
+    }
+  }
 }
 ```
 
@@ -281,11 +281,11 @@ import useLoginStore from './login/login'
 const pinia = createPinia()
 
 const registerStore = (app: App<Element>) => {
-	// 1.安装 pinia 插件
-	app.use(pinia)
-	// 2.加载本地数据
-	const loginStore = useLoginStore()
-	loginStore.loadLocalCacheAction()
+  // 1.安装 pinia 插件
+  app.use(pinia)
+  // 2.加载本地数据
+  const loginStore = useLoginStore()
+  loginStore.loadLocalCacheAction()
 }
 
 export default registerStore
@@ -325,27 +325,27 @@ import type { IMenuInRole, IMenuInRoleChild, IBreadcrumb } from '@/types'
  * @return {IMenuInRoleChild | undefined} 激活的菜单，或者未匹配到/
  */
 export const mapPathToMenu = (
-	path: string,
-	userMenus: IMenuInRole[] | IMenuInRoleChild[],
-	breadcrumb?: IBreadcrumb[]
+  path: string,
+  userMenus: IMenuInRole[] | IMenuInRoleChild[],
+  breadcrumb?: IBreadcrumb[]
 ): IMenuInRoleChild | undefined => {
-	let findMenu: IMenuInRoleChild | undefined
+  let findMenu: IMenuInRoleChild | undefined
 
-	for (const item of userMenus) {
-		switch (item.type) {
-			case 1:
-				findMenu = mapPathToMenu(path, item.children ?? [])
-				if (findMenu) {
-					breadcrumb?.push({ name: item.name, path: item.url }) // 一层菜单
-					breadcrumb?.push({ name: findMenu.name, path: findMenu.url })
-					return findMenu
-				}
-				break
-			case 2:
-				if (item.url === path) return item
-				break
-		}
-	}
+  for (const item of userMenus) {
+    switch (item.type) {
+      case 1:
+        findMenu = mapPathToMenu(path, item.children ?? [])
+        if (findMenu) {
+          breadcrumb?.push({ name: item.name, path: item.url }) // 一层菜单
+          breadcrumb?.push({ name: findMenu.name, path: findMenu.url })
+          return findMenu
+        }
+        break
+      case 2:
+        if (item.url === path) return item
+        break
+    }
+  }
 }
 ```
 
@@ -357,8 +357,8 @@ src\components\main-menu\MainMenu.vue
 
 ```typescript
 const defaultActive = computed(() => {
-	const menu = mapPathToMenu(route.path, userMenu)
-	return menu ? menu.id + '' : '-1'
+  const menu = mapPathToMenu(route.path, userMenu)
+  return menu ? menu.id + '' : '-1'
 })
 ```
 
@@ -368,8 +368,8 @@ src\components\main-menu\MainMenu.vue
 
 ```typescript
 onMounted(() => {
-	const menu = mapPathToMenu(route.path, userMenu)
-	defaultActive.value = menu ? menu.id + '' : '-1'
+  const menu = mapPathToMenu(route.path, userMenu)
+  defaultActive.value = menu ? menu.id + '' : '-1'
 })
 ```
 
@@ -388,27 +388,27 @@ src\utils\map-path.ts
  * @return {IMenuInRoleChild | undefined} 激活的菜单，或者未匹配到/
  */
 export const mapPathToMenu = (
-	path: string,
-	userMenus: IMenuInRole[] | IMenuInRoleChild[],
-	breadcrumb?: IBreadcrumb[]
+  path: string,
+  userMenus: IMenuInRole[] | IMenuInRoleChild[],
+  breadcrumb?: IBreadcrumb[]
 ): IMenuInRoleChild | undefined => {
-	let findMenu: IMenuInRoleChild | undefined
+  let findMenu: IMenuInRoleChild | undefined
 
-	for (const item of userMenus) {
-		switch (item.type) {
-			case 1:
-				findMenu = mapPathToMenu(path, item.children ?? [])
-				if (findMenu) {
-					breadcrumb?.push({ name: item.name, path: item.url }) // 一层菜单
-					breadcrumb?.push({ name: findMenu.name, path: findMenu.url })
-					return findMenu
-				}
-				break
-			case 2:
-				if (item.url === path) return item
-				break
-		}
-	}
+  for (const item of userMenus) {
+    switch (item.type) {
+      case 1:
+        findMenu = mapPathToMenu(path, item.children ?? [])
+        if (findMenu) {
+          breadcrumb?.push({ name: item.name, path: item.url }) // 一层菜单
+          breadcrumb?.push({ name: findMenu.name, path: findMenu.url })
+          return findMenu
+        }
+        break
+      case 2:
+        if (item.url === path) return item
+        break
+    }
+  }
 }
 
 /**
@@ -419,12 +419,12 @@ export const mapPathToMenu = (
  * @return {IBreadcrumb[]} 面包屑列表
  */
 export const mapPathToBreadcrumb = (
-	path: string,
-	userMenus: IMenuInRole[] | IMenuInRoleChild[]
+  path: string,
+  userMenus: IMenuInRole[] | IMenuInRoleChild[]
 ): IBreadcrumb[] => {
-	const breadcrumbs: IBreadcrumb[] = []
-	mapPathToMenu(path, userMenus, breadcrumbs)
-	return breadcrumbs
+  const breadcrumbs: IBreadcrumb[] = []
+  mapPathToMenu(path, userMenus, breadcrumbs)
+  return breadcrumbs
 }
 ```
 
@@ -474,7 +474,7 @@ src\views\main\system\user\cpns\UserSearch.vue
 
 ```typescript
 const onResetClick = () => {
-	formRef.value?.resetFields()
+  formRef.value?.resetFields()
 }
 ```
 
@@ -493,11 +493,11 @@ import zhCn from 'element-plus/dist/locale/zh-cn.mjs'
 </script>
 
 <template>
-	<div class="app">
-		<ElConfigProvider :locale="zhCn">
-			<router-view></router-view>
-		</ElConfigProvider>
-	</div>
+  <div class="app">
+    <ElConfigProvider :locale="zhCn">
+      <router-view></router-view>
+    </ElConfigProvider>
+  </div>
 </template>
 ```
 
@@ -522,8 +522,8 @@ src\views\main\system\user\cpns\UserContent.vue
 
 ```html
 <div class="header">
-	<h3 class="title">用户列表</h3>
-	<el-button type="primary">新建用户</el-button>
+  <h3 class="title">用户列表</h3>
+  <el-button type="primary">新建用户</el-button>
 </div>
 ```
 
@@ -537,13 +537,13 @@ src\service\main\system\system.ts
 
 ```typescript
 export const postUsers = () =>
-	ztRequest.post<IResponse<IUsersData>>({
-		url: '/users/list',
-		data: {
-			offset: 0,
-			size: 10
-		}
-	})
+  ztRequest.post<IResponse<IUsersData>>({
+    url: '/users/list',
+    data: {
+      offset: 0,
+      size: 10
+    }
+  })
 ```
 
 创建 `systmeStore`。
@@ -558,23 +558,23 @@ import { postUsers } from '@/service/main/system/system'
 import { defineStore } from 'pinia'
 
 interface ISystemStore {
-	users: IUser[]
-	usersTotalCount: number
+  users: IUser[]
+  usersTotalCount: number
 }
 
 const useSystemStore = defineStore('system', {
-	state: (): ISystemStore => ({
-		users: [],
-		usersTotalCount: 0
-	}),
-	actions: {
-		postUsersAction() {
-			postUsers().then(res => {
-				this.users = res.data.list
-				this.usersTotalCount = res.data.totalCount
-			})
-		}
-	}
+  state: (): ISystemStore => ({
+    users: [],
+    usersTotalCount: 0
+  }),
+  actions: {
+    postUsersAction() {
+      postUsers().then(res => {
+        this.users = res.data.list
+        this.usersTotalCount = res.data.totalCount
+      })
+    }
+  }
 })
 
 export default useSystemStore
@@ -598,10 +598,10 @@ src\views\main\system\user\cpns\UserContent.vue
 
 ```css
 .table {
-	/* 选中 el-table 中的深层子元素 */
-	:deep(.el-table__cell) {
-		padding: 12px 0;
-	}
-	/*...*/
+  /* 选中 el-table 中的深层子元素 */
+  :deep(.el-table__cell) {
+    padding: 12px 0;
+  }
+  /*...*/
 }
 ```

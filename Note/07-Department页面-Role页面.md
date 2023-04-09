@@ -24,18 +24,18 @@ src\views\main\system\department\cpns\PageContent.vue
 </template>
 
 <script setup lang="ts">
-  interface IProps {
-    contentConfig: {
-      pageName: string
-      header?: {
-        title: string
-        btnLabel: string
-      }
+interface IProps {
+  contentConfig: {
+    pageName: string
+    header?: {
+      title: string
+      btnLabel: string
     }
   }
-  
-  //...
-  defineProps<IProps>()
+}
+
+//...
+defineProps<IProps>()
 </script>
 ```
 
@@ -51,12 +51,12 @@ src\views\main\system\department\config\content.config.ts
 
 ```typescript
 const propsList = [
-	// 较通用的列
-	{ type: 'selection', label: '选择', width: '50' },
-	{ type: 'index', label: '序号', width: '60' },
-	{ label: '部门名称', prop: 'name', width: '200' },
-	{ label: '部门编号', prop: 'leader', width: '200' },
-	{ label: '上级部门', prop: 'parentId', width: '150' }
+  // 较通用的列
+  { type: 'selection', label: '选择', width: '50' },
+  { type: 'index', label: '序号', width: '60' },
+  { label: '部门名称', prop: 'name', width: '200' },
+  { label: '部门编号', prop: 'leader', width: '200' },
+  { label: '上级部门', prop: 'parentId', width: '150' }
 ]
 ```
 
@@ -64,7 +64,7 @@ src\views\main\system\department\cpns\PageContent.vue
 
 ```vue
 <template v-for="item of contentConfig.propsList" :key="item.prop">
-	<el-table-column align="center" v-bind="item"></el-table-column>
+  <el-table-column align="center" v-bind="item"></el-table-column>
 </template>
 ```
 
@@ -82,16 +82,16 @@ src\views\main\system\department\config\content.config.ts
 
 ```typescript
 const propsList = [
-	// 较通用的列
-	{ type: 'selection', label: '选择', width: '50' },
-	{ type: 'index', label: '序号', width: '60' },
-	{ label: '部门名称', prop: 'name', width: '200' },
-	{ label: '部门编号', prop: 'leader', width: '200' },
-	{ label: '上级部门', prop: 'parentId', width: '150' },
-	// 很多页面都有的列
-	{ gener: 'timer', label: '创建时间', prop: 'createAt' },
-	{ gener: 'timer', label: '修改时间', prop: 'updateAt' },
-	{ gener: 'handler', label: '操作', prop: 'updateAt', width: '250' }
+  // 较通用的列
+  { type: 'selection', label: '选择', width: '50' },
+  { type: 'index', label: '序号', width: '60' },
+  { label: '部门名称', prop: 'name', width: '200' },
+  { label: '部门编号', prop: 'leader', width: '200' },
+  { label: '上级部门', prop: 'parentId', width: '150' },
+  // 很多页面都有的列
+  { gener: 'timer', label: '创建时间', prop: 'createAt' },
+  { gener: 'timer', label: '修改时间', prop: 'updateAt' },
+  { gener: 'handler', label: '操作', prop: 'updateAt', width: '250' }
 ]
 ```
 
@@ -99,28 +99,28 @@ src\views\main\system\department\cpns\PageContent.vue
 
 ```vue
 <template v-for="item of contentConfig.propList" :key="item.prop">
-	<!-- 很多页面都有的列。分情况处理 -->
-	<template v-if="item.gener === 'timer'">
-		<el-table-column align="center" v-bind="item" #default="scope">
-			{{ formatUTC(scope.row.createAt) }}
-		</el-table-column>
-	</template>
+  <!-- 很多页面都有的列。分情况处理 -->
+  <template v-if="item.gener === 'timer'">
+    <el-table-column align="center" v-bind="item" #default="scope">
+      {{ formatUTC(scope.row.createAt) }}
+    </el-table-column>
+  </template>
 
-	<template v-else-if="item.gener === 'handler'">
-		<el-table-column align="center" v-bind="item" #default="scope">
-			<el-button size="small" icon="Edit" type="primary" text @click="onEditClick(scope.row)"
-				>编辑</el-button
-			>
-			<el-button size="small" icon="Delete" type="danger" text @click="onDeleteClick(scope.row.id)"
-				>删除</el-button
-			>
-		</el-table-column>
-	</template>
+  <template v-else-if="item.gener === 'handler'">
+    <el-table-column align="center" v-bind="item" #default="scope">
+      <el-button size="small" icon="Edit" type="primary" text @click="onEditClick(scope.row)"
+        >编辑</el-button
+      >
+      <el-button size="small" icon="Delete" type="danger" text @click="onDeleteClick(scope.row.id)"
+        >删除</el-button
+      >
+    </el-table-column>
+  </template>
 
-	<!-- 较为通用的列 -->
-	<template v-else>
-		<el-table-column align="center" v-bind="item"></el-table-column>
-	</template>
+  <!-- 较为通用的列 -->
+  <template v-else>
+    <el-table-column align="center" v-bind="item"></el-table-column>
+  </template>
 </template>
 ```
 
@@ -134,7 +134,7 @@ src\views\main\system\department\config\content.config.ts
 
 ```typescript
 const contentConfig = {
-	pageName: DEPARTMENT
+  pageName: DEPARTMENT
 }
 ```
 
@@ -145,8 +145,8 @@ const pageName = computed(() => props.contentConfig.pageName)
 
 //...
 systemStore.postPageListAction<IDepartmentQueryParam>(pageName.value, {
-	...queryParam,
-	...formatData
+  ...queryParam,
+  ...formatData
 })
 
 //...
@@ -165,18 +165,18 @@ src\views\main\system\department\config\modal.config.ts
 
 ```typescript
 const formItems: IDepartmentFormItem[] = [
-	{ type: 'input', label: '部门名称', prop: 'name', placeholder: '请输入部门名称' },
-	{ type: 'input', label: '部门领导', prop: 'leader', placeholder: '请输入部门领导' },
-	{ type: 'select', label: '上级部门', prop: 'parentId', placeholder: '请选择上级部门' }
+  { type: 'input', label: '部门名称', prop: 'name', placeholder: '请输入部门名称' },
+  { type: 'input', label: '部门领导', prop: 'leader', placeholder: '请输入部门领导' },
+  { type: 'select', label: '上级部门', prop: 'parentId', placeholder: '请选择上级部门' }
 ]
 
 export default {
-	pageName: DEPARTMENT,
-	header: {
-		newBtnLabel: '新建部门',
-		editBtnLabel: '编辑部门'
-	},
-	formItems
+  pageName: DEPARTMENT,
+  header: {
+    newBtnLabel: '新建部门',
+    editBtnLabel: '编辑部门'
+  },
+  formItems
 }
 ```
 
@@ -218,15 +218,15 @@ src\views\main\system\department\config\modal.config.ts
 
 ```typescript
 const formItems: IModalFormItem[] = [
-	{ type: 'input', label: '部门名称', prop: 'name', placeholder: '请输入部门名称' },
-	{ type: 'input', label: '部门领导', prop: 'leader', placeholder: '请输入部门领导' },
-	{
-		type: 'select',
-		label: '上级部门',
-		prop: 'parentId',
-		placeholder: '请选择上级部门',
-		options: [] // options 是不确定的，来自服务器中的数据
-	}
+  { type: 'input', label: '部门名称', prop: 'name', placeholder: '请输入部门名称' },
+  { type: 'input', label: '部门领导', prop: 'leader', placeholder: '请输入部门领导' },
+  {
+    type: 'select',
+    label: '上级部门',
+    prop: 'parentId',
+    placeholder: '请选择上级部门',
+    options: [] // options 是不确定的，来自服务器中的数据
+  }
 ]
 ```
 
@@ -238,26 +238,26 @@ src\views\main\system\department\DepartmentPanel.vue
 
 ```vue
 <template>
-	<PageModal :modal-config="modalConfigREf" ref="modalRef"></PageModal>
+  <PageModal :modal-config="modalConfigREf" ref="modalRef"></PageModal>
 </template>
 
 <script>
 const modalConfigREf = computed(() => {
-	const mainStore = useMainStore()
-  
-	// 这种写法，如果导致一行过长，prettier 格式化后，要注意给回调函数加上 return。
-	const selectFormItem = modalConfig.formItems.find(
-		item => item.type === 'select' && item.prop === 'parentId'
-	)
+  const mainStore = useMainStore()
 
-	if (selectFormItem && 'options' in selectFormItem) {
-		selectFormItem.options = mainStore.entireDepartments.map(item => ({
-			label: item.name,
-			value: item.id
-		}))
-	}
+  // 这种写法，如果导致一行过长，prettier 格式化后，要注意给回调函数加上 return。
+  const selectFormItem = modalConfig.formItems.find(
+    item => item.type === 'select' && item.prop === 'parentId'
+  )
 
-	return modalConfig
+  if (selectFormItem && 'options' in selectFormItem) {
+    selectFormItem.options = mainStore.entireDepartments.map(item => ({
+      label: item.name,
+      value: item.id
+    }))
+  }
+
+  return modalConfig
 })
 </script>
 ```
@@ -276,31 +276,31 @@ src\components\page-modal\PageModal.vue
 
 ```typescript
 interface OpenDialogParamType<T> {
-	isNew?: boolean
-	itemData?: T
+  isNew?: boolean
+  itemData?: T
 }
 // 设置 dialog 是否显示
 const setModalVisible = <T extends { id: number }, F>({
-	isNew = true,
-	itemData
+  isNew = true,
+  itemData
 }: OpenDialogParamType<T>) => {
-	showdialog.value = true
-	isAdd.value = isNew
-	if (!isNew && itemData) {
-		// 编辑
-		Object.keys({ ...formData }).forEach(key => {
-			if (key in itemData) {
-				formData[key as keyof F] = itemData[key as keyof T]
-			}
-		})
-		editId.value = itemData.id
-	} else {
-		// 新建
-		Object.keys({ ...formData }).forEach(key => {
-			formData[key as keyof F] = ''
-		})
-		editId.value = -1
-	}
+  showdialog.value = true
+  isAdd.value = isNew
+  if (!isNew && itemData) {
+    // 编辑
+    Object.keys({ ...formData }).forEach(key => {
+      if (key in itemData) {
+        formData[key as keyof F] = itemData[key as keyof T]
+      }
+    })
+    editId.value = itemData.id
+  } else {
+    // 新建
+    Object.keys({ ...formData }).forEach(key => {
+      formData[key as keyof F] = ''
+    })
+    editId.value = -1
+  }
 }
 ```
 
@@ -324,17 +324,17 @@ import type PageContent from '@/components/page-content/PageContent.vue'
 import type { IDepartmentSearchFormData } from '@/types'
 
 const usePageSearch = () => {
-	const contentRef = ref<InstanceType<typeof PageContent>>()
+  const contentRef = ref<InstanceType<typeof PageContent>>()
 
-	const handleQueryClick = <T extends IDepartmentSearchFormData>(formData: T) => {
-		contentRef.value?.fetchPageListData(formData)
-	}
+  const handleQueryClick = <T extends IDepartmentSearchFormData>(formData: T) => {
+    contentRef.value?.fetchPageListData(formData)
+  }
 
-	const handleResetClick = () => {
-		contentRef.value?.fetchPageListData()
-	}
+  const handleResetClick = () => {
+    contentRef.value?.fetchPageListData()
+  }
 
-	return [contentRef, handleQueryClick, handleResetClick]
+  return [contentRef, handleQueryClick, handleResetClick]
 }
 
 export default usePageSearch
@@ -348,17 +348,17 @@ import { ref } from 'vue'
 import type { IDepartment } from '@/types'
 
 const usePageContent = () => {
-	const modalRef = ref<InstanceType<typeof PageModal>>()
+  const modalRef = ref<InstanceType<typeof PageModal>>()
 
-	const handleNewClick = () => {
-		modalRef.value?.setModalVisible({ isNew: true })
-	}
+  const handleNewClick = () => {
+    modalRef.value?.setModalVisible({ isNew: true })
+  }
 
-	const handleEditClick = <T extends IDepartment>(itemData: T) => {
-		modalRef.value?.setModalVisible({ isNew: false, itemData })
-	}
+  const handleEditClick = <T extends IDepartment>(itemData: T) => {
+    modalRef.value?.setModalVisible({ isNew: false, itemData })
+  }
 
-	return [modalRef, handleNewClick, handleEditClick]
+  return [modalRef, handleNewClick, handleEditClick]
 }
 
 export default usePageContent
@@ -411,29 +411,29 @@ import type { IContentConfig } from '@/types'
 import { MENU } from '@/global/constance'
 
 const contentConfig: IContentConfig = {
-	pageName: MENU,
-	header: {
-		title: '菜单列表',
-		btnLabel: '新建菜单'
-	},
-	propList: [
-		{ label: '菜单名称', prop: 'name', width: '180' },
-		{ label: '级别', prop: 'type', width: '120' },
-		{ label: '菜单url', prop: 'url', width: '250' },
-		{ label: '菜单icon', prop: 'icon', width: '200' },
-		{ label: '排序', prop: 'sort', width: '120' },
-		{ label: '权限', prop: 'promission', width: '150' },
+  pageName: MENU,
+  header: {
+    title: '菜单列表',
+    btnLabel: '新建菜单'
+  },
+  propList: [
+    { label: '菜单名称', prop: 'name', width: '180' },
+    { label: '级别', prop: 'type', width: '120' },
+    { label: '菜单url', prop: 'url', width: '250' },
+    { label: '菜单icon', prop: 'icon', width: '200' },
+    { label: '排序', prop: 'sort', width: '120' },
+    { label: '权限', prop: 'promission', width: '150' },
 
-		{ gener: 'timer', label: '创建时间', prop: 'createAt' },
-		{ gener: 'timer', label: '修改时间', prop: 'updateAt' },
-		{ gener: 'handler', label: '操作', width: '250' }
-	],
-	childrenTree: {
-		rowKey: 'id',
-		treeProps: {
-			children: 'children'
-		}
-	}
+    { gener: 'timer', label: '创建时间', prop: 'createAt' },
+    { gener: 'timer', label: '修改时间', prop: 'updateAt' },
+    { gener: 'handler', label: '操作', width: '250' }
+  ],
+  childrenTree: {
+    rowKey: 'id',
+    treeProps: {
+      children: 'children'
+    }
+  }
 }
 
 export default contentConfig
@@ -443,11 +443,11 @@ src\components\page-content\PageContent.vue
 
 ```vue
 <el-table
-	:data="pageList"
-	stripe
-	border
-	style="width: 100%"
-	v-bind="contentConfig?.childrenTree"
+  :data="pageList"
+  stripe
+  border
+  style="width: 100%"
+  v-bind="contentConfig?.childrenTree"
 ></el-table>
 ```
 
@@ -477,18 +477,18 @@ src\views\main\system\role\RolePanel.vue
 
 ```vue
 <template>
-	<PageModal ref="modalRef" :modal-config="modalConfig" :other-info="otherInfo">
-		<template #menulist>
-			<el-tree
-				ref="treeRef"
-				:data="entireMenus"
-				show-checkbox
-				node-key="id"
-				:props="{ children: 'children', label: 'name' }"
-				@check="handleElTreeCheck"
-			></el-tree>
-		</template>
-	</PageModal>
+  <PageModal ref="modalRef" :modal-config="modalConfig" :other-info="otherInfo">
+    <template #menulist>
+      <el-tree
+        ref="treeRef"
+        :data="entireMenus"
+        show-checkbox
+        node-key="id"
+        :props="{ children: 'children', label: 'name' }"
+        @check="handleElTreeCheck"
+      ></el-tree>
+    </template>
+  </PageModal>
 </template>
 
 <script>
@@ -497,10 +497,10 @@ const { entireMenus } = storeToRefs(mainStore)
 
 const otherInfo = ref({})
 const handleElTreeCheck = (detail: any, data: any) => {
-	console.log('data:', data)
-	const menuList = [...data.checkedKeys, ...data.halfCheckedKeys]
-	console.log(`menuList`, menuList)
-	otherInfo.value = { menuList }
+  console.log('data:', data)
+  const menuList = [...data.checkedKeys, ...data.halfCheckedKeys]
+  console.log(`menuList`, menuList)
+  otherInfo.value = { menuList }
 }
 
 const [contentRef, handleQueryClick, handleResetClick] = usePageSearch()
@@ -515,36 +515,34 @@ src\components\page-modal\PageModal.vue
 ```vue
 <!-- 插槽列 -->
 <template v-if="item.type === 'custom'">
-	<el-form-item>
-		<slot :name="(item as IModalFormItemCustom).slotname"></slot>
-	</el-form-item>
+  <el-form-item>
+    <slot :name="(item as IModalFormItemCustom).slotname"></slot>
+  </el-form-item>
 </template>
 
 <script>
 //...
-  
+
 // 点击“确认”
 const systemStore = useSystemStore()
 const onConfigClick = () => {
-	showdialog.value = false
+  showdialog.value = false
 
-	let editFormData = { ...formData }
+  let editFormData = { ...formData }
 
-	if (props.otherInfo) {
-		editFormData = { ...formData, ...props.otherInfo }
-	}
+  if (props.otherInfo) {
+    editFormData = { ...formData, ...props.otherInfo }
+  }
 
-	if (!isAdd.value && editId.value !== -1) {
-		// 编辑
-		systemStore.pathEditPageRecordByIdAction<EditFormDataType>(
-			pageName.value,
-			editId.value,
-			editFormData
-		)
-	} else {
-		// 新增
-		systemStore.postNewPageRecordAction<CreateFormDataType>(pageName.value, editFormData)
-	}
+  if (!isAdd.value && editId.value !== -1) {
+    // 编辑
+    systemStore.pathEditPageRecordByIdAction <
+      EditFormDataType >
+      (pageName.value, editId.value, editFormData)
+  } else {
+    // 新增
+    systemStore.postNewPageRecordAction < CreateFormDataType > (pageName.value, editFormData)
+  }
 }
 </script>
 ```
@@ -569,18 +567,18 @@ import type { ItemType, CreateFormDataType, EditFormDataType, IRole } from '@/ty
 type EditCallbackType = (data: IRole) => void
 
 const usePageContent = (editCallback?: EditCallbackType) => {
-	const modalRef = ref<InstanceType<typeof PageModal>>()
+  const modalRef = ref<InstanceType<typeof PageModal>>()
 
-	const handleNewClick = () => {
-		modalRef.value?.setModalVisible<never, CreateFormDataType>({ isNew: true })
-	}
+  const handleNewClick = () => {
+    modalRef.value?.setModalVisible<never, CreateFormDataType>({ isNew: true })
+  }
 
-	const handleEditClick = (itemData: ItemType) => {
-		modalRef.value?.setModalVisible<ItemType, EditFormDataType>({ isNew: false, itemData })
-		if (editCallback && 'menuList' in itemData) editCallback(itemData)
-	}
+  const handleEditClick = (itemData: ItemType) => {
+    modalRef.value?.setModalVisible<ItemType, EditFormDataType>({ isNew: false, itemData })
+    if (editCallback && 'menuList' in itemData) editCallback(itemData)
+  }
 
-	return [modalRef, handleNewClick, handleEditClick]
+  return [modalRef, handleNewClick, handleEditClick]
 }
 
 export default usePageContent
@@ -598,20 +596,20 @@ src\utils\map-menu.ts
  * @return {*}
  */
 export const mapMenusToIds = (menuList: IMenuInRole[]): number[] => {
-	const ids: number[] = []
+  const ids: number[] = []
 
-	const _getIds = (menuList: IMenuInRole[] | IMenuInRoleChild[] | IMenuInRoleChild2[]) => {
-		menuList.forEach(menu => {
-			if ('children' in menu && menu.children) {
-				_getIds(menu.children)
-			} else {
-				ids.push(menu.id)
-			}
-		})
-	}
-	_getIds(menuList)
+  const _getIds = (menuList: IMenuInRole[] | IMenuInRoleChild[] | IMenuInRoleChild2[]) => {
+    menuList.forEach(menu => {
+      if ('children' in menu && menu.children) {
+        _getIds(menu.children)
+      } else {
+        ids.push(menu.id)
+      }
+    })
+  }
+  _getIds(menuList)
 
-	return ids
+  return ids
 }
 ```
 
@@ -624,11 +622,11 @@ src\views\main\system\role\RolePanel.vue
 ```typescript
 // 编辑时，携带编辑角色的菜单
 const editCallback = (itemData: IRole) => {
-	nextTick(() => {
-		const menuIds = mapMenusToIds(itemData.menuList)
-		console.log('menuIds:', menuIds)
-		treeRef.value?.setCheckedKeys(menuIds)
-	})
+  nextTick(() => {
+    const menuIds = mapMenusToIds(itemData.menuList)
+    console.log('menuIds:', menuIds)
+    treeRef.value?.setCheckedKeys(menuIds)
+  })
 }
 ```
 

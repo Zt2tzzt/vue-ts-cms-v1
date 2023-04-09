@@ -1,7 +1,7 @@
 <template>
-	<div class="menu">
-		<PageContent :content-config="contentConfig"></PageContent>
-	</div>
+  <div class="menu">
+    <PageContent :content-config="contentConfig"></PageContent>
+  </div>
 </template>
 
 <script setup lang="ts" name="menu">

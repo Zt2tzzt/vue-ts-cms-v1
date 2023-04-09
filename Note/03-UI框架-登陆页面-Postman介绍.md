@@ -66,15 +66,15 @@ import Components from 'unplugin-vue-components/vite'
 import { ElementPlusResolver } from 'unplugin-vue-components/resolvers'
 
 export default defineConfig({
-	plugins: [
-		//...
-		AutoImport({
-			resolvers: [ElementPlusResolver()]
-		}),
-		Components({
-			resolvers: [ElementPlusResolver()]
-		})
-	]
+  plugins: [
+    //...
+    AutoImport({
+      resolvers: [ElementPlusResolver()]
+    }),
+    Components({
+      resolvers: [ElementPlusResolver()]
+    })
+  ]
 })
 ```
 
@@ -89,7 +89,7 @@ export default defineConfig({
 
 ```json
 {
-	"include": ["env.d.ts", "src/**/*", "src/**/*.vue", "auto-imports.d.ts", "components.d.ts"]
+  "include": ["env.d.ts", "src/**/*", "src/**/*.vue", "auto-imports.d.ts", "components.d.ts"]
 }
 ```
 
@@ -117,9 +117,9 @@ import * as ElementPlusIconsVue from '@element-plus/icons-vue'
 import type { App } from 'vue'
 
 const registerIcons = (app: App<Element>) => {
-	for (const [key, component] of Object.entries(ElementPlusIconsVue)) {
-		app.component(key, component)
-	}
+  for (const [key, component] of Object.entries(ElementPlusIconsVue)) {
+    app.component(key, component)
+  }
 }
 
 export default registerIcons
@@ -183,23 +183,23 @@ import { UserConfigExport } from 'vite'
 import { createStyleImportPlugin, ElementPlusResolve } from 'vite-plugin-style-import'
 
 export default (): UserConfigExport => {
-	return {
-		plugins: [
-			//...
-			createStyleImportPlugin({
-				resolves: [ElementPlusResolve()],
-				libs: [
-					{
-						libraryName: 'element-plus',
-						esModule: true,
-						resolveStyle: (name: string) => {
-							return `element-plus/theme-chalk/${name}.css`
-						}
-					}
-				]
-			})
-		]
-	}
+  return {
+    plugins: [
+      //...
+      createStyleImportPlugin({
+        resolves: [ElementPlusResolve()],
+        libs: [
+          {
+            libraryName: 'element-plus',
+            esModule: true,
+            resolveStyle: (name: string) => {
+              return `element-plus/theme-chalk/${name}.css`
+            }
+          }
+        ]
+      })
+    ]
+  }
 }
 ```
 
@@ -213,8 +213,8 @@ src\App.vue
 
 ```css
 .app {
-	width: 100vw;
-	height: 100vh;
+  width: 100vw;
+  height: 100vh;
 }
 ```
 
@@ -228,12 +228,12 @@ src\views\login\LogIn.vue
 
 ```css
 .login {
-	display: flex;
-	justify-content: center;
-	align-items: center;
-	width: 100%;
-	height: 100%;
-	background-image: url(@/assets/img/login-bg.svg);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  height: 100%;
+  background-image: url(@/assets/img/login-bg.svg);
 }
 ```
 
@@ -253,9 +253,9 @@ import LoginPanel from './cpns/LoginPanel.vue'
 </script>
 
 <template>
-	<div class="login">
-		<LoginPanel></LoginPanel>
-	</div>
+  <div class="login">
+    <LoginPanel></LoginPanel>
+  </div>
 </template>
 ```
 
@@ -300,14 +300,14 @@ src\views\login\cpns\LoginPanel.vue
 ```html
 <!-- 底部区域 -->
 <div class="controls">
-	<el-checkbox v-model="isRemPwd" label="记住密码" size="large" />
-	<el-link type="primary">忘记密码</el-link>
+  <el-checkbox v-model="isRemPwd" label="记住密码" size="large" />
+  <el-link type="primary">忘记密码</el-link>
 </div>
 
 <script setup lang="ts">
-	import { ref } from 'vue'
+  import { ref } from 'vue'
 
-	const isRemPwd = ref(false)
+  const isRemPwd = ref(false)
 </script>
 ```
 
@@ -356,9 +356,9 @@ src\views\login\cpns\LoginPanel.vue
 >
 > ```css
 > :root {
-> 	/* 定义了一个变量(CSS属性) */
-> 	/* 只有后代元素可以使用 */
-> 	--main-color: #f00;
+>   /* 定义了一个变量(CSS属性) */
+>   /* 只有后代元素可以使用 */
+>   --main-color: #f00;
 > }
 > ```
 
@@ -383,12 +383,12 @@ src\views\login\cpns\PanelAccount.vue
 
 // 1.定义 account 数据
 const account =
-	reactive <
-	IAccount >
-	{
-		name: '',
-		password: ''
-	}
+  reactive <
+  IAccount >
+  {
+    name: '',
+    password: ''
+  }
 </script>
 ```
 
@@ -402,22 +402,22 @@ src\views\login\cpns\PanelAccount.vue
 
 ```typescript
 const accountRules: FormRules = {
-	name: [
-		{ required: true, message: '必须输入帐号信息~', trigger: 'blur' },
-		{
-			pattern: /^[a-z0-9]{6,20}$/,
-			message: '必须是6~20数字或字母组成~',
-			trigger: 'blur'
-		}
-	],
-	password: [
-		{ required: true, message: '必须输入密码信息~', trigger: 'blur' },
-		{
-			pattern: /^[a-z0-9]{3,}$/,
-			message: '必须是3位以上数字或字母组成',
-			trigger: 'blur'
-		}
-	]
+  name: [
+    { required: true, message: '必须输入帐号信息~', trigger: 'blur' },
+    {
+      pattern: /^[a-z0-9]{6,20}$/,
+      message: '必须是6~20数字或字母组成~',
+      trigger: 'blur'
+    }
+  ],
+  password: [
+    { required: true, message: '必须输入密码信息~', trigger: 'blur' },
+    {
+      pattern: /^[a-z0-9]{3,}$/,
+      message: '必须是3位以上数字或字母组成',
+      trigger: 'blur'
+    }
+  ]
 }
 ```
 
@@ -429,12 +429,12 @@ src\views\login\cpns\LoginPanel.vue
 
 ```vue
 <template>
-	<!-- .. -->
-	<PanelAccount ref="accountRef"></PanelAccount>
-	<!-- ... -->
-	<el-button class="login-btn" type="primary" size="large" @click="handleLoginBtnClick">
-		立即登录
-	</el-button>
+  <!-- .. -->
+  <PanelAccount ref="accountRef"></PanelAccount>
+  <!-- ... -->
+  <el-button class="login-btn" type="primary" size="large" @click="handleLoginBtnClick">
+    立即登录
+  </el-button>
 </template>
 
 <script>
@@ -465,7 +465,7 @@ src\views\login\cpns\PanelAccount.vue
 const loginAction = () => {}
 
 defineExpose({
-	loginAction
+  loginAction
 })
 ```
 
@@ -483,12 +483,12 @@ src\views\login\cpns\PanelAccount.vue
 const formRef = ref<InstanceType<typeof ElForm>>()
 
 const loginAction = () => {
-	formRef.value?.validate(valid => {
-		if (valid) {
-		} else {
-			ElMessage.error('Oops, 请您输入正确的格式后再操作~~.')
-		}
-	})
+  formRef.value?.validate(valid => {
+    if (valid) {
+    } else {
+      ElMessage.error('Oops, 请您输入正确的格式后再操作~~.')
+    }
+  })
 }
 ```
 
@@ -501,10 +501,10 @@ src\service\login\login.ts
 ```typescript
 //...
 export const accountLoginRequest = (account: IAccount) =>
-	ztRequest.post<IResponse<ILoginResData>>({
-		url: 'login',
-		data: account
-	})
+  ztRequest.post<IResponse<ILoginResData>>({
+    url: 'login',
+    data: account
+  })
 ```
 
 ### 3.在 store 和组件中使用
@@ -524,22 +524,22 @@ src\stores\login\login.ts
 const LOGIN_TOKEN = 'login/token'
 
 const useLoginStore = defineStore('login', {
-	state: () => ({
-		id: 0,
-		token: localCache.getCache(LOGIN_TOKEN) ?? '',
-		name: ''
-	}),
-	actions: {
-		loginAccountAction(account: IAccount) {
-			accountLoginRequest(account).then(res => {
-				this.id = res.data.id
-				this.token = res.data.token
-				this.name = res.data.name
+  state: () => ({
+    id: 0,
+    token: localCache.getCache(LOGIN_TOKEN) ?? '',
+    name: ''
+  }),
+  actions: {
+    loginAccountAction(account: IAccount) {
+      accountLoginRequest(account).then(res => {
+        this.id = res.data.id
+        this.token = res.data.token
+        this.name = res.data.name
 
-				localCache.setCache(LOGIN_TOKEN, this.token)
-			})
-		}
-	}
+        localCache.setCache(LOGIN_TOKEN, this.token)
+      })
+    }
+  }
 })
 
 export default useLoginStore
@@ -552,19 +552,19 @@ src\views\login\cpns\PanelAccount.vue
 ```typescript
 //...
 const account = reactive<IAccount>({
-	name: '',
-	password: ''
+  name: '',
+  password: ''
 })
 
 //...
 const loginAction = () => {
-	formRef.value?.validate(valid => {
-		if (valid) {
-			loginStore.loginAccountAction({ ...account })
-		} else {
-			ElMessage.error('Oops, 请您输入正确的格式后再操作~~.')
-		}
-	})
+  formRef.value?.validate(valid => {
+    if (valid) {
+      loginStore.loginAccountAction({ ...account })
+    } else {
+      ElMessage.error('Oops, 请您输入正确的格式后再操作~~.')
+    }
+  })
 }
 ```
 
@@ -576,8 +576,8 @@ src\types\login.d.ts
 
 ```typescript
 export interface IAccount {
-	name: string
-	password: string
+  name: string
+  password: string
 }
 ```
 

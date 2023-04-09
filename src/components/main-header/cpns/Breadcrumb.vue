@@ -11,15 +11,15 @@ const breadcrumbs = computed(() => mapPathToBreadcrumb(route.path, loginStore.us
 </script>
 
 <template>
-	<div class="breadcrumb">
-		<el-breadcrumb separator-icon="CaretRight">
-			<template v-for="item in breadcrumbs" :key="item.name">
-				<el-breadcrumb-item :to="item.path">
-					{{ item.name }}
-				</el-breadcrumb-item>
-			</template>
-		</el-breadcrumb>
-	</div>
+  <div class="breadcrumb">
+    <el-breadcrumb separator-icon="CaretRight">
+      <template v-for="item in breadcrumbs" :key="item.name">
+        <el-breadcrumb-item :to="item.path">
+          {{ item.name }}
+        </el-breadcrumb-item>
+      </template>
+    </el-breadcrumb>
+  </div>
 </template>
 
 <style scoped lang="less"></style>

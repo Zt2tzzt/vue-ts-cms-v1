@@ -22,20 +22,20 @@ src\utils\map-menu.ts
  * @return {string[]} 映射出的权限列表。
  */
 export const mapMenusToPermission = (menuList: IMenuInRole[]): string[] => {
-	const permission: string[] = []
+  const permission: string[] = []
 
-	const _getPermission = (menus: IMenuInRole[] | IMenuInRoleChild[] | IMenuInRoleChild2[]) => {
-		menus.forEach(menu => {
-			if (menu.type === 3) {
-				permission.push(menu.permission)
-			} else {
-				_getPermission(menu.children ?? [])
-			}
-		})
-	}
-	_getPermission(menuList)
+  const _getPermission = (menus: IMenuInRole[] | IMenuInRoleChild[] | IMenuInRoleChild2[]) => {
+    menus.forEach(menu => {
+      if (menu.type === 3) {
+        permission.push(menu.permission)
+      } else {
+        _getPermission(menu.children ?? [])
+      }
+    })
+  }
+  _getPermission(menuList)
 
-	return permission
+  return permission
 }
 ```
 
@@ -43,13 +43,13 @@ src\stores\login\login.ts
 
 ```typescript
 function dynamicLoadingPermissionAndRoutes(this: ILoginState, userMenus: IMenuInRole[]) {
-	// 加载按钮的权限
-	const permissions = mapMenusToPermission(userMenus)
-	this.permissions = permissions
+  // 加载按钮的权限
+  const permissions = mapMenusToPermission(userMenus)
+  this.permissions = permissions
 
-	// 动态添加路由
-	const routes = mapMenusToRoutes(userMenus)
-	routes.forEach(route => router.addRoute('main', route))
+  // 动态添加路由
+  const routes = mapMenusToRoutes(userMenus)
+  routes.forEach(route => router.addRoute('main', route))
 }
 ```
 
@@ -74,8 +74,8 @@ src\hooks\usePermissions.ts
 import useLoginStore from '@/stores/login/login'
 
 const usePermission = (permissionStr: string): boolean => {
-	const loginStore = useLoginStore()
-	return loginStore.permissions.some(item => item.includes(permissionStr))
+  const loginStore = useLoginStore()
+  return loginStore.permissions.some(item => item.includes(permissionStr))
 }
 
 export default usePermission
@@ -86,10 +86,10 @@ src\components\page-content\PageContent.vue
 ```typescript
 // 增删改查，权限控制
 const permission = {
-	isCreate: usePermission(pageName.value + ':create'),
-	isDelete: usePermission(pageName.value + ':delete'),
-	isUpdate: usePermission(pageName.value + ':update'),
-	isQuery: usePermission(pageName.value + ':query')
+  isCreate: usePermission(pageName.value + ':create'),
+  isDelete: usePermission(pageName.value + ':delete'),
+  isUpdate: usePermission(pageName.value + ':update'),
+  isQuery: usePermission(pageName.value + ':query')
 }
 ```
 
@@ -100,8 +100,8 @@ src\components\page-content\PageContent.vue
 ```typescript
 // 查询
 const fetchPageListData = <T>(formatData: T | object = {}) => {
-	if (!permission.isQuery) return
-	//...
+  if (!permission.isQuery) return
+  //...
 }
 ```
 
@@ -111,30 +111,30 @@ src\components\page-content\PageContent.vue
 
 ```vue
 <template>
-	<el-button v-if="permission.isCreate" type="primary" @click="onNewclick">{{
-		contentConfig?.header?.btnLabel ?? `新建数据`
-	}}</el-button>
+  <el-button v-if="permission.isCreate" type="primary" @click="onNewclick">{{
+    contentConfig?.header?.btnLabel ?? `新建数据`
+  }}</el-button>
 
-	<!--,,,--->
+  <!--,,,--->
 
-	<el-button
-		v-if="permission.isUpdate"
-		size="small"
-		icon="Edit"
-		type="primary"
-		text
-		@click="onEditClick(scope.row)"
-		>编辑</el-button
-	>
-	<el-button
-		v-if="permission.isDelete"
-		size="small"
-		icon="Delete"
-		type="danger"
-		text
-		@click="onDeleteClick(scope.row.id)"
-		>删除</el-button
-	>
+  <el-button
+    v-if="permission.isUpdate"
+    size="small"
+    icon="Edit"
+    type="primary"
+    text
+    @click="onEditClick(scope.row)"
+    >编辑</el-button
+  >
+  <el-button
+    v-if="permission.isDelete"
+    size="small"
+    icon="Delete"
+    type="danger"
+    text
+    @click="onDeleteClick(scope.row.id)"
+    >删除</el-button
+  >
 </template>
 ```
 
@@ -148,12 +148,12 @@ src\components\page-search\PageSearch.vue
 <script>
 // 查询权限
 const permission = {
-	isQuery: usePermission(props.searchConfig.pageName + ':query')
+  isQuery: usePermission(props.searchConfig.pageName + ':query')
 }
 </script>
 
 <template>
-	<div class="page-search" v-if="permission.isQuery"></div>
+  <div class="page-search" v-if="permission.isQuery"></div>
 </template>
 ```
 
@@ -179,42 +179,42 @@ src\stores\main\system\system.ts
 
 ```typescript
 const fetchEntireData = (pageName: string) => {
-	if ([DEPARTMENT, ROLE, MENU].includes(pageName)) {
-		const mainStore = useMainStore()
-		mainStore.fetchEntireDataAction()
-	}
+  if ([DEPARTMENT, ROLE, MENU].includes(pageName)) {
+    const mainStore = useMainStore()
+    mainStore.fetchEntireDataAction()
+  }
 }
 
 //...
 
 const actions = {
-	deletePageByIdAction(pageName: string, id: number) {
-		deletePageById(pageName, id).then(res => {
-			console.log(pageName, 'delete res:', res)
-			this.postPageListAction(pageName, { offset: 0, size: 10 })
+  deletePageByIdAction(pageName: string, id: number) {
+    deletePageById(pageName, id).then(res => {
+      console.log(pageName, 'delete res:', res)
+      this.postPageListAction(pageName, { offset: 0, size: 10 })
 
-			// 如果是部门，角色，菜单等基础数据发生增、删、改操作，要重显加载到缓存中。
-			fetchEntireData(pageName)
-		})
-	},
-	postNewPageRecordAction<T>(pageName: string, record: T) {
-		postNewPageRecord(pageName, record).then(res => {
-			console.log(pageName, 'add res:', res)
-			this.postPageListAction(pageName, { offset: 0, size: 10 })
+      // 如果是部门，角色，菜单等基础数据发生增、删、改操作，要重显加载到缓存中。
+      fetchEntireData(pageName)
+    })
+  },
+  postNewPageRecordAction<T>(pageName: string, record: T) {
+    postNewPageRecord(pageName, record).then(res => {
+      console.log(pageName, 'add res:', res)
+      this.postPageListAction(pageName, { offset: 0, size: 10 })
 
-			// 如果是部门，角色，菜单等基础数据发生增、删、改操作，要重显加载到缓存中。
-			fetchEntireData(pageName)
-		})
-	},
-	pathEditPageRecordByIdAction<T>(pageName: string, id: number, record: T) {
-		pathEditPageRecordById(pageName, id, record).then(res => {
-			console.log(pageName, 'edit res:', res)
-			this.postPageListAction(pageName, { offset: 0, size: 10 })
+      // 如果是部门，角色，菜单等基础数据发生增、删、改操作，要重显加载到缓存中。
+      fetchEntireData(pageName)
+    })
+  },
+  pathEditPageRecordByIdAction<T>(pageName: string, id: number, record: T) {
+    pathEditPageRecordById(pageName, id, record).then(res => {
+      console.log(pageName, 'edit res:', res)
+      this.postPageListAction(pageName, { offset: 0, size: 10 })
 
-			// 如果是部门，角色，菜单等基础数据发生增、删、改操作，要重显加载到缓存中。
-			fetchEntireData(pageName)
-		})
-	}
+      // 如果是部门，角色，菜单等基础数据发生增、删、改操作，要重显加载到缓存中。
+      fetchEntireData(pageName)
+    })
+  }
 }
 ```
 
@@ -229,13 +229,13 @@ src\components\main-header\cpns\UserState.vue
 ```vue
 <script>
 const loginStore = useLoginStore()
-const nickname = computed(() =>
-	'name' in loginStore.userInfo ? loginStore.userInfo.name : '用户名' // 类型缩小
+const nickname = computed(
+  () => ('name' in loginStore.userInfo ? loginStore.userInfo.name : '用户名') // 类型缩小
 )
 </script>
 
 <template>
-	<span class="name">{{ nickname }}</span>
+  <span class="name">{{ nickname }}</span>
 </template>
 ```
 
@@ -265,19 +265,19 @@ src\components\page-content\PageContent.vue
 <script>
 // 增、删、改后，将页面重置到第一页
 const onSubscribe = systemStore.$onAction(({ name, after }) => {
-	after(() => {
-		if (
-			['deletePageByIdAction', 'postNewPageRecordAction', 'pathEditPageRecordByIdAction'].includes(
-				name
-			)
-		) {
-			currentPage.value = 1
-		}
-	})
+  after(() => {
+    if (
+      ['deletePageByIdAction', 'postNewPageRecordAction', 'pathEditPageRecordByIdAction'].includes(
+        name
+      )
+    ) {
+      currentPage.value = 1
+    }
+  })
 })
 
 onUnmounted(() => {
-	onSubscribe()
+  onSubscribe()
 })
 </script>
 ```
@@ -309,9 +309,9 @@ src\service\main\analysis\analysis.ts
 
 ```typescript
 export const getGoodsAmountListData = () =>
-	ztRequest.get<IResponse<IGoodsAmountData[]>>({
-		url: '/goods/amount/list'
-	})
+  ztRequest.get<IResponse<IGoodsAmountData[]>>({
+    url: '/goods/amount/list'
+  })
 ```
 
 > 软件架构中，没有什么问题是分层不能解决的，如果有，就再分一层。
@@ -326,24 +326,24 @@ src\views\main\analysis\dashboard\cpns\count-card\CountCard.vue
 
 ```vue
 <template>
-	<div class="count-card">
+  <div class="count-card">
     <!-- 头部标题 -->
-		<div class="header">
-			<span class="title">{{ title }}</span>
-			<el-tooltip :content="tips" placement="top" effect="dark">
-				<el-icon><Warning /></el-icon>
-			</el-tooltip>
-		</div>
-		<!-- 数字 -->
-		<div class="content">
-			<span ref="count1Ref">{{ number1 }}</span>
-		</div>
-		<!-- 底部副标题和数字 -->
-		<div class="footer">
-			<span>{{ subtitle }}</span>
-			<span ref="count2Ref">{{ number2 }}</span>
-		</div>
-	</div>
+    <div class="header">
+      <span class="title">{{ title }}</span>
+      <el-tooltip :content="tips" placement="top" effect="dark">
+        <el-icon><Warning /></el-icon>
+      </el-tooltip>
+    </div>
+    <!-- 数字 -->
+    <div class="content">
+      <span ref="count1Ref">{{ number1 }}</span>
+    </div>
+    <!-- 底部副标题和数字 -->
+    <div class="footer">
+      <span>{{ subtitle }}</span>
+      <span ref="count2Ref">{{ number2 }}</span>
+    </div>
+  </div>
 </template>
 ```
 
@@ -365,14 +365,14 @@ src\views\main\analysis\dashboard\cpns\count-card\CountCard.vue
 
 ```typescript
 const countOption = {
-	prefix: props.amount === 'saleroom' ? '￥' : ''
+  prefix: props.amount === 'saleroom' ? '￥' : ''
 }
 
 onMounted(() => {
-	const countup1 = new CountUp(count1Ref.value!, props.number1, countOption)
-	const countup2 = new CountUp(count2Ref.value!, props.number2, countOption)
-	countup1.start()
-	countup2.start()
+  const countup1 = new CountUp(count1Ref.value!, props.number1, countOption)
+  const countup2 = new CountUp(count2Ref.value!, props.number2, countOption)
+  countup1.start()
+  countup2.start()
 })
 ```
 
@@ -391,21 +391,21 @@ src\views\main\analysis\dashboard\cpns\chart-card\ChartCard.vue
 ```vue
 <script setup lang="ts">
 withDefaults(
-	defineProps<{
-		header?: string
-	}>(),
-	{
-		header: '卡片标题'
-	}
+  defineProps<{
+    header?: string
+  }>(),
+  {
+    header: '卡片标题'
+  }
 )
 </script>
 
 <template>
-	<div class="chart-card">
-		<el-card :header="header">
-			<slot> 卡片内容</slot>
-		</el-card>
-	</div>
+  <div class="chart-card">
+    <el-card :header="header">
+      <slot> 卡片内容</slot>
+    </el-card>
+  </div>
 </template>
 
 <style scoped lang="less"></style>
@@ -435,11 +435,11 @@ import type { EChartsOption, EChartsType } from 'echarts'
 import debounce from '@/utils/debounce'
 
 const props = defineProps<{
-	options: EChartsOption
-	mapData?: {
-		mapName: string
-		geoJSON: any
-	}
+  options: EChartsOption
+  mapData?: {
+    mapName: string
+    geoJSON: any
+  }
 }>()
 
 const containerRef = ref<HTMLElement>()
@@ -449,46 +449,46 @@ let echartInstance: EChartsType
 if (props.mapData) echarts.registerMap(props.mapData.mapName, props.mapData.geoJSON)
 
 const echartResize = debounce(() => {
-	echartInstance.resize()
+  echartInstance.resize()
 }, 300)
 
 let stopWatchEffect: WatchStopHandle
 
 onMounted(() => {
-	echartInstance = echarts.init(containerRef.value!, 'light', {
-		renderer: 'canvas'
-	})
+  echartInstance = echarts.init(containerRef.value!, 'light', {
+    renderer: 'canvas'
+  })
 
   // 方案一
-	/* watch(
+  /* watch(
 		() => props.options,
 		newVal => {
 			echartInstance.setOption(newVal)
 		}
 	) */
-  
-  // 方案二
-	stopWatchEffect = watchEffect(() => echartInstance.setOption(props.options))
 
-	window.addEventListener('resize', echartResize)
+  // 方案二
+  stopWatchEffect = watchEffect(() => echartInstance.setOption(props.options))
+
+  window.addEventListener('resize', echartResize)
 })
 
 onUnmounted(() => {
-	stopWatchEffect?.()
+  stopWatchEffect?.()
 
-	window.removeEventListener('resize', echartResize)
+  window.removeEventListener('resize', echartResize)
 })
 </script>
 
 <template>
-	<div class="base-echart">
-		<div class="container" ref="containerRef"></div>
-	</div>
+  <div class="base-echart">
+    <div class="container" ref="containerRef"></div>
+  </div>
 </template>
 
 <style scoped lang="less">
 .container {
-	height: 300px;
+  height: 300px;
 }
 </style>
 ```
@@ -501,11 +501,11 @@ src\views\main\analysis\dashboard\DashboardPanel.vue
 
 ```typescript
 const {
-	goodsAmountList,
-	goodsCategoryCount,
-	goodsCategorySale,
-	goodsCategoryFavor,
-	goodsCategoryAddressSale
+  goodsAmountList,
+  goodsCategoryCount,
+  goodsCategorySale,
+  goodsCategoryFavor,
+  goodsCategoryAddressSale
 } = storeToRefs(analysisStore)
 ```
 
@@ -535,79 +535,79 @@ const analysisStore = useAnalysisStore()
 analysisStore.fetchAnalysisDataAction()
 
 const {
-	goodsAmountList,
-	goodsCategoryCount,
-	goodsCategorySale,
-	goodsCategoryFavor,
-	goodsAddressSale
+  goodsAmountList,
+  goodsCategoryCount,
+  goodsCategorySale,
+  goodsCategoryFavor,
+  goodsAddressSale
 } = storeToRefs(analysisStore)
 
 const showGoodsCategoryCount = computed(() =>
-	goodsCategoryCount.value.map(itme => ({
-		name: itme.name,
-		value: itme.goodsCount
-	}))
+  goodsCategoryCount.value.map(itme => ({
+    name: itme.name,
+    value: itme.goodsCount
+  }))
 )
 
 const showgoodsCategorySale = computed(() => ({
-	labels: goodsCategorySale.value.map(item => item.name),
-	values: goodsCategorySale.value.map(item => item.goodsCount)
+  labels: goodsCategorySale.value.map(item => item.name),
+  values: goodsCategorySale.value.map(item => item.goodsCount)
 }))
 
 const showgoodsCategoryFavor = computed(() => ({
-	labels: goodsCategoryFavor.value.map(item => item.name),
-	values: goodsCategoryFavor.value.map(item => item.goodsFavor)
+  labels: goodsCategoryFavor.value.map(item => item.name),
+  values: goodsCategoryFavor.value.map(item => item.goodsFavor)
 }))
 
 const showGoodsAddressSale = computed(() =>
-	goodsAddressSale.value.map(item => ({
-		name: item.address,
-		values: item.count
-	}))
+  goodsAddressSale.value.map(item => ({
+    name: item.address,
+    values: item.count
+  }))
 )
 </script>
 
 <template>
-	<div class="dashboard">
-		<!-- 数字卡片 -->
-		<el-row :gutter="10">
-			<template v-for="item of goodsAmountList" :key="item.amount">
-				<el-col :span="6" :xs="24" :sm="12" :md="8" :lg="6">
-					<CountCard v-bind="item"></CountCard>
-				</el-col>
-			</template>
-		</el-row>
+  <div class="dashboard">
+    <!-- 数字卡片 -->
+    <el-row :gutter="10">
+      <template v-for="item of goodsAmountList" :key="item.amount">
+        <el-col :span="6" :xs="24" :sm="12" :md="8" :lg="6">
+          <CountCard v-bind="item"></CountCard>
+        </el-col>
+      </template>
+    </el-row>
 
-		<!-- 图表 -->
-		<el-row :gutter="10">
-			<el-col :span="7">
-				<ChartCard header="饼图">
-					<PieEchart :pie-data="showGoodsCategoryCount"></PieEchart>
-				</ChartCard>
-			</el-col>
-			<el-col :span="10">
-				<ChartCard header="地图">
-					<MapEchart :map-data="showGoodsAddressSale"></MapEchart>
-				</ChartCard>
-			</el-col>
-			<el-col :span="7">
-				<ChartCard header="玫瑰图">
-					<RoseEchart :rose-data="showGoodsCategoryCount"></RoseEchart>
-				</ChartCard>
-			</el-col>
+    <!-- 图表 -->
+    <el-row :gutter="10">
+      <el-col :span="7">
+        <ChartCard header="饼图">
+          <PieEchart :pie-data="showGoodsCategoryCount"></PieEchart>
+        </ChartCard>
+      </el-col>
+      <el-col :span="10">
+        <ChartCard header="地图">
+          <MapEchart :map-data="showGoodsAddressSale"></MapEchart>
+        </ChartCard>
+      </el-col>
+      <el-col :span="7">
+        <ChartCard header="玫瑰图">
+          <RoseEchart :rose-data="showGoodsCategoryCount"></RoseEchart>
+        </ChartCard>
+      </el-col>
 
-			<el-col :span="12">
-				<ChartCard header="折线图">
-					<LineEchart v-bind="showgoodsCategorySale"></LineEchart>
-				</ChartCard>
-			</el-col>
-			<el-col :span="12">
-				<ChartCard header="柱状图">
-					<BarEchart v-bind="showgoodsCategoryFavor"></BarEchart>
-				</ChartCard>
-			</el-col>
-		</el-row>
-	</div>
+      <el-col :span="12">
+        <ChartCard header="折线图">
+          <LineEchart v-bind="showgoodsCategorySale"></LineEchart>
+        </ChartCard>
+      </el-col>
+      <el-col :span="12">
+        <ChartCard header="柱状图">
+          <BarEchart v-bind="showgoodsCategoryFavor"></BarEchart>
+        </ChartCard>
+      </el-col>
+    </el-row>
+  </div>
 </template>
 ```
 
@@ -627,19 +627,19 @@ import coordinate from '../data/coordinate-data'
 type AddressUnionType = keyof typeof coordinate
 
 export default (
-	data: Array<{
-		name: string
-		values: number
-	}>
+  data: Array<{
+    name: string
+    values: number
+  }>
 ) =>
-	data
-		.filter(
-			item => item.name in coordinate && Array.isArray(coordinate[item.name as AddressUnionType])
-		)
-		.map(item => ({
-			name: item.name,
-			value: coordinate[item.name as AddressUnionType].concat(item.values)
-		}))
+  data
+    .filter(
+      item => item.name in coordinate && Array.isArray(coordinate[item.name as AddressUnionType])
+    )
+    .map(item => ({
+      name: item.name,
+      value: coordinate[item.name as AddressUnionType].concat(item.values)
+    }))
 ```
 
 在 `MapEchart.vue` 中，向 `BaseEchart.vue` 中传递 `mapData`。
@@ -648,11 +648,11 @@ src\components\page-echarts\src\BaseEchart.vue
 
 ```typescript
 const props = defineProps<{
-	options: EChartsOption
-	mapData?: {
-		mapName: string
-		geoJSON: any
-	}
+  options: EChartsOption
+  mapData?: {
+    mapName: string
+    geoJSON: any
+  }
 }>()
 
 if (props.mapData) echarts.registerMap(props.mapData.mapName, props.mapData.geoJSON)
@@ -697,9 +697,9 @@ onUnmounted(() => {
 </script>
 
 <template>
-	<div class="base-echart">
-		<div class="container" ref="containerRef"></div>
-	</div>
+  <div class="base-echart">
+    <div class="container" ref="containerRef"></div>
+  </div>
 </template>
 ```
 

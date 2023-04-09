@@ -2,17 +2,17 @@ import type { IAccount, ILoginResData, IUserInfoResData, IMenuInRole, IResponse 
 import ztRequest from '..'
 
 export const accountLoginRequest = (account: IAccount) =>
-	ztRequest.post<IResponse<ILoginResData>>({
-		url: 'login',
-		data: account
-	})
+  ztRequest.post<IResponse<ILoginResData>>({
+    url: 'login',
+    data: account
+  })
 
 export const getUserInfoById = (id: number) =>
-	ztRequest.get<IResponse<IUserInfoResData>>({
-		url: '/users/' + id
-	})
+  ztRequest.get<IResponse<IUserInfoResData>>({
+    url: '/users/' + id
+  })
 
 export const getUserMenusByRoleId = (id: number) =>
-	ztRequest.get<IResponse<IMenuInRole[]>>({
-		url: `/role/${id}/menu`
-	})
+  ztRequest.get<IResponse<IMenuInRole[]>>({
+    url: `/role/${id}/menu`
+  })

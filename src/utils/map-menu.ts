@@ -7,14 +7,14 @@ import type { RouteRecordRaw } from 'vue-router'
  * @return {RouteRecordRaw[]} 本地的路由对象列表
  */
 const loadLocalRoutes = (): RouteRecordRaw[] => {
-	const files: Record<string, any> = import.meta.glob('../router/main/**/*.ts', {
-		eager: true
-	})
+  const files: Record<string, any> = import.meta.glob('../router/main/**/*.ts', {
+    eager: true
+  })
 
-	return Object.keys(files).map(key => {
-		const moudle = files[key]
-		return moudle.default
-	})
+  return Object.keys(files).map(key => {
+    const moudle = files[key]
+    return moudle.default
+  })
 }
 
 export let firstRoute: RouteRecordRaw
@@ -26,36 +26,36 @@ export let firstRoute: RouteRecordRaw
  * @return {RouteRecordRaw[]} 菜单映射后的路由列表
  */
 export const mapMenusToRoutes = (userMenu: IMenuInRole[]): RouteRecordRaw[] => {
-	const localRoutes = loadLocalRoutes()
+  const localRoutes = loadLocalRoutes()
 
-	const routes: RouteRecordRaw[] = []
+  const routes: RouteRecordRaw[] = []
 
-	const _getRoute = (userMenu: IMenuInRole[] | IMenuInRoleChild[]) => {
-		let route: RouteRecordRaw | undefined
+  const _getRoute = (userMenu: IMenuInRole[] | IMenuInRoleChild[]) => {
+    let route: RouteRecordRaw | undefined
 
-		userMenu.forEach(item => {
-			switch (item.type) {
-				case 1:
-					routes.push({ path: item.url, redirect: '' })
-					if (Array.isArray(item.children)) _getRoute(item.children)
-					break
-				case 2:
-					route = localRoutes.find(lr => lr.path === item.url)
-					if (route) {
-						// 点击一级面包屑，返回大类里的重定向路由。
-						const redirectRoute = routes.find(r => !r.redirect && item.url.includes(r.path))
-						if (redirectRoute) redirectRoute.redirect = route.path
+    userMenu.forEach(item => {
+      switch (item.type) {
+        case 1:
+          routes.push({ path: item.url, redirect: '' })
+          if (Array.isArray(item.children)) _getRoute(item.children)
+          break
+        case 2:
+          route = localRoutes.find(lr => lr.path === item.url)
+          if (route) {
+            // 点击一级面包屑，返回大类里的重定向路由。
+            const redirectRoute = routes.find(r => !r.redirect && item.url.includes(r.path))
+            if (redirectRoute) redirectRoute.redirect = route.path
 
-						if (!firstRoute) firstRoute = route
-						routes.push(route)
-					}
-					break
-			}
-		})
-	}
-	_getRoute(userMenu)
+            if (!firstRoute) firstRoute = route
+            routes.push(route)
+          }
+          break
+      }
+    })
+  }
+  _getRoute(userMenu)
 
-	return routes
+  return routes
 }
 
 /**
@@ -65,20 +65,20 @@ export const mapMenusToRoutes = (userMenu: IMenuInRole[]): RouteRecordRaw[] => {
  * @return {number[]} 映射出的 id 列表
  */
 export const mapMenusToIds = (menuList: IMenuInRole[]): number[] => {
-	const ids: number[] = []
+  const ids: number[] = []
 
-	const _getIds = (menuList: IMenuInRole[] | IMenuInRoleChild[] | IMenuInRoleChild2[]) => {
-		menuList.forEach(menu => {
-			if ('children' in menu && menu.children) {
-				_getIds(menu.children)
-			} else {
-				ids.push(menu.id)
-			}
-		})
-	}
-	_getIds(menuList)
+  const _getIds = (menuList: IMenuInRole[] | IMenuInRoleChild[] | IMenuInRoleChild2[]) => {
+    menuList.forEach(menu => {
+      if ('children' in menu && menu.children) {
+        _getIds(menu.children)
+      } else {
+        ids.push(menu.id)
+      }
+    })
+  }
+  _getIds(menuList)
 
-	return ids
+  return ids
 }
 
 /**
@@ -88,18 +88,18 @@ export const mapMenusToIds = (menuList: IMenuInRole[]): number[] => {
  * @return {string[]} 映射出的权限列表。
  */
 export const mapMenusToPermission = (menuList: IMenuInRole[]): string[] => {
-	const permission: string[] = []
+  const permission: string[] = []
 
-	const _getPermission = (menus: IMenuInRole[] | IMenuInRoleChild[] | IMenuInRoleChild2[]) => {
-		menus.forEach(menu => {
-			if (menu.type === 3) {
-				permission.push(menu.permission)
-			} else {
-				_getPermission(menu.children ?? [])
-			}
-		})
-	}
-	_getPermission(menuList)
+  const _getPermission = (menus: IMenuInRole[] | IMenuInRoleChild[] | IMenuInRoleChild2[]) => {
+    menus.forEach(menu => {
+      if (menu.type === 3) {
+        permission.push(menu.permission)
+      } else {
+        _getPermission(menu.children ?? [])
+      }
+    })
+  }
+  _getPermission(menuList)
 
-	return permission
+  return permission
 }

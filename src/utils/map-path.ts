@@ -8,27 +8,27 @@ import type { IMenuInRole, IMenuInRoleChild, IBreadcrumb } from '@/types'
  * @return {IMenuInRoleChild | undefined} 激活的菜单，或者未匹配到/
  */
 export const mapPathToMenu = (
-	path: string,
-	userMenus: IMenuInRole[] | IMenuInRoleChild[],
-	breadcrumb?: IBreadcrumb[]
+  path: string,
+  userMenus: IMenuInRole[] | IMenuInRoleChild[],
+  breadcrumb?: IBreadcrumb[]
 ): IMenuInRoleChild | undefined => {
-	let findMenu: IMenuInRoleChild | undefined
+  let findMenu: IMenuInRoleChild | undefined
 
-	for (const item of userMenus) {
-		switch (item.type) {
-			case 1:
-				findMenu = mapPathToMenu(path, item.children ?? [])
-				if (findMenu) {
-					breadcrumb?.push({ name: item.name, path: item.url }) // 一层菜单
-					breadcrumb?.push({ name: findMenu.name, path: findMenu.url })
-					return findMenu
-				}
-				break
-			case 2:
-				if (item.url === path) return item
-				break
-		}
-	}
+  for (const item of userMenus) {
+    switch (item.type) {
+      case 1:
+        findMenu = mapPathToMenu(path, item.children ?? [])
+        if (findMenu) {
+          breadcrumb?.push({ name: item.name, path: item.url }) // 一层菜单
+          breadcrumb?.push({ name: findMenu.name, path: findMenu.url })
+          return findMenu
+        }
+        break
+      case 2:
+        if (item.url === path) return item
+        break
+    }
+  }
 }
 
 /**
@@ -39,10 +39,10 @@ export const mapPathToMenu = (
  * @return {IBreadcrumb[]} 面包屑列表
  */
 export const mapPathToBreadcrumb = (
-	path: string,
-	userMenus: IMenuInRole[] | IMenuInRoleChild[]
+  path: string,
+  userMenus: IMenuInRole[] | IMenuInRoleChild[]
 ): IBreadcrumb[] => {
-	const breadcrumbs: IBreadcrumb[] = []
-	mapPathToMenu(path, userMenus, breadcrumbs)
-	return breadcrumbs
+  const breadcrumbs: IBreadcrumb[] = []
+  mapPathToMenu(path, userMenus, breadcrumbs)
+  return breadcrumbs
 }

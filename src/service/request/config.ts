@@ -12,12 +12,12 @@ let BASE_URL: string
 const TIME_OUT = 25000
 
 switch (import.meta.env.PROD) {
-	case true:
-		BASE_URL = 'http://codercba.com:5000'
-		break
-	case false:
-		BASE_URL = 'http://codercba.com:5000'
-		break
+  case true:
+    BASE_URL = 'http://codercba.com:5000'
+    break
+  case false:
+    BASE_URL = 'http://codercba.com:5000'
+    break
 }
 
 console.log('env:', import.meta.env)
