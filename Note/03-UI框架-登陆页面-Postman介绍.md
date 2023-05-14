@@ -1,4 +1,6 @@
-# 一、UI 组件库介绍
+# UI框架 & 登陆页面 & Postman介绍
+
+## 一、UI 组件库介绍
 
 流行的 React 组件库：
 
@@ -15,9 +17,9 @@
 
 - Element UI
 
-# 二、Element Plus 引入
+## 二、Element Plus 引入
 
-## 1.安装
+### 1.安装
 
 在项目中，使用包管理器进行安装；[官方文档](https://element-plus.org/zh-CN/guide/installation.html)。
 
@@ -25,7 +27,7 @@
 npm install element-plus
 ```
 
-## 2.全局引入
+### 2.全局引入
 
 方便简洁，但打包过大。[官方文档](https://element-plus.org/zh-CN/guide/quickstart.html)
 
@@ -40,7 +42,7 @@ app.use(ElementPlus)
 //...
 ```
 
-## 3.按需引入（推荐）
+### 3.按需引入（推荐）
 
 详细步骤参考[官方文档](https://element-plus.org/zh-CN/guide/quickstart.html#%E6%8C%89%E9%9C%80%E5%AF%BC%E5%85%A5)
 
@@ -95,20 +97,20 @@ export default defineConfig({
 
 > 【注意】：像 `ELMessage`、`ELLoading` 这样的”反馈组件“，没有在 `<template>` 中使用；
 >
-> 按需引入不会自动导入，需要手动导入，或者另外配置它们的自动导入，[详细配置方式见下方](#6.反馈组件引入)。
+> 按需引入的方式，不会自动导入，需要手动导入，或者另外配置它们的自动导入，[详细配置方式见下方](# 6.反馈组件引入)。
 
-## 4.手动导入
+### 4.手动导入
 
 了解，比较麻烦，不推荐使用。[官方文档](https://element-plus.org/zh-CN/guide/quickstart.html#%E6%89%8B%E5%8A%A8%E5%AF%BC%E5%85%A5)
 
-## 5.图标引入
+### 5.图标引入
 
 使用 Element Plus 框架中自带的图标，两种方式：
 
 - [全局注册](https://element-plus.org/zh-CN/component/icon.html#%E6%B3%A8%E5%86%8C%E6%89%80%E6%9C%89%E5%9B%BE%E6%A0%87)，项目中采用。
 - [自动导入](https://element-plus.org/zh-CN/component/icon.html#%E8%87%AA%E5%8A%A8%E5%AF%BC%E5%85%A5)（配置起来较麻烦）
 
-  1.编写一个注册图标的 vue 插件。
+Ⅰ.编写一个注册图标的 vue 插件。
 
 src\global\register-icons.ts
 
@@ -125,7 +127,7 @@ const registerIcons = (app: App<Element>) => {
 export default registerIcons
 ```
 
-2.使用插件
+Ⅱ.使用插件
 
 src\main.ts
 
@@ -136,13 +138,13 @@ import icon from '@/global/register-icons'
 app.use(icon)
 ```
 
-## 6.反馈组件引入
+### 6.反馈组件引入
 
 使用像 `ElMessage` 这样的反馈组件。对错误信息进行提示。
 
 该组件不会在 `<template>` 中使用，而是在 ts 逻辑代码中使用，需要手动引入组件和样式，
 
-### 1.手动引入组件：
+#### 1.手动引入组件
 
 src\views\login\cpns\PanelAccount.vue
 
@@ -150,7 +152,7 @@ src\views\login\cpns\PanelAccount.vue
 import { ElMessage } from 'element-plus'
 ```
 
-### 2.手动引入样式：
+#### 2.手动引入样式
 
 方式一：全局引入样式。
 
@@ -203,9 +205,9 @@ export default (): UserConfigExport => {
 }
 ```
 
-# 三、登录页面
+## 三、登录页面
 
-## 1.样式调整，添加背景
+### 1.样式调整，添加背景
 
 1.`App.vue` 占满屏幕；这样好做窗口居中处理。
 
@@ -237,7 +239,7 @@ src\views\login\LogIn.vue
 }
 ```
 
-## 2.登录页面搭建
+### 2.登录页面搭建
 
 1.创建组件 `LoginPanel.vue` 组件
 
@@ -259,7 +261,7 @@ import LoginPanel from './cpns/LoginPanel.vue'
 </template>
 ```
 
-### 1.整体页面搭建
+#### 1.整体页面搭建
 
 在 `LoginPanel.vue` 中搭建整体页面。
 
@@ -330,7 +332,7 @@ const handleLoginBtnClick = () => {}
 </script>
 ```
 
-### 2.tabs 搭建过程
+#### 2.tabs 搭建过程
 
 1.`<el-tab-pane>` 里，`label` 插槽的使用，用于 tabs 的标签。
 
@@ -347,7 +349,7 @@ src\views\login\cpns\LoginPanel.vue
       <span class="text">帐号登录</span>
     </div>
 
-		我是内容
+    我是内容
   </template>
 </el-tab-pane>
 ```
@@ -356,13 +358,13 @@ src\views\login\cpns\LoginPanel.vue
 >
 > ```css
 > :root {
->   /* 定义了一个变量(CSS属性) */
->   /* 只有后代元素可以使用 */
->   --main-color: #f00;
+>     /* 定义了一个变量(CSS属性) */
+>     /* 只有后代元素可以使用 */
+>     --main-color: #f00;
 > }
 > ```
 
-### 3.帐号登录 form
+#### 3.帐号登录 form
 
 创建 `PanelAccount.vue` 组件，在其中搭建账号登陆的 form
 
@@ -382,19 +384,16 @@ src\views\login\cpns\PanelAccount.vue
 //...
 
 // 1.定义 account 数据
-const account =
-  reactive <
-  IAccount >
-  {
-    name: '',
-    password: ''
-  }
+const account = reactive<IAccount>({
+  name: '',
+  password: ''
+})
 </script>
 ```
 
 > 【注意】：词语“账号”，一般出现在银行系统中，与钱有关；词语”帐号“，一般用于普通系统。
 
-### 4.form 验证规则
+#### 4.form 验证规则
 
 为用户输入的帐号、密码编写校验规则，传入 `<el-form>` 的 `rules` 属性中。
 
@@ -421,7 +420,7 @@ const accountRules: FormRules = {
 }
 ```
 
-### 5.立即登录按钮
+#### 5.立即登录按钮
 
 回到 `LoginPanel.vue` 组件中，点击“立即登录”按钮，调用 `PanelAccount.vue` 中的登录方法，
 
@@ -442,11 +441,11 @@ src\views\login\cpns\LoginPanel.vue
 const accountRef = ref<InstanceType<typeof PanelAccount>>()
 //...
 const handleLoginBtnClick = () => {
-	if (activeName.value === 'account') {
-		accountRef.value?.loginAction()
-	} else {
-		console.log('用户在进行手机登录')
-	}
+  if (activeName.value === 'account') {
+    accountRef.value?.loginAction()
+  } else {
+    console.log('用户在进行手机登录')
+  }
 }
 </script>
 ```
@@ -455,7 +454,7 @@ const handleLoginBtnClick = () => {
 >
 > 而是这么写 `ref<InstanceType<typeof [组件名称]>>`，
 >
-> .vue 文件中导出的是组件对象，在 Vue 框架中是当作构造器来使用的。
+> .vue 文件中导出的，是组件对象，在 Vue 框架中是当作构造器来使用的。
 >
 > 引入的 Element 组件，可以加 `class` 属性。
 
@@ -469,9 +468,9 @@ defineExpose({
 })
 ```
 
-## 3.登录操作分析
+### 3.登录操作分析
 
-### 1.form 通过验证
+#### 1.form 通过验证
 
 使用 `form.validata` 方法：
 
@@ -492,7 +491,7 @@ const loginAction = () => {
 }
 ```
 
-### 2.登录接口封装
+#### 2.登录接口封装
 
 在 service 目录中，封装登录接口。
 
@@ -507,7 +506,7 @@ export const accountLoginRequest = (account: IAccount) =>
   })
 ```
 
-### 3.在 store 和组件中使用
+#### 3.在 store 和组件中使用
 
 在 store 中使用
 
@@ -568,7 +567,7 @@ const loginAction = () => {
 }
 ```
 
-### 4.登录接口参数类型
+#### 4.登录接口参数类型
 
 在全局定义 `IAccount` 类型，作为登录接口传入参数的类型。
 
@@ -583,7 +582,7 @@ export interface IAccount {
 
 > 【注意】：在 src 下创建 types 目录，用来声明多处都要用到的类型。
 
-# 四、postman 使用
+## 四、postman 使用
 
 将在线文档，导入到 postman 中。
 
