@@ -60,7 +60,7 @@ onMounted(() => {
           <el-sub-menu :index="item.id + ''">
             <template #title>
               <el-icon>
-                <Component :is="item.icon.split('-icon-').pop()"></Component>
+                <Component :is="item.icon.split('-icon-').pop() as string"></Component>
               </el-icon>
               <span>{{ item.name }}</span>
             </template>
