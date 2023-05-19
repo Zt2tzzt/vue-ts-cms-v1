@@ -1,6 +1,8 @@
-# 一、动态添加路由
+# 动态路由 & 面包屑 & User页面
 
-## 1.思路整理
+## 一、动态添加路由
+
+### 1.思路整理
 
 > 【回顾】：[RBAC 设计的三种方案](./04-登录退出-用户权限-菜单树-头部区域-注册路由.md/#5RBAC 设计思想理解)，这里我们讨论方案二、三的具体实现步骤。
 
@@ -22,7 +24,7 @@
 
 4. 根据用户菜单，筛选路由对象，并动态添加路由。
 
-## 2.创建页面和路由
+### 2.创建页面和路由
 
 在 router 目录下，创建与 view 目录下，相同的目录结构。
 
@@ -57,7 +59,7 @@ npx coderwhy add3page_setup DepartmentPanel -d src/views/main/system/department
 
 - 比如后端返回的这样的路径：`/main/analysis/overview`
 
-## 3.从本地文件中读取路由
+### 3.从本地文件中读取路由
 
 1.封装一个工具函数，在其中返回一个保存路由对象的数组。
 
@@ -75,7 +77,7 @@ npx coderwhy add3page_setup DepartmentPanel -d src/views/main/system/department
 const obj = import.meta.glob('../../router/main/**/*.ts')
 ```
 
-添加一个参数 `{eager: true}`。取到的是一个对象。
+添加一个参数 `{eager: true}`。可以取到一个对象。
 
 - 其中 key 是文件路径文本，value 是对应的文件模块。
 
@@ -105,7 +107,7 @@ const loadLocalRoutes = (): RouteRecordRaw[] => {
 }
 ```
 
-## 4.根据菜单映射路由
+### 4.根据菜单映射路由
 
 封装一个工具函数 `mapMenusToRoutes`，在其中返回一个数组，里面是用户菜单映射后的路由对象列表。
 
@@ -160,7 +162,7 @@ const routes = mapMenusToRoutes(userMenus)
 routes.forEach(route => router.addRoute('main', route))
 ```
 
-## 5.登陆后匹配第一个页面
+### 5.登陆后匹配第一个页面
 
 定义一个全局变量 `firstRoute`，用于保存第一个匹配到的路由。
 
@@ -178,36 +180,36 @@ export let firstRoute: RouteRecordRaw // 用于保存第一个路由。
  * @return {RouteRecordRaw[]} 菜单映射后的路由列表
  */
 export const mapMenusToRoutes = (userMenu: IMenuInRole[]): RouteRecordRaw[] => {
-	const localRoutes = loadLocalRoutes()
+  const localRoutes = loadLocalRoutes()
 
-	const routes: RouteRecordRaw[] = []
+  const routes: RouteRecordRaw[] = []
 
-	const _getRoute = (userMenu: IMenuInRole[] | IMenuInRoleChild[]) => {
-		let route: RouteRecordRaw | undefined
+  const _getRoute = (userMenu: IMenuInRole[] | IMenuInRoleChild[]) => {
+    let route: RouteRecordRaw | undefined
 
-		userMenu.forEach(item => {
-			switch (item.type) {
-				case 1:
-					routes.push({ path: item.url, redirect: '' })
-					if (Array.isArray(item.children)) _getRoute(item.children)
-					break
-				case 2:
-					route = localRoutes.find(lr => lr.path === item.url)
-					if (route) {
-						// 点击一级面包屑，返回大类里的重定向路由。
-						const redirectRoute = routes.find(r => !r.redirect && item.url.includes(r.path))
-						if (redirectRoute) redirectRoute.redirect = route.path
+    userMenu.forEach(item => {
+      switch (item.type) {
+        case 1:
+          routes.push({ path: item.url, redirect: '' })
+          if (Array.isArray(item.children)) _getRoute(item.children)
+          break
+        case 2:
+          route = localRoutes.find(lr => lr.path === item.url)
+          if (route) {
+            // 点击一级面包屑，返回大类里的重定向路由。
+            const redirectRoute = routes.find(r => !r.redirect && item.url.includes(r.path))
+            if (redirectRoute) redirectRoute.redirect = route.path
 
-						if (!firstRoute) firstRoute = route
-						routes.push(route)
-					}
-					break
-			}
-		})
-	}
-	_getRoute(userMenu)
+            if (!firstRoute) firstRoute = route
+            routes.push(route)
+          }
+          break
+      }
+    })
+  }
+  _getRoute(userMenu)
 
-	return routes
+  return routes
 }
 ```
 
@@ -220,7 +222,6 @@ src\router\index.ts
 import { firstRoute } from '@/utils/map-menu'
 
 //...
-
 router.beforeEach(to => {
   const token = localCache.getCache(LOGIN_TOKEN)
 
@@ -232,7 +233,7 @@ router.beforeEach(to => {
 })
 ```
 
-## 6.刷新后保持路由映射
+### 6.刷新后保持路由映射
 
 上述操作后；如果刷新页面，动态添加的路由，全都消失了；
 
@@ -302,11 +303,11 @@ app.use(store)
 app.use(router)
 ```
 
-## 7.登陆/刷新匹配菜单索引
+### 7.登陆/刷新匹配菜单索引
 
 上述操作，使得登陆后匹配到了第一个路由，刷新页面后，动态添加的路由，也仍然存在；
 
-但是，菜单索引又回到了第一个。这是不对的。
+但是，右侧菜单索引，又回到了第一个。这是不对的。
 
 刷新页面时，还需要再匹配当前页对应的菜单索引，并在 `MainMenu.vue` 中进行设置。
 
@@ -373,7 +374,7 @@ onMounted(() => {
 })
 ```
 
-# 二、MainHeader 里的面包屑
+## 二、MainHeader 里的面包屑
 
 封装一个工具 `mapPathToBreadcrumb`，用来将当前路由匹配面包屑。
 
@@ -438,13 +439,13 @@ src\components\main-header\cpns\Breadcrumb.vue
 const breadcrumbs = computed(() => mapPathToBreadcrumb(route.path, loginStore.userMenus))
 ```
 
-# 三、UserPanel.vue 页面
+## 三、UserPanel.vue 页面
 
-## 1.搜索页面
+### 1.搜索页面
 
-### 1.表单区域
+#### 1.表单区域
 
-创建 `UserSearch.vue` 页面。
+创建 `UserSearch.vue` 页面；
 
 使用 `<el-form>` 布局搜索区域。
 
@@ -461,7 +462,7 @@ const breadcrumbs = computed(() => mapPathToBreadcrumb(route.path, loginStore.us
 
 src\views\main\system\user\cpns\UserSearch.vue
 
-### 2.按钮区域
+#### 2.按钮区域
 
 ”重置“和”搜索“按钮编写。
 
@@ -478,9 +479,9 @@ const onResetClick = () => {
 }
 ```
 
-## 2.UI 框架国际化
+### 2.UI 框架国际化
 
-具体操作参考[官方文档](https://element-plus.org/zh-CN/guide/i18n.html)
+具体操作参考[官方文档](https://element-plus.org/zh-CN/guide/i18n.html)。
 
 在 `App.vue` 中配置。
 
@@ -510,11 +511,11 @@ env.d.ts
 declare module '*.mjs'
 ```
 
-## 3.内容页面
+### 3.内容页面
 
 创建 `UserContent.vue` 页面。
 
-### 1.头部区域
+#### 1.头部区域
 
 编写 content 的头部区域。
 
@@ -527,7 +528,7 @@ src\views\main\system\user\cpns\UserContent.vue
 </div>
 ```
 
-### 2.数据列表
+#### 2.数据列表
 
 获取 user 列表的数据并展示：
 
@@ -582,7 +583,7 @@ export default useSystemStore
 
 使用 `<el-tabel>` 展示数据。
 
-- 在第一列加入多选列 `type="selection" `。
+- 在第一列加入多选列 `type="selection"`。
 
 - 最后一列操作列，使用 `<el-table-column>` 的插槽插入按钮。
 
