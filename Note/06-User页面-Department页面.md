@@ -1,6 +1,8 @@
-# 一、User 页面
+# User页面 & Department页面
 
-## 1.状态格式化
+## 一、User 页面
+
+### 1.状态格式化
 
 在 `UserContent.vue` 中，格式化“状态”列。
 
@@ -18,7 +20,7 @@ src\views\main\system\user\cpns\UserContent.vue
 </el-table-column>
 ```
 
-## 2.创建/修改时间格式化
+### 2.创建/修改时间格式化
 
 在 `UserContent.vue` 中，格式化，“创建日期”和“结束日期”。
 
@@ -54,7 +56,7 @@ src\views\main\system\user\cpns\UserContent.vue
 </el-table-column>
 ```
 
-## 3.分页功能
+### 3.分页功能
 
 在 `UserContent.vue` 中编写分页区域。
 
@@ -121,11 +123,11 @@ const handleCurrentChange = () => {
 </template>
 ```
 
-## 4.查询功能-条件查询
+### 4.查询功能-条件查询
 
 在 `UserContent.vue` 中进行条件查询。
 
-将条件查询的方法 `fetchUserListData` 暴露给 `UserPanel.vue`
+将条件查询的方法 `fetchUserListData` 暴露给 `UserPanel.vue`；
 
 > 【注意】：事件总线，通常用于跨度比较大的组件。存在不可控的缺陷；这里使用父子组件通信的方式。
 
@@ -183,7 +185,7 @@ const handleResetClick = () => {
 }
 ```
 
-## 5.删除功能
+### 5.删除功能
 
 在 `UserContent.vue` 中编写用户删除功能。
 
@@ -225,9 +227,9 @@ const actions = {
 }
 ```
 
-## 6.新增、编辑功能
+### 6.新增、编辑功能
 
-### 1.弹出新增对话框
+#### 1.弹出新增对话框
 
 在 `UserContent.vue` 中发送用户“新建”的事件。
 
@@ -240,7 +242,7 @@ const actions = {
 
 在 `UserPanel.vue` 中拿到该状态，去调用 `UserModal.vue` 中暴露的方法 `setModalVisible`，改变其中的状态，
 
-> 【注意】：在组件中一般暴露方法，而不是直接暴露属性；因为方法中可以进行拦截，更加可控。
+> 【注意】：在组件中一般暴露方法，而不是直接暴露属性；因为在方法中，可以对操作进行拦截，更加可控。
 
 src\views\main\system\user\cpns\UserContent.vue
 
@@ -306,7 +308,7 @@ defineExpose({
 </template>
 ```
 
-### 2.加载“角色”和“部门”
+#### 2.加载“角色”和“部门”
 
 新建用户时，在 `UserModal.vue` 中“选择角色”和“选择部门”，需要使用服务器请求下来的数据。
 
@@ -372,7 +374,7 @@ const action = {
 }
 ```
 
-### 3.新增用户
+#### 3.新增用户
 
 在 `UserModal.vue` 中，点击“确定”，使用表单中的数据发送网络请求。
 
@@ -415,7 +417,7 @@ const actions = {
 }
 ```
 
-### 4.编辑用户
+#### 4.编辑用户
 
 在 `UserContent.vue` 中，编写用户修改功能。
 
@@ -543,19 +545,17 @@ function print(obj: Person) {
 }
 ```
 
-封装一个函数，用于在 ts 中遍历对象类型，返回指定类型的 key。
+封装一个函数，用于在 ts 中，遍历对象类型，返回指定类型的 key。
 
 ```typescript
 export const getKeysFronObj = <T extends object>(obj: T) => Object.keys(obj) as Array<keyof T>
 ```
 
-> 【补充】：箭头函数的泛型。
+> 【补充】：箭头函数的泛型。写在函数参数的前面，见上面的例子。
 
-写在函数参数的前面，见上面的例子。
+## 二、Department 页面
 
-# 二、Department 页面
-
-## 1.快速搭建
+### 1.快速搭建
 
 根据 `UserPanel.vue` 和其中的组件。
 
@@ -567,7 +567,7 @@ src\views\main\system\department\cpns\Pagesearch.vue
 
 src\views\main\system\department\cpns\PageContent.vue
 
-## 2.封装网络请求
+### 2.封装网络请求
 
 在 systemStore 中，针对 `DepartmentPanel.vue` 的内容，封装”增删改查“对应的”动态“的网络请求。
 
@@ -637,7 +637,7 @@ const actions = {
 }
 ```
 
-## 3.实现查询、重置、删除
+### 3.实现查询、重置、删除
 
 在 `PageSearch.vue` 中，发送 `Department.vue` 中的“查询”，“重置”的事件。
 
@@ -699,7 +699,7 @@ const onDeleteClick = (id: number) => {
 }
 ```
 
-## 4.实现新增、编辑
+### 4.实现新增、编辑
 
 创建 `PageModal.vue` 组件，实现“新增”，“修改”等功能。
 
@@ -725,7 +725,7 @@ const onConfigClick = () => {
 }
 ```
 
-## 5.目录重构
+### 5.目录重构
 
 将 `PageSearch.vue` 移动到 Component 目录下。在其中进行抽取和封装。
 
@@ -875,7 +875,7 @@ interface Student {
 type propTypes = Student[keyof Student]
 ```
 
-# 三、Role 页面（简单搭建）
+## 三、Role 页面（简单搭建）
 
 快速搭建 `RolePanel.vue` 页面
 
