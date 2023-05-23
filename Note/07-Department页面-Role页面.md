@@ -1,10 +1,12 @@
-# 一、高阶组件封装（一）
+# Department页面 & Role页面
+
+## 一、高阶组件封装（一）
 
 以 `DepartmentPanel.vue` 页面为例，封装和完善高阶组件 `PageContent.vue` 和 `PageModal.vue`.
 
-## 1.PageContent 组件
+### 1.PageContent 组件
 
-### 1.头部抽取
+#### 1.头部抽取
 
 在 `PageContent.vue` 中，进行抽取和封装。
 
@@ -39,9 +41,9 @@ defineProps<IProps>()
 </script>
 ```
 
-### 2.表格抽取
+#### 2.表格抽取
 
-#### 1.通用列抽取
+##### 1.通用列抽取
 
 在 `PageContent.vue` 中，抽取”选择列“、”序号“、”部门名称“、”部门编号“，”上级部门“等比较通用的列。
 
@@ -68,15 +70,15 @@ src\views\main\system\department\cpns\PageContent.vue
 </template>
 ```
 
-#### 2.时间、操作列抽取
+##### 2.时间、操作列抽取
 
 抽取”创建时间“、”更新时间“、”操作“等三个使用了插槽的列，
 
-> 【注意】：在 `PageContent.vue` 中遍历处理配置文件时，有两种思路（项目中都有采用）：
+> 【注意】：在 `PageContent.vue` 中，遍历处理配置文件时，有两种思路（项目中都有采用）：
 >
 > - 思路一：使用 `v-if` 处理每种情况。
 > - 思路二：使用插槽，将特殊的列交给父组件（如 `DepartmentPanel.vue`）处理，使用动态插槽名。
->   - 配置文件中 item 的 `gener` 为 `custom`，表示需要使用插槽处理（项目中还没有）。
+>   - 配置文件中 item 的 `gener` 为 `custom`；表示需要使用插槽处理（项目中还没有）。
 
 src\views\main\system\department\config\content.config.ts
 
@@ -124,11 +126,11 @@ src\views\main\system\department\cpns\PageContent.vue
 </template>
 ```
 
-### 3.网络请求重构
+#### 3.网络请求重构
 
 在 `PageContent.vue` 中。传入 `pageName` 属性；
 
-用来决定 `PageContent.vue` 组件用于哪个页面。并用于发送网络请求。
+用来决定 `PageContent.vue` 组件，用于哪个页面，并用于发送网络请求。
 
 src\views\main\system\department\config\content.config.ts
 
@@ -153,11 +155,11 @@ systemStore.postPageListAction<IDepartmentQueryParam>(pageName.value, {
 systemStore.deletePageByIdAction(pageName.value, id)
 ```
 
-## 2.PageModal 组件
+### 2.PageModal 组件
 
 在 `PageModal.vue` 中进行抽取和封装。
 
-### 1.头部、表单抽取
+#### 1.头部、表单抽取
 
 抽取 `header` 的配置，和 `formItems` 的配置。
 
@@ -210,7 +212,7 @@ src\components\page-modal\PageModal.vue\
 </el-form>
 ```
 
-### 2.动态注入配置项
+#### 2.动态注入配置项
 
 在 modalConfig 配置文件中，`formItem` 里，某些 `type` 为 `select` 的元素，`options` 属性值来自服务器。
 
@@ -312,7 +314,7 @@ const setModalVisible = <T extends { id: number }, F>({
 >
 > .vue 文件默认导出的是一个组件对象，setup 顶层写法本质上只是一种语法糖。[参考文档](https://cn.vuejs.org/guide/typescript/composition-api.html#typing-component-props)
 
-## 3.Hooks 封装
+### 3.Hooks 封装
 
 在 `DepartmentPanel.vue` 中，对相同的逻辑进行抽取，使用 hooks。
 
@@ -372,11 +374,11 @@ const [contentRef, handleQueryClick, handleResetClick] = usePageSearch()
 const [modalRef, handleNewClick, handleEditClick] = usePageContent()
 ```
 
-# 二、高阶组件封装（二）
+## 二、高阶组件封装（二）
 
 以 `RolePanel.vue` 页面为例，封装和完善高阶组件 `PageContent.vue` 和 `PageModal.vue`.
 
-## 1.Role 和 Menu 配置文件
+### 1.Role 和 Menu 配置文件
 
 在 `RolePanel.vue` 中，应用封装好的组件。编写配置文件。
 
@@ -390,13 +392,13 @@ src\views\main\system\role\config\modal.config.ts
 
 src\views\main\system\menu\config\content.config.ts
 
-## 2.PageContent 组件
+### 2.PageContent 组件
 
 在 `MenuPanel.vue` 中，要对菜单做分级展示；
 
 对 `PageContent.vue` 中的 `<el-table>` 做优化。
 
-### 1.table 树形数据
+#### 1.table 树形数据
 
 为 `<el-table>` 添加树形数据的效果，在 `MenuPanel.vue` 中展示菜单列表和它的子列表。
 
@@ -455,13 +457,13 @@ src\components\page-content\PageContent.vue
 >
 > 因为在 `<el-table-column>` 上使用 `v-bind` 绑定属性对象时，会覆盖原组件上的属性 `type`。
 
-## 3.PageModal 组件
+### 3.PageModal 组件
 
 在 `RolePanel.vue` 中，新建角色时，要分级展示菜单；
 
 在 `PageModal.vue` 中，进行优化。
 
-### 1.插槽展示角色的菜单
+#### 1.插槽展示角色的菜单
 
 在 `RolePanel.vue` 中，新建角色时，需要在 `PageModal.vue` 中展示菜单树。
 
@@ -641,6 +643,6 @@ const editCallback = (itemData: IRole) => {
 > - 在 Vue2 中进行了多次调整。
 > - 在 Vue3 中，是一个微任务。
 
-# 三、富文本编辑器（了解）
+## 三、富文本编辑器（了解）
 
 【了解】：流行的做富文本编辑的库 [wangEdit](https://www.wangeditor.com/)
