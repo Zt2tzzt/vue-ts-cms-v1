@@ -1,6 +1,8 @@
-# 一、页面权限管理
+# 页面权限 & Dashboard页面 & Husky
 
-## 1.映射按钮权限
+## 一、页面权限管理
+
+### 1.映射按钮权限
 
 按钮的权限管理:
 
@@ -53,15 +55,15 @@ function dynamicLoadingPermissionAndRoutes(this: ILoginState, userMenus: IMenuIn
 }
 ```
 
-## 2.在页面控制权限
+### 2.在页面控制权限
 
-### 1.PageContent 页面
+#### 1.PageContent 页面
 
-在进入某个页面，如角色（`RolePanel.vue`）时，判断用户是否有增、删、改、查权限。
+在进入某个页面，如角色（`RolePanel.vue`）时，判断用户是否有该页面中，相应的增、删、改、查权限。
 
-由分析可知，”增删改查“实际上都要通过 `PageContent.vue` 来完成，所以在其中进行控制。
+由分析可知，”增、删、改、查“操作，实际上都要通过 `PageContent.vue` 来完成，所以在该组件中，进行控制。
 
-在其中增加四个布尔类型的 flags，`isCreate`、`isDelete`、`isUpdate`、`isQuery`，分别表示”增“、”删“、”改“、”查“
+在其中增加四个布尔类型的 flags，`isCreate`、`isDelete`、`isUpdate`、`isQuery`；分别表示”增“、”删“、”改“、”查“
 权限。
 
 获取到 `loginstore` 中的 `permissions` 后，进行判断，为 flags 赋值。
@@ -93,7 +95,7 @@ const permission = {
 }
 ```
 
-”查“，在网络请求中控制。
+”查“ 操作权限，在网络请求中控制。
 
 src\components\page-content\PageContent.vue
 
@@ -105,7 +107,7 @@ const fetchPageListData = <T>(formatData: T | object = {}) => {
 }
 ```
 
-”增“、”删“，”改“：在页面上的按钮控制.
+”增“、”删“，”改“操作权限：在页面上的按钮控制.
 
 src\components\page-content\PageContent.vue
 
@@ -138,7 +140,7 @@ src\components\page-content\PageContent.vue
 </template>
 ```
 
-### 2.PageSearch 页面
+#### 2.PageSearch 页面
 
 在 `PageSearch.vue` 中，判断是否拥有查询权限，如果没有，整个组件都不展示。
 
@@ -157,7 +159,7 @@ const permission = {
 </template>
 ```
 
-## 3.单元测试
+### 3.单元测试
 
 对以上编写的权限管理功能，进行测试。
 
@@ -168,7 +170,7 @@ const permission = {
 原因：
 
 - 创建用户时，能够选择的角色，是在用户登录或页面刷新时，加载到内存（`mainStore`）中的。
-- 创建角色后，没有对内存中的角色，进行重载。
+- 创建角色后，没有对内存中的角色，重新加载。
 
 解决方案：
 
@@ -218,9 +220,9 @@ const actions = {
 }
 ```
 
-# 二、bug 修复
+## 二、bug 修复
 
-## 1.用户名显示
+### 1.用户名显示
 
 在 `UserState.vue` 中动态展示用户名。
 
@@ -239,21 +241,21 @@ const nickname = computed(
 </template>
 ```
 
-## 2.增删改后页码重置
+### 2.增删改后页码重置
 
-在“增“、“删“、“改“发送网络请求后，将分页器页码重置为第一页。
+在“增“、“删“、“改“发送网络请求后，将分页器页码，重置为第一页。
 
 “增“、“改“都涉及到跨组件操作，它们都在 `PageModal.vue` 中触发，意味着：
 
 `PageModal.vue` 中发送完网络请求，要将事件传给 `PageContent.vue`。
 
-### 1.常用两种方案
+#### 1.常用两种方案
 
 方案一：父子组件通信（推荐）。
 
-方案二：事件总线（少用，不可控）。
+方案二：事件总线（尽量少用，不可控）。
 
-### 2.store.$onAction 方案
+#### 2.store.$onAction 方案
 
 在 `PageContent.vue` 中使用 [store.$onAction](https://pinia.vuejs.org/zh/core-concepts/actions.html#subscribing-to-actions) API，
 
@@ -282,9 +284,9 @@ onUnmounted(() => {
 </script>
 ```
 
-# 三、Dashboard 页面
+## 三、Dashboard 页面
 
-## 1.页面布局
+### 1.页面布局
 
 上方数字卡片展示区域搭建，使用 Element Plus Layout 布局中的 `<el-row>` 布局。
 
@@ -301,7 +303,7 @@ src\views\main\analysis\dashboard\DashboardPanel.vue
 </el-row>
 ```
 
-## 2.封装网络请求
+### 2.封装网络请求
 
 获取商品数据统计的数量。
 
@@ -316,7 +318,7 @@ export const getGoodsAmountListData = () =>
 
 > 软件架构中，没有什么问题是分层不能解决的，如果有，就再分一层。
 
-## 3.数字卡片组件
+### 3.数字卡片组件
 
 封装组件 `CountCard.vue` 组件。
 
@@ -353,7 +355,7 @@ src\views\main\analysis\dashboard\cpns\count-card\CountCard.vue
 npm install countup.js
 ```
 
-将这个库，在 `CountCard.vue` 组件中使用。做数字滚动动画效果。
+在 `CountCard.vue` 组件中使用这个库。做数字滚动动画效果。
 
 为数字添加前缀，两种思路：
 
@@ -376,9 +378,9 @@ onMounted(() => {
 })
 ```
 
-## 4.图表区域
+### 4.图表区域
 
-### 1.ChartCard 组件
+#### 1.ChartCard 组件
 
 在 `DashboardPanel.vue` 中，创建 `ChartCard.vue` 组件。用于展示图表卡片。
 
@@ -411,7 +413,7 @@ withDefaults(
 <style scoped lang="less"></style>
 ```
 
-### 2.echarts 安装
+#### 2.echarts 安装
 
 安装 _echarts_
 
@@ -419,7 +421,7 @@ withDefaults(
 npm install echarts
 ```
 
-### 3.BaseEchart 组件
+#### 3.BaseEchart 组件
 
 创建 `BaseEchart.vue` 组件，在其中接收 echarts 的配置项 `option`；
 
@@ -461,11 +463,11 @@ onMounted(() => {
 
   // 方案一
   /* watch(
-		() => props.options,
-		newVal => {
-			echartInstance.setOption(newVal)
-		}
-	) */
+    () => props.options,
+    newVal => {
+      echartInstance.setOption(newVal)
+    }
+  ) */
 
   // 方案二
   stopWatchEffect = watchEffect(() => echartInstance.setOption(props.options))
@@ -493,7 +495,7 @@ onUnmounted(() => {
 </style>
 ```
 
-### 4.图表组件创建，并获取数据
+#### 4.图表组件创建，并获取数据
 
 封装网络请求和 actions，在 `DashboardPanel.vue` 中获取商品数据。
 
@@ -611,7 +613,7 @@ const showGoodsAddressSale = computed(() =>
 </template>
 ```
 
-### 5.地图组件
+#### 5.地图组件
 
 服务器返回的数据中，没有地区销量对应的经纬度。需要去网上找一个包含地名和经纬度的文件。
 
@@ -658,9 +660,9 @@ const props = defineProps<{
 if (props.mapData) echarts.registerMap(props.mapData.mapName, props.mapData.geoJSON)
 ```
 
-### 6.响应式布局
+#### 6.响应式布局
 
-#### 1.图表 resize
+##### 1.图表 resize
 
 监听 `window` 的缩放，重置 `echart` 实例大小。
 
@@ -676,22 +678,22 @@ src\components\page-echarts\src\BaseEchart.vue
 let echartInstance: EChartsType
 
 const echartResize = debounce(() => {
-	echartInstance.resize()
+  echartInstance.resize()
 }, 300)
 
 onMounted(() => {
   echartInstance = echarts.init(containerRef.value!, 'light', {
-		renderer: 'canvas'
-	})
+    renderer: 'canvas'
+  })
 
   //...
   stopWatchEffect = watchEffect(() => echartInstance.setOption(props.options))
-	window.addEventListener('resize', echartResize)
+  window.addEventListener('resize', echartResize)
 })
 
 onUnmounted(() => {
-	window.removeEventListener('resize', echartResize)
-	stopWatchEffect?.()
+  window.removeEventListener('resize', echartResize)
+  stopWatchEffect?.()
 
 })
 </script>
@@ -703,7 +705,7 @@ onUnmounted(() => {
 </template>
 ```
 
-> 【注意】：echart 实例 `echartInstance` 如果用 `ref` 包裹变为响应式对象，会有两个问题：
+> 【注意】：echart 实例 `echartInstance` 如果用 `ref` 包裹，变为响应式对象，会有两个问题：
 >
 > - 调用 `resize` 方法时可能报错。
 >
@@ -711,7 +713,7 @@ onUnmounted(() => {
 >
 > `echartInstance` 不是响应式数据，不要用 `ref` 包裹。
 
-#### 2.卡片
+##### 2.卡片
 
 为 `DashboardPanel.vue` 上方卡片做响应式布局。
 
@@ -723,6 +725,6 @@ src\views\main\analysis\dashboard\DashboardPanel.vue
 </el-col>
 ```
 
-# 四、git Husky
+## 四、git Husky
 
 [git Husky 配置回顾](./02-项目配置-目录结构分析-环境搭建（一）.md/#二、项目 git 提交规范配置)
