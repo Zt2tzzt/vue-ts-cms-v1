@@ -110,7 +110,7 @@ export default defineConfig({
 - [全局注册](https://element-plus.org/zh-CN/component/icon.html#%E6%B3%A8%E5%86%8C%E6%89%80%E6%9C%89%E5%9B%BE%E6%A0%87)，项目中采用。
 - [自动导入](https://element-plus.org/zh-CN/component/icon.html#%E8%87%AA%E5%8A%A8%E5%AF%BC%E5%85%A5)（配置起来较麻烦）
 
-Ⅰ.编写一个注册图标的 vue 插件。
+Ⅰ~~.编写一个注册图标的 vue 插件。~~,（现在已不需要，具体参康上方文档）
 
 src\global\register-icons.ts
 
@@ -127,7 +127,7 @@ const registerIcons = (app: App<Element>) => {
 export default registerIcons
 ```
 
-Ⅱ.使用插件
+Ⅱ.~~使用插件~~，（现在已不需要，具体参康上方文档）
 
 src\main.ts
 
