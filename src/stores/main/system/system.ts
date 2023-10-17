@@ -92,7 +92,7 @@ const useSystemStore = defineStore('system', {
       postPageList<T, IResponseListData>(pageName, queryParam).then(res => {
         console.log(pageName, 'res:', res)
         this.pageList = res.data.list
-        this.pageTotalCount = res.data.totalCount
+        this.pageTotalCount = res.data.totalCount || 0
       })
     },
     deletePageByIdAction(pageName: string, id: number) {
