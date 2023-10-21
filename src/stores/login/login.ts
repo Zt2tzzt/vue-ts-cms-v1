@@ -60,6 +60,9 @@ const useLoginStore = defineStore('login', {
           this.userMenus = userMenus
           localCache.setCache(USER_MENU, userMenus)
 
+          const mainStore = useMainStore()
+          mainStore.fetchEntireDataAction()
+
           // 路由映射
           dynamicLoadingPermissionAndRoutes(this, userMenus)
 
